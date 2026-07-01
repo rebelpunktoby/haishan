@@ -19,8 +19,6 @@
     --serif:"Fraunces","Noto Serif TC",Georgia,serif;
     --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
     --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
-    /* Custom font stack for Chinese minimalism */
-    --zh-font:"LXGW WenKai TC",serif;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -109,7 +107,6 @@
 
   .statement{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,1.1rem + 1.9vw,2.6rem);
     line-height:1.36;letter-spacing:-.015em;color:#DEDBEC;max-width:24ch;}
-  /* Removed .hl class usage */
   .statement-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;}
   @media(min-width:860px){.statement-grid{grid-template-columns:1.55fr .9fr;gap:5rem;align-items:end;}.statement{max-width:none;}}
   .aside-note{font-family:var(--sans);font-size:1rem;color:var(--haze);line-height:1.7;max-width:36ch;}
@@ -168,7 +165,7 @@
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
 
-  /* Chinese view using LXGW WenKai */
+  /* Chinese view - LXGW WenKai */
   body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;}
   body.lang-zh .thesis{font-style:normal;font-weight:300;line-height:1.72;letter-spacing:.07em;}
   body.lang-zh .statement{font-weight:300;line-height:1.78;letter-spacing:.07em;}
@@ -178,8 +175,6 @@
   body.lang-zh .row .title .role,body.lang-zh .perf .p .v small{font-weight:300;}
   body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .nav-links{letter-spacing:.22em;}
   body.lang-zh .brand{letter-spacing:.16em;}
-  /* No colors on Chinese statement */
-  body.lang-zh .statement, body.lang-zh .contact-head em, body.lang-zh .row .title .role em{font-style:normal;}
 
   @media(max-width:600px){
     .nav-links{gap:1.3rem;}
@@ -254,14 +249,14 @@
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work7_role">OceanMountain</span>
+            <span class="role">OceanMountain</span>
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" class="work-link">Waves <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work8_role">OceanMountain</span>
+            <span class="role">OceanMountain</span>
           </div>
         </div>
         <div class="row" data-reveal>
@@ -305,18 +300,18 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
-        <div class="p" data-reveal><span class="v" data-i18n="perf7">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">2025.10</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf8">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">2025.10</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf3">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf4">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf9">Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small></span><span class="y">03.20</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf10">Pianos, NYC<small>Breaking Sound · with Eric Leo</small></span><span class="y">04.18</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf12">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.18 · 05.09</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf11">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.01</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf6">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf5">Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small></span><span class="y">’21 / ’20</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf2">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf1">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">2025.10</span></div>
+        <div class="p" data-reveal><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">2025.10</span></div>
+        <div class="p" data-reveal><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
+        <div class="p" data-reveal><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
+        <div class="p" data-reveal><span class="v">Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small></span><span class="y">03.20</span></div>
+        <div class="p" data-reveal><span class="v">Pianos, NYC<small>Breaking Sound · with Eric Leo</small></span><span class="y">04.18</span></div>
+        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.18 · 05.09</span></div>
+        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.01</span></div>
+        <div class="p" data-reveal><span class="v">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
+        <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small></span><span class="y">’21 / ’20</span></div>
+        <div class="p" data-reveal><span class="v">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
       </div>
     </div>
   </section>
@@ -383,36 +378,10 @@
     statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
     lbl_work:{en:"Selected Work",zh:"精選作品"},
     idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
-    work1_role:{en:'Composer &amp; Producer',zh:'Composer &amp; Producer'},
-    work2_role:{en:"Original Composition",zh:"Original Composition"},
-    work4_role:{en:"Original Composition",zh:"Original Composition"},
-    work5_role:{en:"Contemporary Hiphop / R&B",zh:"Contemporary Hiphop / R&B"},
-    work6_role:{en:"Alt-Rock / Emo Rock",zh:"Alt-Rock / Emo Rock"},
-    work7_role:{en:"OceanMountain",zh:"OceanMountain"},
-    work8_role:{en:"OceanMountain",zh:"OceanMountain"},
     lbl_stage:{en:"On Stage",zh:"現場演出"},
     idx_stage:{en:"Selected Performances",zh:"精選場次"},
-    perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
-    perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>Elite International Competition</small>"},
-    perf3:{en:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>",zh:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>"},
-    perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"World Monuments Fund<small>Charity Concert</small>"},
-    perf5:{en:"Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small>",zh:"Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small>"},
-    perf6:{en:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>",zh:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>"},
-    perf7:{en:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>",zh:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>"},
-    perf8:{en:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>",zh:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>"},
-    perf9:{en:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>",zh:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>"},
-    perf10:{en:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>",zh:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>"},
-    perf11:{en:"The Green Room, Hoboken<small>with Eric Leo</small>",zh:"The Green Room, Hoboken<small>with Eric Leo</small>"},
-    perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>",zh:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>"},
     lbl_edu:{en:"Education",zh:"學歷"},
     idx_edu:{en:"Training",zh:"訓練歷程"},
-    edu1_title:{en:"New York University",zh:"New York University"},
-    edu1_role:{en:"M.M., Music Technology",zh:"M.M., Music Technology"},
-    edu1_yr:{en:"2025 — Now",zh:"2025 — 至今"},
-    edu2_title:{en:"The New School for Jazz &amp; Contemporary Music",zh:"The New School for Jazz &amp; Contemporary Music"},
-    edu2_role:{en:"B.F.A., Jazz Piano",zh:"B.F.A., Jazz Piano"},
-    edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"Affiliated High School of Xinghai Conservatory"},
-    edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"Specialized Music Program, Piano · Guangzhou"},
     lbl_mentor:{en:"Mentorship",zh:"師承"},
     lbl_contact:{en:"Contact",zh:"聯絡"},
     idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
