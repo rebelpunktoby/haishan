@@ -26,7 +26,7 @@
   body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;overflow-x:hidden;}
-  body.lang-zh{font-family:var(--zh-font),var(--sans);}
+  body.lang-zh{font-family:var(--zh-font),var(--sans);font-size:0.95em;}
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
@@ -60,15 +60,15 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  .hero-bg{position:absolute;inset:0;z-index:0;background-image:url('HYSAN.jpg');background-size:cover;background-position:center 20%;opacity:0.85;}
-  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(9,11,20,.7) 0%, rgba(9,11,20,.2) 40%, rgba(9,11,20,.9) 100%);}
-  
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
+  /* Moody Portrait - Fixed Visibility */
+  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;pointer-events:none;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
     opacity:0.85;filter:contrast(1.2) brightness(1.5);
     -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
     mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);}
   @media(max-width:760px){.hero-portrait{width:72%;opacity:.5;}}
+  
+  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(9,11,20,.7) 0%, rgba(9,11,20,.2) 40%, rgba(9,11,20,.9) 100%);}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
   .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
@@ -169,12 +169,30 @@
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
 
+  /* Chinese view */
+  body.lang-zh .thesis{font-style:normal;font-weight:300;line-height:1.8;letter-spacing:.05em;}
+  body.lang-zh .statement{font-weight:300;line-height:1.85;letter-spacing:.05em;}
+  body.lang-zh .aside-note{font-weight:300;line-height:1.95;letter-spacing:.03em;}
+  body.lang-zh .contact-head{font-weight:300;line-height:1.5;letter-spacing:.05em;}
+  body.lang-zh .row .title{font-weight:400;line-height:1.5;letter-spacing:.02em;}
+  body.lang-zh .row .title .role,body.lang-zh .perf .p .v small{font-weight:300;}
+  body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .nav-links{letter-spacing:.2em;}
+  body.lang-zh .brand{letter-spacing:.1em;}
+  body.lang-zh .statement, body.lang-zh .contact-head em, body.lang-zh .row .title .role em{font-style:normal;}
+
   @media(max-width:600px){
     .nav-links{gap:1.3rem;}
     .brand{font-size:.72rem;}
     .nav-right{gap:1.1rem;}
     .seclabel .idx{display:none;}
     .seclabel{margin-bottom:2.2rem;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .orb{animation:none !important;}
+    .orb-wrap{transition:none;}
+    .scroll-cue .bar::after{animation:none;left:0;width:14px;}
+    [data-reveal]{opacity:1;transform:none;transition:none;}
   }
 </style>
 </head>
@@ -223,7 +241,7 @@
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
       <div class="statement-grid">
         <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
-        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across conservatory composition, jazz, and music technology. The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
+        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
       </div>
     </div>
   </section>
