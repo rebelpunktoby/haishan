@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Toby Hysan — Artist</title>
-<meta name="description" content="Toby Hysan — Creative artist and visionary" />
+<title>Haishan Lai — Pianist · Composer · Producer</title>
+<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in feeling, progressive in form. Film scoring, recording, and live performance." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
@@ -37,7 +37,6 @@
   .skip:focus{left:1rem;top:1rem;}
   :focus-visible{outline:2px solid var(--lumen);outline-offset:4px;border-radius:2px;}
 
-  /* NAV */
   header.nav{position:fixed;top:0;left:0;right:0;z-index:100;
     transition:background .5s var(--ease),border-color .5s var(--ease),backdrop-filter .5s;border-bottom:1px solid transparent;}
   header.nav.scrolled{background:rgba(9,11,20,.72);backdrop-filter:blur(14px) saturate(1.2);border-bottom:1px solid var(--line);}
@@ -50,12 +49,26 @@
   .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--lumen);transition:width .4s var(--ease);}
   .nav-links a:hover{color:var(--mist);}
   .nav-links a:hover::after{width:100%;}
+  .lang-toggle{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mist);background:transparent;
+    border:1px solid var(--line-2);border-radius:22px;padding:.36rem .82rem;cursor:pointer;line-height:1;
+    transition:border-color .35s var(--ease),color .35s var(--ease);}
+  .lang-toggle:hover{border-color:var(--lumen);color:var(--lumen);}
 
-  /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   .field{position:absolute;inset:0;z-index:0;overflow:hidden;}
-  .hero-bg{position:absolute;inset:0;z-index:1;background-image:url('HYSAN.jpg');background-size:cover;background-position:center;opacity:.35;mix-blend-mode:darken;}
-  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(9,11,20,.6) 0%,rgba(9,11,20,.4) 50%,rgba(9,11,20,.7) 100%);}
+  .hero-bg{position:absolute;inset:0;z-index:1;background-image:url('HYSAN.jpg');background-size:cover;background-position:center;opacity:.3;mix-blend-mode:darken;}
+  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(9,11,20,.7) 0%,rgba(9,11,20,.5) 50%,rgba(9,11,20,.8) 100%);}
+  .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
+  .orb{position:absolute;border-radius:50%;filter:blur(58px);mix-blend-mode:screen;will-change:transform;}
+  .o1{width:72vmax;height:72vmax;top:-22%;left:-14%;opacity:.55;background:radial-gradient(circle at 50% 50%,var(--violet) 0%,rgba(124,107,179,0) 62%);animation:driftA 46s var(--ease) infinite;}
+  .o2{width:66vmax;height:66vmax;bottom:-26%;right:-16%;opacity:.5;background:radial-gradient(circle at 50% 50%,var(--teal) 0%,rgba(63,168,156,0) 60%);animation:driftB 58s var(--ease) infinite;}
+  .o3{width:48vmax;height:48vmax;top:6%;right:8%;opacity:.42;background:radial-gradient(circle at 50% 50%,var(--rose) 0%,rgba(206,126,142,0) 62%);animation:driftC 51s var(--ease) infinite;}
+  .o4{width:52vmax;height:52vmax;bottom:2%;left:14%;opacity:.4;background:radial-gradient(circle at 50% 50%,var(--indigo) 0%,rgba(86,100,198,0) 62%);animation:driftD 63s var(--ease) infinite;}
+  .o5{width:34vmax;height:34vmax;top:42%;left:42%;opacity:.32;background:radial-gradient(circle at 50% 50%,var(--amber) 0%,rgba(226,172,110,0) 64%);animation:driftA 55s var(--ease) infinite reverse;}
+  @keyframes driftA{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,-6%) scale(1.12)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes driftB{0%{transform:translate(0,0) scale(1.05)}50%{transform:translate(-6%,4%) scale(.95)}100%{transform:translate(0,0) scale(1.05)}}
+  @keyframes driftC{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-5%,-5%) scale(1.15)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes driftD{0%{transform:translate(0,0) scale(1.08)}50%{transform:translate(7%,3%) scale(.92)}100%{transform:translate(0,0) scale(1.08)}}
 
   .hero-inner{position:relative;z-index:2;width:100%;}
   .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;color:var(--haze);}
@@ -74,7 +87,6 @@
   .scroll-cue .bar::after{content:"";position:absolute;left:-40px;top:0;width:40px;height:1px;background:var(--lumen);animation:sweep 2.8s var(--ease) infinite;}
   @keyframes sweep{0%{left:-40px}60%,100%{left:40px}}
 
-  /* SECTIONS */
   section.block{padding-block:clamp(4.5rem,9vw,8.5rem);position:relative;}
   .block + .block{border-top:1px solid var(--line);}
   .seclabel{display:flex;align-items:center;gap:1rem;margin-bottom:2.8rem;}
@@ -96,68 +108,86 @@
   @media(max-width:600px){
     .nav-links{gap:1.3rem;}
     .brand{font-size:.72rem;}
+    .nav-right{gap:1.1rem;}
+  }
+  @media(prefers-reduced-motion:reduce){
+    html{scroll-behavior:auto;}
+    .orb{animation:none !important;}
+    .orb-wrap{transition:none;}
+    .scroll-cue .bar::after{animation:none;left:0;width:14px;}
+    [data-reveal]{opacity:1;transform:none;transition:none;}
   }
 </style>
 </head>
 <body>
-<a class="skip" href="#content">Skip to content</a>
+<a class="skip" href="#statement">Skip to content</a>
 
 <header class="nav" id="nav">
   <div class="wrap nav-row">
-    <div class="brand">Toby <b>/</b> Hysan</div>
+    <div class="brand">Haishan&nbsp;Lai <b>/</b> Toby</div>
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
         <a href="#work">Work</a>
         <a href="#contact">Contact</a>
       </nav>
+      <button class="lang-toggle" id="langToggle" aria-label="Switch language">繁</button>
     </div>
   </div>
 </header>
 
 <main>
   <section class="hero" aria-label="Introduction">
-    <div class="field"></div>
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
+    <div class="field" aria-hidden="true">
+      <div class="hero-bg"></div>
+      <div class="hero-overlay"></div>
+      <div class="orb-wrap" style="--depth:16px"><span class="orb o1"></span></div>
+      <div class="orb-wrap" style="--depth:-22px"><span class="orb o2"></span></div>
+      <div class="orb-wrap" style="--depth:30px"><span class="orb o3"></span></div>
+      <div class="orb-wrap" style="--depth:-14px"><span class="orb o4"></span></div>
+      <div class="orb-wrap" style="--depth:38px"><span class="orb o5"></span></div>
+    </div>
     <div class="wrap hero-inner">
-      <p class="eyebrow">Creative Artist</p>
-      <h1>Toby <span class="em">Hysan</span></h1>
-      <p class="thesis">Visual storyteller blending light, silhouette, and emotional depth into compelling artistic experiences.</p>
+      <p class="eyebrow">Pianist · Composer · Producer</p>
+      <h1>Haishan <span class="em">Lai</span></h1>
+      <p class="thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
-        <span>Based everywhere</span>
-        <span><span class="dot">◆</span>&nbsp; Open to collaboration</span>
+        <span>Based in New York</span>
+        <span><span class="dot">◆</span>&nbsp; Conservatory · Jazz · Music Technology</span>
+        <span><span class="dot">◆</span>&nbsp; Open to international work</span>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span>Scroll</span></div>
   </section>
 
+  <section class="block" id="statement">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag">Practice</span><span class="rule"></span><span class="idx">Statement</span></div>
+      <p class="statement" data-reveal>My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument.</p>
+    </div>
+  </section>
+
   <section class="block" id="work">
     <div class="wrap">
-      <div class="seclabel" data-reveal>
-        <span class="tag">Featured</span>
-        <span class="rule"></span>
-        <span class="idx">Work</span>
-      </div>
-      <p class="statement" data-reveal>Your artistic portfolio goes here. Share your vision, your craft, and your story with the world.</p>
+      <div class="seclabel" data-reveal><span class="tag">Featured</span><span class="rule"></span><span class="idx">Work</span></div>
+      <p class="statement" data-reveal>Echoes of Ash Valley — Composer & Producer · Official Selection, Venice Immersive</p>
     </div>
   </section>
 
   <section class="block" id="contact">
     <div class="wrap">
-      <div class="seclabel" data-reveal>
-        <span class="tag">Connect</span>
-        <span class="rule"></span>
-        <span class="idx">Let's collaborate</span>
+      <div class="seclabel" data-reveal><span class="tag">Contact</span><span class="rule"></span><span class="idx">Let's collaborate</span></div>
+      <div class="statement" data-reveal>
+        <a href="mailto:Tobycantonese@gmail.com">Email</a>
+        <br><a href="tel:+15514144918">+1 551 414 4918</a>
       </div>
-      <p class="statement" data-reveal>Ready to work together or just say hello? Get in touch.</p>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap foot-row">
-    <span><b>Toby Hysan</b> — Artist & Visionary</span>
-    <span>2026</span>
+    <span><b>Haishan Lai</b> — Pianist · Composer · Producer</span>
+    <span>New York</span>
   </div>
 </footer>
 
