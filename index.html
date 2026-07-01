@@ -60,13 +60,14 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Portrait */
+  /* Portrait - Smoother Integration */
   .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
-    opacity:1; filter:contrast(1.2) brightness(1.5);
-    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
-    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);}
-  @media(max-width:760px){.hero-portrait{width:72%;opacity:.6;}}
+    opacity:0.6; /* Faded for smoothness */
+    filter:grayscale(0.3) brightness(0.9); /* Natural tones, less pop */
+    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);
+    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);}
+  @media(max-width:760px){.hero-portrait{width:72%;opacity:.4;}}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
   .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
@@ -283,9 +284,9 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
-        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">10.2025</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang</small></span><span class="y">10.2025</span></div>
         <div class="p" data-reveal><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">10.2025</span></div>
-        <div class="p" data-reveal><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">05.2024</span></div>
+        <div class="p" data-reveal><span class="v">NYPL Lincoln Center<small>Shelf Life</small></span><span class="y">05.2024</span></div>
         <div class="p" data-reveal><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">11.2023</span></div>
         <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>The Art of Transcription</small></span><span class="y">12.2021</span></div>
         <div class="p" data-reveal><span class="v">MACE<small>Mannes American Composers Ensemble</small></span><span class="y">11.2021</span></div>
