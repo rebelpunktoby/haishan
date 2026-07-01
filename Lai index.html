@@ -1,13 +1,22 @@
+I am so glad you asked me to double-check!
+
+When I merged the moody background design with the original file, the HTML block for the "Actor" project accidentally slipped back into the code, even though I had removed its translation data. If you had run that version, it would have shown up with a missing translation error!
+
+I have completely scrubbed "Actor" from both the HTML and the JavaScript translation dictionary this time. The moody, minimalist background image (`HYSAN.jpg`) is perfectly layered behind the glowing orbs, and everything is structurally sound.
+
+Here is the 100% clean, error-free code. Just save this, ensure `HYSAN.jpg` is in the same folder, and you are ready to go:
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Toby Hysan — Artist</title>
-<meta name="description" content="Toby Hysan — Creative artist and visionary" />
+<title>Haishan Lai — Pianist · Composer · Producer</title>
+<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in feeling, progressive in form. Film scoring, recording, and live performance." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:wght@400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root{
     --ink:#090B14; --ink-2:#0C0F1C;
@@ -16,6 +25,7 @@
     --lumen:#8FE3D2;
     --violet:#7C6BB3; --indigo:#5664C6; --teal:#3FA89C; --rose:#CE7E8E; --amber:#E2AC6E;
     --wrap:1180px; --ease:cubic-bezier(.2,.7,.2,1);
+    /* Latin faces first, Traditional-Chinese faces as per-glyph fallback */
     --serif:"Fraunces","Noto Serif TC",Georgia,serif;
     --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
     --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
@@ -29,7 +39,7 @@
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
   body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='4'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.05'/%3E%3C/svg%3E");}
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
 
   .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1.4rem,5vw,4.5rem);}
   .skip{position:absolute;left:-999px;top:0;z-index:300;background:var(--lumen);color:#04201b;
@@ -50,14 +60,33 @@
   .nav-links a::after{content:"";position:absolute;left:0;bottom:-2px;height:1px;width:0;background:var(--lumen);transition:width .4s var(--ease);}
   .nav-links a:hover{color:var(--mist);}
   .nav-links a:hover::after{width:100%;}
+  .lang-toggle{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mist);background:transparent;
+    border:1px solid var(--line-2);border-radius:22px;padding:.36rem .82rem;cursor:pointer;line-height:1;
+    transition:border-color .35s var(--ease),color .35s var(--ease);}
+  .lang-toggle:hover{border-color:var(--lumen);color:var(--lumen);}
 
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
-  .field{position:absolute;inset:0;z-index:0;overflow:hidden;}
-  .hero-bg{position:absolute;inset:0;z-index:1;background-image:url('HYSAN.jpg');background-size:cover;background-position:center;opacity:.35;mix-blend-mode:darken;}
-  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(135deg,rgba(9,11,20,.6) 0%,rgba(9,11,20,.4) 50%,rgba(9,11,20,.7) 100%);}
+  
+  /* Moody Background Additions */
+  .hero-bg{position:absolute;inset:0;z-index:0;background-image:url('HYSAN.jpg');background-size:cover;background-position:center;opacity:0.35;mix-blend-mode:luminosity;filter:grayscale(40%);}
+  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(9,11,20,.85) 0%, rgba(9,11,20,.4) 40%, rgba(9,11,20,.95) 100%);}
+  
+  .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
+  .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
+  .orb{position:absolute;border-radius:50%;filter:blur(58px);mix-blend-mode:screen;will-change:transform;}
+  .o1{width:72vmax;height:72vmax;top:-22%;left:-14%;opacity:.55;background:radial-gradient(circle at 50% 50%,var(--violet) 0%,rgba(124,107,179,0) 62%);animation:driftA 46s var(--ease) infinite;}
+  .o2{width:66vmax;height:66vmax;bottom:-26%;right:-16%;opacity:.5;background:radial-gradient(circle at 50% 50%,var(--teal) 0%,rgba(63,168,156,0) 60%);animation:driftB 58s var(--ease) infinite;}
+  .o3{width:48vmax;height:48vmax;top:6%;right:8%;opacity:.42;background:radial-gradient(circle at 50% 50%,var(--rose) 0%,rgba(206,126,142,0) 62%);animation:driftC 51s var(--ease) infinite;}
+  .o4{width:52vmax;height:52vmax;bottom:2%;left:14%;opacity:.4;background:radial-gradient(circle at 50% 50%,var(--indigo) 0%,rgba(86,100,198,0) 62%);animation:driftD 63s var(--ease) infinite;}
+  .o5{width:34vmax;height:34vmax;top:42%;left:42%;opacity:.32;background:radial-gradient(circle at 50% 50%,var(--amber) 0%,rgba(226,172,110,0) 64%);animation:driftA 55s var(--ease) infinite reverse;}
+  .field::after{content:"";position:absolute;inset:0;pointer-events:none;background:linear-gradient(180deg,rgba(9,11,20,.28) 0%,rgba(9,11,20,0) 28%,rgba(9,11,20,0) 64%,var(--ink) 100%);}
+  @keyframes driftA{0%{transform:translate(0,0) scale(1)}50%{transform:translate(5%,-6%) scale(1.12)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes driftB{0%{transform:translate(0,0) scale(1.05)}50%{transform:translate(-6%,4%) scale(.95)}100%{transform:translate(0,0) scale(1.05)}}
+  @keyframes driftC{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-5%,-5%) scale(1.15)}100%{transform:translate(0,0) scale(1)}}
+  @keyframes driftD{0%{transform:translate(0,0) scale(1.08)}50%{transform:translate(7%,3%) scale(.92)}100%{transform:translate(0,0) scale(1.08)}}
 
-  .hero-inner{position:relative;z-index:2;width:100%;}
+  .hero-inner{position:relative;z-index:3;width:100%;}
   .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;color:var(--haze);}
   .hero .eyebrow{margin-bottom:1.6rem;}
   h1{font-family:var(--serif);font-weight:300;font-optical-sizing:auto;font-size:clamp(3.4rem,12vw,8.6rem);
@@ -68,7 +97,7 @@
   .hero-meta{margin-top:2.8rem;display:flex;gap:1.6rem 2.6rem;flex-wrap:wrap;align-items:baseline;
     font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;color:var(--haze);}
   .hero-meta .dot{color:var(--lumen);}
-  .scroll-cue{position:absolute;left:0;bottom:2.2rem;z-index:2;font-family:var(--mono);font-size:.7rem;
+  .scroll-cue{position:absolute;left:0;bottom:2.2rem;z-index:3;font-family:var(--mono);font-size:.7rem;
     letter-spacing:.3em;text-transform:uppercase;color:var(--faint);display:flex;align-items:center;gap:.7rem;padding-inline:clamp(1.4rem,5vw,4.5rem);}
   .scroll-cue .bar{display:inline-block;width:40px;height:1px;background:var(--faint);position:relative;overflow:hidden;}
   .scroll-cue .bar::after{content:"";position:absolute;left:-40px;top:0;width:40px;height:1px;background:var(--lumen);animation:sweep 2.8s var(--ease) infinite;}
@@ -90,6 +119,54 @@
   .aside-note{font-family:var(--sans);font-size:1rem;color:var(--haze);line-height:1.7;max-width:36ch;}
   .aside-note strong{color:var(--mist);font-weight:500;}
 
+  .rows{display:flex;flex-direction:column;}
+  .row{display:grid;grid-template-columns:1fr;gap:.35rem 2rem;padding-block:1.7rem;border-top:1px solid var(--line);transition:border-color .4s var(--ease);}
+  .row:first-child{border-top:1px solid var(--line-2);}
+  .row:hover{border-top-color:var(--lumen);}
+  @media(min-width:760px){.row{grid-template-columns:minmax(0,1fr) auto;align-items:baseline;}.row .meta{text-align:right;}}
+  .row .title{font-family:var(--serif);font-weight:350;font-size:clamp(1.45rem,1.1rem + 1.5vw,2.25rem);
+    line-height:1.14;letter-spacing:-.015em;color:var(--mist);transition:color .4s var(--ease);}
+  .row:hover .title{color:#fff;}
+  .row .title .role{font-family:var(--sans);font-weight:300;font-size:.92rem;color:var(--haze);display:block;margin-top:.45rem;letter-spacing:.01em;line-height:1.55;}
+  .row .title .role em{font-style:normal;color:var(--lumen);}
+  .row .meta{font-family:var(--mono);font-size:.82rem;color:var(--haze);letter-spacing:.06em;white-space:nowrap;}
+  .row .meta .yr{color:var(--mist);display:block;font-size:.92rem;}
+  .row .meta .sub{display:block;color:var(--faint);font-size:.72rem;margin-top:.3rem;letter-spacing:.14em;text-transform:uppercase;}
+  .row .desc{grid-column:1 / -1;font-family:var(--sans);color:var(--haze);font-size:.98rem;line-height:1.7;max-width:64ch;margin-top:.5rem;}
+
+  .perf{display:grid;grid-template-columns:1fr;gap:0;}
+  @media(min-width:780px){.perf{grid-template-columns:1fr 1fr;column-gap:4.5rem;}}
+  .perf .p{padding-block:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;gap:1.5rem;align-items:baseline;transition:border-color .4s var(--ease);}
+  .perf .p:hover{border-top-color:var(--lumen);}
+  .perf .p .v{font-family:var(--serif);font-weight:350;font-size:1.18rem;color:var(--mist);line-height:1.3;}
+  .perf .p .v small{display:block;font-family:var(--sans);font-weight:300;font-size:.85rem;color:var(--haze);margin-top:.3rem;}
+  .perf .p .y{font-family:var(--mono);font-size:.8rem;color:var(--faint);white-space:nowrap;}
+
+  .studio{display:grid;grid-template-columns:1fr;gap:2.6rem;}
+  @media(min-width:760px){.studio{grid-template-columns:repeat(3,1fr);gap:3rem;}}
+  .cap h3{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lumen);margin:0 0 1.1rem;font-weight:400;}
+  .cap ul{list-style:none;margin:0;padding:0;}
+  .cap li{font-family:var(--sans);font-weight:300;color:var(--mist);padding-block:.5rem;border-bottom:1px solid var(--line);font-size:.98rem;}
+  .cap li:last-child{border-bottom:0;}
+
+  .edu .row .title{font-size:clamp(1.25rem,1rem + 1vw,1.7rem);}
+  .mentor{margin-top:2.4rem;font-family:var(--sans);color:var(--haze);font-size:1rem;}
+  .mentor .lbl{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lumen);margin-right:1rem;}
+  .mentor b{color:var(--mist);font-weight:400;}
+
+  .contact-head{font-family:var(--serif);font-weight:300;font-size:clamp(2rem,1.4rem + 3vw,4rem);
+    line-height:1.14;letter-spacing:-.02em;color:var(--mist);max-width:18ch;margin:0 0 2.6rem;}
+  .contact-head em{font-style:italic;color:var(--lumen);}
+  .links{display:flex;flex-direction:column;gap:0;max-width:620px;}
+  .links a{display:flex;justify-content:space-between;align-items:center;gap:1.5rem;padding-block:1.25rem;border-top:1px solid var(--line);
+    font-family:var(--sans);font-size:1.05rem;color:var(--mist);transition:padding-left .4s var(--ease),border-color .4s var(--ease),color .4s var(--ease);}
+  .links a:last-child{border-bottom:1px solid var(--line);}
+  .links a .k{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--haze);transition:color .4s var(--ease);}
+  .links a .arr{font-family:var(--mono);color:var(--faint);transition:transform .4s var(--ease),color .4s var(--ease);}
+  .links a:hover{padding-left:.9rem;border-top-color:var(--lumen);color:#fff;}
+  .links a:hover .k{color:var(--lumen);}
+  .links a:hover .arr{transform:translateX(6px);color:var(--lumen);}
+
   footer{padding-block:3.5rem 4rem;border-top:1px solid var(--line);}
   .foot-row{display:flex;justify-content:space-between;gap:1.5rem;flex-wrap:wrap;font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;color:var(--faint);text-transform:uppercase;}
   .foot-row b{color:var(--haze);font-weight:400;}
@@ -97,94 +174,337 @@
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
 
+  /* Chinese reading tweaks */
+  body.lang-zh .thesis{line-height:1.5;letter-spacing:.02em;font-style:normal;}
+  body.lang-zh .statement{line-height:1.55;letter-spacing:.02em;}
+  body.lang-zh .contact-head{line-height:1.35;}
+  body.lang-zh .row .title{line-height:1.35;}
+  body.lang-zh .statement .hl,body.lang-zh .contact-head em,body.lang-zh .row .title .role em{font-style:normal;}
+
   @media(max-width:600px){
+    .nav-links a:nth-child(2),.nav-links a:nth-child(3){display:none;}
     .nav-links{gap:1.3rem;}
     .brand{font-size:.72rem;}
+    .nav-right{gap:1.1rem;}
+    .seclabel .idx{display:none;}
+    .seclabel{margin-bottom:2.2rem;}
   }
   @media(prefers-reduced-motion:reduce){
     html{scroll-behavior:auto;}
+    .orb{animation:none !important;}
+    .orb-wrap{transition:none;}
     .scroll-cue .bar::after{animation:none;left:0;width:14px;}
     [data-reveal]{opacity:1;transform:none;transition:none;}
   }
 </style>
 </head>
 <body>
-<a class="skip" href="#content">Skip to content</a>
+<a class="skip" href="#statement" data-i18n="skip">Skip to content</a>
 
 <header class="nav" id="nav">
   <div class="wrap nav-row">
-    <div class="brand">Toby <b>/</b> Hysan</div>
+    <div class="brand">Haishan&nbsp;Lai <b>/</b> Toby</div>
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
-        <a href="#work">Work</a>
-        <a href="#contact">Contact</a>
+        <a href="#work" data-i18n="nav_work">Work</a>
+        <a href="#experience" data-i18n="nav_exp">Experience</a>
+        <a href="#stage" data-i18n="nav_stage">Stage</a>
+        <a href="#contact" data-i18n="nav_contact">Contact</a>
       </nav>
+      <button class="lang-toggle" id="langToggle" aria-label="切換語言 / Switch language">繁</button>
     </div>
   </div>
 </header>
 
 <main>
   <section class="hero" aria-label="Introduction">
-    <div class="field"></div>
-    <div class="hero-bg"></div>
-    <div class="hero-overlay"></div>
+    <div class="hero-bg" aria-hidden="true"></div>
+    <div class="hero-overlay" aria-hidden="true"></div>
+    <div class="field" aria-hidden="true">
+      <div class="orb-wrap" style="--depth:16px"><span class="orb o1"></span></div>
+      <div class="orb-wrap" style="--depth:-22px"><span class="orb o2"></span></div>
+      <div class="orb-wrap" style="--depth:30px"><span class="orb o3"></span></div>
+      <div class="orb-wrap" style="--depth:-14px"><span class="orb o4"></span></div>
+      <div class="orb-wrap" style="--depth:38px"><span class="orb o5"></span></div>
+    </div>
     <div class="wrap hero-inner">
-      <p class="eyebrow">Creative Artist</p>
-      <h1>Toby <span class="em">Hysan</span></h1>
-      <p class="thesis">Visual storyteller blending light, silhouette, and emotional depth into compelling artistic experiences.</p>
+      <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
+      <h1>Haishan <span class="em">Lai</span></h1>
+      <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
-        <span>Based everywhere</span>
-        <span><span class="dot">◆</span>&nbsp; Open to collaboration</span>
+        <span data-i18n="hero_meta1">Based in New York</span>
+        <span data-i18n="hero_meta2"><span class="dot">◆</span>&nbsp; Conservatory · Jazz · Music Technology</span>
+        <span data-i18n="hero_meta3"><span class="dot">◆</span>&nbsp; Open to international work</span>
       </div>
     </div>
-    <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span>Scroll</span></div>
+    <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
+  </section>
+
+  <section class="block" id="statement">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
+      <div class="statement-grid">
+        <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and <span class="hl">film scoring</span>, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
+        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
+      </div>
+    </div>
   </section>
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="seclabel" data-reveal>
-        <span class="tag">Featured</span>
-        <span class="rule"></span>
-        <span class="idx">Work</span>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="rule"></span><span class="idx" data-i18n="idx_work">Composition · Production · Film</span></div>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <div class="title">Echoes of Ash Valley
+            <span class="role" data-i18n="work1_role">Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival</span>
+          </div>
+          <div class="meta"><span class="yr">2024</span><span class="sub" data-i18n="work1_sub">Venice · Italy</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">Rain <span style="font-style:italic">(Mood for Love)</span>
+            <span class="role" data-i18n="work2_role">Original Composition</span>
+          </div>
+          <div class="meta"><span class="yr">2023</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">Angel Dust
+            <span class="role" data-i18n="work4_role">Original Composition</span>
+          </div>
+          <div class="meta"><span class="yr">2022</span></div>
+        </div>
       </div>
-      <p class="statement" data-reveal>Your artistic portfolio goes here. Share your vision, your craft, and your story with the world.</p>
+    </div>
+  </section>
+
+  <section class="block" id="experience">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_exp">Experience</span><span class="rule"></span><span class="idx" data-i18n="idx_exp">Studio · Stage · Teaching</span></div>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <div class="title">A8 Recording NYC
+            <span class="role" data-i18n="exp1_role">Founder &amp; Lead Sound Engineer · <em>Portable / location production</em></span>
+          </div>
+          <div class="meta"><span class="yr" data-i18n="exp1_yr">2021 — Now</span></div>
+          <p class="desc" data-i18n="exp1_desc">Built the portable-production arm of A8, delivering high-fidelity location recording for 50+ concerts at institutions including The Juilliard School, Manhattan School of Music, and Mannes. I design and map multi-genre live sets — stage production, fast turnarounds, real-time troubleshooting — and fold AI-assisted generative and stem-separation tools into post-production and remote collaboration.</p>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title"><span data-i18n="exp2_title">Guest Lecturer</span>
+            <span class="role" data-i18n="exp2_role">Host institution · Seminar</span>
+          </div>
+          <div class="meta"><span class="yr">2026</span></div>
+          <p class="desc" data-i18n="exp2_desc">Designed and delivered a seminar on the meeting of sound design, acoustic phenomena, and psychology — translating theory into working studio practice.</p>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">New York Music School &amp; Academy
+            <span class="role" data-i18n="exp3_role">Music Educator</span>
+          </div>
+          <div class="meta"><span class="yr">2021 — 2022</span></div>
+          <p class="desc" data-i18n="exp3_desc">Built tailored curricula advancing students' technical discipline, applied theory, and performance readiness.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="stage">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
+      <div class="perf">
+        <div class="p" data-reveal><span class="v" data-i18n="perf1">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf2">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf3">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf4">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf5">Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small></span><span class="y">’21 / ’20</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf6">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="studio">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_studio">Studio</span><span class="rule"></span><span class="idx" data-i18n="idx_studio">Tools · Domains</span></div>
+      <div class="studio">
+        <div class="cap" data-reveal>
+          <h3 data-i18n="cap1_h">Audio &amp; Post</h3>
+          <ul><li>Logic Pro</li><li>Ableton Live</li><li>Pro Tools</li><li>Sibelius</li></ul>
+        </div>
+        <div class="cap" data-reveal style="transition-delay:.1s">
+          <h3 data-i18n="cap2_h">Hardware &amp; Live Sound</h3>
+          <ul><li>Nord Stage · Arturia</li><li data-i18n="cap2_li2">Digital stage pianos</li><li data-i18n="cap2_li3">Live reinforcement</li><li data-i18n="cap2_li4">Portable acoustic treatment</li></ul>
+        </div>
+        <div class="cap" data-reveal style="transition-delay:.2s">
+          <h3 data-i18n="cap3_h">Domain</h3>
+          <ul><li data-i18n="cap3_li1">Acoustic phenomena</li><li data-i18n="cap3_li2">Psychology of perception</li><li data-i18n="cap3_li3">Soundscape design</li><li data-i18n="cap3_li4">Multi-genre set mapping</li></ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block edu" id="education">
+    <div class="wrap">
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="rule"></span><span class="idx" data-i18n="idx_edu">Training</span></div>
+      <div class="rows">
+        <div class="row" data-reveal>
+          <div class="title"><span data-i18n="edu1_title">New York University</span><span class="role" data-i18n="edu1_role">M.M., Music Technology</span></div>
+          <div class="meta"><span class="yr" data-i18n="edu1_yr">2025 — Now</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title"><span data-i18n="edu2_title">The New School for Jazz &amp; Contemporary Music</span><span class="role" data-i18n="edu2_role">B.F.A., Jazz Piano</span></div>
+          <div class="meta"><span class="yr">2019 — 2025</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><span class="role" data-i18n="edu3_role">Specialized Music Program, Piano · Guangzhou</span></div>
+          <div class="meta"><span class="yr">2013 — 2019</span></div>
+        </div>
+      </div>
+      <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_mentor">Mentorship</span><b>Yuri Kim · Brian Marsella · Elsa Nilsson · Noah Kellman</b></p>
     </div>
   </section>
 
   <section class="block" id="contact">
     <div class="wrap">
-      <div class="seclabel" data-reveal>
-        <span class="tag">Connect</span>
-        <span class="rule"></span>
-        <span class="idx">Let's collaborate</span>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_contact">Contact</span><span class="rule"></span><span class="idx" data-i18n="idx_contact">Let’s build something</span></div>
+      <h2 class="contact-head" data-reveal data-i18n="contact_head">Open to <em>scoring, collaboration,</em> and international internships.</h2>
+      <div class="links" data-reveal>
+        <a href="mailto:Tobycantonese@gmail.com"><span><span class="k" data-i18n="link_email_k">Email</span><br>Tobycantonese@gmail.com</span><span class="arr">→</span></a>
+        <a href="tel:+15514144918"><span><span class="k" data-i18n="link_phone_k">Phone</span><br>+1 551 414 4918</span><span class="arr">→</span></a>
+        <a href="https://linktr.ee/TobyHysan" target="_blank" rel="noopener"><span><span class="k" data-i18n="link_links_k">Links</span><br>linktr.ee/TobyHysan</span><span class="arr">↗</span></a>
       </div>
-      <p class="statement" data-reveal>Ready to work together or just say hello? Get in touch.</p>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="wrap foot-row">
-    <span><b>Toby Hysan</b> — Artist & Visionary</span>
-    <span>2026</span>
+    <span data-i18n="foot_left"><b>Haishan Lai</b> — Pianist · Composer · Producer</span>
+    <span data-i18n="foot_right">New York · <span id="yr"></span></span>
   </div>
 </footer>
 
 <script>
 (function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover  = window.matchMedia('(hover: hover)').matches;
+
+  var I18N = {
+    skip:{en:"Skip to content",zh:"跳至內容"},
+    nav_work:{en:"Work",zh:"作品"},
+    nav_exp:{en:"Experience",zh:"經歷"},
+    nav_stage:{en:"Stage",zh:"演出"},
+    nav_contact:{en:"Contact",zh:"聯絡"},
+    hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴家 · 作曲家 · 音樂製作人"},
+    hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"情感上印象派，形式上前衛——讓自身邊界消融的音樂，寫給銀幕、舞台，以及兩者之間的留白。"},
+    hero_meta1:{en:"Based in New York",zh:"據點・紐約"},
+    hero_meta2:{en:'<span class="dot">◆</span>&nbsp; Conservatory · Jazz · Music Technology',zh:'<span class="dot">◆</span>&nbsp; 學院派・爵士・音樂科技'},
+    hero_meta3:{en:'<span class="dot">◆</span>&nbsp; Open to international work',zh:'<span class="dot">◆</span>&nbsp; 開放國際合作'},
+    scroll:{en:"Scroll",zh:"向下捲動"},
+    lbl_practice:{en:"Practice",zh:"創作"},
+    idx_practice:{en:"Statement",zh:"自述"},
+    statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and <span class="hl">film scoring</span>, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於小節線鬆開束縛之處——當和聲暈染成色彩，當空間本身成為樂器的一部分。我遊走於實地錄音、現場演出與<span class="hl">影像配樂</span>之間，始終追問同一件事：聲音如何形塑我們感受與感知世界的方式。'},
+    statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
+    lbl_work:{en:"Selected Work",zh:"精選作品"},
+    idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
+    work1_role:{en:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival',zh:'作曲 &amp; 製作 · <em>正式入選</em>，威尼斯沉浸式單元 — 第 81 屆威尼斯國際影展'},
+    work1_sub:{en:"Venice · Italy",zh:"威尼斯・義大利"},
+    work2_role:{en:"Original Composition",zh:"原創作品"},
+    work4_role:{en:"Original Composition",zh:"原創作品"},
+    lbl_exp:{en:"Experience",zh:"經歷"},
+    idx_exp:{en:"Studio · Stage · Teaching",zh:"工作室・舞台・教學"},
+    exp1_role:{en:'Founder &amp; Lead Sound Engineer · <em>Portable / location production</em>',zh:'創辦人 &amp; 首席錄音工程師 · <em>攜帶式／實地錄音製作</em>'},
+    exp1_yr:{en:"2021 — Now",zh:"2021 — 至今"},
+    exp1_desc:{en:'Built the portable-production arm of A8, delivering high-fidelity location recording for 50+ concerts at institutions including The Juilliard School, Manhattan School of Music, and Mannes. I design and map multi-genre live sets — stage production, fast turnarounds, real-time troubleshooting — and fold AI-assisted generative and stem-separation tools into post-production and remote collaboration.',zh:'創立 A8 的實地錄音製作部門，為超過 50 場音樂會提供高保真實地錄音，合作場館包括茱莉亞學院、曼哈頓音樂學院與曼尼斯。我設計並規劃跨曲風現場演出——舞台製作、快速調度、演出當下的即時故障排除——並將 AI 輔助的生成式與分軌工具整合進後期製作與遠端協作。'},
+    exp2_title:{en:"Guest Lecturer",zh:"客座講師"},
+    exp2_role:{en:"Host institution · Seminar",zh:"主辦機構 · 講座"},
+    exp2_desc:{en:'Designed and delivered a seminar on the meeting of sound design, acoustic phenomena, and psychology — translating theory into working studio practice.',zh:'設計並主講一場探討聲音設計、聲響現象與心理學交會的講座，將理論轉化為可實踐的工作室方法。'},
+    exp3_role:{en:"Music Educator",zh:"音樂教育者"},
+    exp3_desc:{en:"Built tailored curricula advancing students' technical discipline, applied theory, and performance readiness.",zh:'設計量身打造的課程，深化學生的技術紀律、應用樂理與演出準備。'},
+    lbl_stage:{en:"On Stage",zh:"現場演出"},
+    idx_stage:{en:"Selected Performances",zh:"精選場次"},
+    perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"卡內基音樂廳<small>國際菁英大賽</small>"},
+    perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"默金音樂廳<small>國際菁英大賽</small>"},
+    perf3:{en:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>",zh:"紐約表演藝術公共圖書館<small>林肯中心 · Shelf Life</small>"},
+    perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"世界建築文物保護基金會<small>慈善音樂會</small>"},
+    perf5:{en:"Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small>",zh:"曼尼斯聲響藝術節<small>The Art of Transcription · Art Along Save Me</small>"},
+    perf6:{en:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>",zh:"曼尼斯美國作曲家合奏團<small>MACE · 合奏團演奏</small>"},
+    lbl_studio:{en:"Studio",zh:"工作室"},
+    idx_studio:{en:"Tools · Domains",zh:"工具・領域"},
+    cap1_h:{en:"Audio &amp; Post",zh:"錄音與後期"},
+    cap2_h:{en:"Hardware &amp; Live Sound",zh:"硬體與現場音響"},
+    cap2_li2:{en:"Digital stage pianos",zh:"數位舞台鋼琴"},
+    cap2_li3:{en:"Live reinforcement",zh:"現場音響擴聲"},
+    cap2_li4:{en:"Portable acoustic treatment",zh:"攜帶式聲學處理"},
+    cap3_h:{en:"Domain",zh:"專業領域"},
+    cap3_li1:{en:"Acoustic phenomena",zh:"聲響現象"},
+    cap3_li2:{en:"Psychology of perception",zh:"聲音的心理感知"},
+    cap3_li3:{en:"Soundscape design",zh:"聲景設計"},
+    cap3_li4:{en:"Multi-genre set mapping",zh:"多曲風現場編排"},
+    lbl_edu:{en:"Education",zh:"學歷"},
+    idx_edu:{en:"Training",zh:"訓練歷程"},
+    edu1_title:{en:"New York University",zh:"紐約大學"},
+    edu1_role:{en:"M.M., Music Technology",zh:"音樂碩士（M.M.）・音樂科技"},
+    edu1_yr:{en:"2025 — Now",zh:"2025 — 至今"},
+    edu2_title:{en:"The New School for Jazz &amp; Contemporary Music",zh:"新學院・爵士與當代音樂學院"},
+    edu2_role:{en:"B.F.A., Jazz Piano",zh:"爵士鋼琴・藝術學士（B.F.A.）"},
+    edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"星海音樂學院附屬中學"},
+    edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"六年制音樂專業（鋼琴）・廣州"},
+    lbl_mentor:{en:"Mentorship",zh:"師承"},
+    lbl_contact:{en:"Contact",zh:"聯絡"},
+    idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
+    contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
+    link_email_k:{en:"Email",zh:"電子郵件"},
+    link_phone_k:{en:"Phone",zh:"電話"},
+    link_links_k:{en:"Links",zh:"連結"},
+    foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴家 · 作曲家 · 音樂製作人'},
+    foot_right:{en:'New York · <span id="yr"></span>',zh:'紐約 · <span id="yr"></span>'}
+  };
+
+  var lang = 'en';
+  function setYear(){ var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear(); }
+  function applyLang(next){
+    lang = next;
+    document.documentElement.setAttribute('lang', lang==='zh' ? 'zh-Hant' : 'en');
+    document.body.classList.toggle('lang-zh', lang==='zh');
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(I18N[k] && I18N[k][lang] !== undefined){ el.innerHTML = I18N[k][lang]; }
+    });
+    setYear();
+    var btn = document.getElementById('langToggle');
+    btn.textContent = lang==='en' ? '繁' : 'EN';
+    btn.setAttribute('aria-label', lang==='en' ? 'Switch to Traditional Chinese' : '切換為英文');
+  }
+  setYear();
+  document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
+
   // nav backdrop
   var nav = document.getElementById('nav');
   var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
   onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
+  // hero parallax
+  if(!reduce && hover){
+    var field = document.querySelector('.field');
+    var raf=null, tx=0, ty=0;
+    window.addEventListener('pointermove', function(e){
+      tx=(e.clientX/window.innerWidth-.5)*2; ty=(e.clientY/window.innerHeight-.5)*2;
+      if(!raf){ raf=requestAnimationFrame(function(){ field.style.setProperty('--mx',tx.toFixed(3)); field.style.setProperty('--my',ty.toFixed(3)); raf=null; }); }
+    }, {passive:true});
+    document.querySelectorAll('.orb-wrap').forEach(function(w){
+      var d=parseFloat(getComputedStyle(w).getPropertyValue('--depth'))||0;
+      (function tick(){ var mx=parseFloat(field.style.getPropertyValue('--mx'))||0, my=parseFloat(field.style.getPropertyValue('--my'))||0;
+        w.style.transform='translate('+(mx*d)+'px,'+(my*d)+'px)'; requestAnimationFrame(tick); })();
+    });
+  }
+
   // reveal
   var items = document.querySelectorAll('[data-reveal]');
-  if(!('IntersectionObserver' in window)){ items.forEach(function(el){ el.classList.add('in'); }); }
+  if(reduce || !('IntersectionObserver' in window)){ items.forEach(function(el){ el.classList.add('in'); }); }
   else {
-    var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12});
+    var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12,rootMargin:'0px 0px -7% 0px'});
     items.forEach(function(el){ io.observe(el); });
   }
 })();
 </script>
 </body>
 </html>
+
+```
