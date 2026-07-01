@@ -60,14 +60,13 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Portrait - Smoother Integration */
+  /* Portrait */
   .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
-    opacity:0.6; /* Faded for smoothness */
-    filter:grayscale(0.3) brightness(0.9); /* Natural tones, less pop */
-    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);
-    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);}
-  @media(max-width:760px){.hero-portrait{width:72%;opacity:.4;}}
+    opacity:0.9; filter:contrast(1.2) brightness(1.5);
+    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
+    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);}
+  @media(max-width:760px){.hero-portrait{width:72%;opacity:.6;}}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
   .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
@@ -284,9 +283,9 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
-        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang</small></span><span class="y">10.2025</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">10.2025</span></div>
         <div class="p" data-reveal><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">10.2025</span></div>
-        <div class="p" data-reveal><span class="v">NYPL Lincoln Center<small>Shelf Life</small></span><span class="y">05.2024</span></div>
+        <div class="p" data-reveal><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">05.2024</span></div>
         <div class="p" data-reveal><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">11.2023</span></div>
         <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>The Art of Transcription</small></span><span class="y">12.2021</span></div>
         <div class="p" data-reveal><span class="v">MACE<small>Mannes American Composers Ensemble</small></span><span class="y">11.2021</span></div>
@@ -343,62 +342,57 @@
 </footer>
 
 <script>
-(function(){
-  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  var hover  = window.matchMedia('(hover: hover)').matches;
+  (function(){
+    var I18N = {
+      skip:{en:"Skip to content",zh:"跳至內容"},
+      nav_work:{en:"Work",zh:"作品"},
+      nav_stage:{en:"Stage",zh:"演出"},
+      nav_contact:{en:"Contact",zh:"聯絡"},
+      hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 音樂製作"},
+      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。"},
+      hero_meta2:{en:'Conservatory · Jazz · Music Technology',zh:'學院派・爵士・音樂科技'},
+      scroll:{en:"Scroll",zh:"向下捲動"},
+      lbl_practice:{en:"Practice",zh:"創作"},
+      idx_practice:{en:"Statement",zh:"自述"},
+      statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知世界的方式。'},
+      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
+      lbl_work:{en:"Selected Work",zh:"精選作品"},
+      idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
+      lbl_stage:{en:"On Stage",zh:"現場演出"},
+      idx_stage:{en:"Selected Performances",zh:"精選場次"},
+      lbl_edu:{en:"Education",zh:"學歷"},
+      idx_edu:{en:"Training",zh:"訓練歷程"},
+      lbl_mentor:{en:"Mentorship",zh:"師承"},
+      lbl_contact:{en:"Contact",zh:"聯絡"},
+      idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
+      contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
+      link_email_k:{en:"Email",zh:"電子郵件"},
+      link_phone_k:{en:"Phone",zh:"電話"},
+      link_links_k:{en:"Links",zh:"連結"}
+    };
 
-  var I18N = {
-    skip:{en:"Skip to content",zh:"跳至內容"},
-    nav_work:{en:"Work",zh:"作品"},
-    nav_stage:{en:"Stage",zh:"演出"},
-    nav_contact:{en:"Contact",zh:"聯絡"},
-    hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴家 · 作曲家 · 音樂製作人"},
-    hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。"},
-    hero_meta2:{en:'Conservatory · Jazz · Music Technology',zh:'學院派・爵士・音樂科技'},
-    hero_meta3:{en:'<span class="dot">◆</span>&nbsp; Open to international work',zh:'<span class="dot">◆</span>&nbsp; 開放國際合作'},
-    scroll:{en:"Scroll",zh:"向下捲動"},
-    lbl_practice:{en:"Practice",zh:"創作"},
-    idx_practice:{en:"Statement",zh:"自述"},
-    statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知世界的方式。'},
-    statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
-    lbl_work:{en:"Selected Work",zh:"精選作品"},
-    idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
-    lbl_stage:{en:"On Stage",zh:"現場演出"},
-    idx_stage:{en:"Selected Performances",zh:"精選場次"},
-    lbl_edu:{en:"Education",zh:"學歷"},
-    idx_edu:{en:"Training",zh:"訓練歷程"},
-    lbl_mentor:{en:"Mentorship",zh:"師承"},
-    lbl_contact:{en:"Contact",zh:"聯絡"},
-    idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
-    contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
-    link_email_k:{en:"Email",zh:"電子郵件"},
-    link_phone_k:{en:"Phone",zh:"電話"},
-    link_links_k:{en:"Links",zh:"連結"}
-  };
-
-  var lang = 'en';
-  function setYear(){ var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear(); }
-  function applyLang(next){
-    lang = next;
-    document.documentElement.setAttribute('lang', lang==='zh' ? 'zh-Hant' : 'en');
-    document.body.classList.toggle('lang-zh', lang==='zh');
-    document.querySelectorAll('[data-i18n]').forEach(function(el){
-      var k = el.getAttribute('data-i18n');
-      if(I18N[k] && I18N[k][lang] !== undefined){ el.innerHTML = I18N[k][lang]; }
-    });
+    var lang = 'en';
+    function setYear(){ var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear(); }
+    function applyLang(next){
+      lang = next;
+      document.documentElement.setAttribute('lang', lang==='zh' ? 'zh-Hant' : 'en');
+      document.body.classList.toggle('lang-zh', lang==='zh');
+      document.querySelectorAll('[data-i18n]').forEach(function(el){
+        var k = el.getAttribute('data-i18n');
+        if(I18N[k] && I18N[k][lang] !== undefined){ el.innerHTML = I18N[k][lang]; }
+      });
+      setYear();
+      var btn = document.getElementById('langToggle');
+      btn.textContent = lang==='en' ? '繁' : 'EN';
+    }
     setYear();
-    var btn = document.getElementById('langToggle');
-    btn.textContent = lang==='en' ? '繁' : 'EN';
-    btn.setAttribute('aria-label', lang==='en' ? 'Switch to Traditional Chinese' : '切換為英文');
-  }
-  setYear();
-  document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
+    document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
 
-  // nav backdrop
-  var nav = document.getElementById('nav');
-  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
-  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-})();
+    // scroll reveal
+    var items = document.querySelectorAll('[data-reveal]');
+    var io = new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12});
+    items.forEach(function(el){ io.observe(el); });
+  })();
 </script>
 </body>
 </html>
