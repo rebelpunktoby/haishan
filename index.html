@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Haishan Lai — Pianist · Composer · Producer</title>
-<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions." />
+<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -26,10 +26,7 @@
   body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;overflow-x:hidden;}
-  body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;
-    font-family:var(--sans);font-weight:300;font-size:.88rem;letter-spacing:.1em;line-height:1.85;}
-  body.lang-zh .thesis,body.lang-zh .statement,body.lang-zh .contact-head,body.lang-zh .row .title,body.lang-zh .perf .p .v{font-weight:400;letter-spacing:.04em;}
-  body.lang-zh .eyebrow,body.lang-zh .nav-links,body.lang-zh .seclabel .tag,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .brand{letter-spacing:.22em;}
+  body.lang-zh{font-family:var(--zh-font),sans-serif; font-size: 0.95rem; letter-spacing: 0.08em;}
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
@@ -372,13 +369,13 @@
       nav_stage:{en:"Stage",zh:"演出"},
       nav_contact:{en:"Contact",zh:"聯絡"},
       hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
-      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
+      hero_thesis:{en:"Impressionism in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
       hero_meta2:{en:'Conservatory · Original · Contemporary Music',zh:'學院派・原創・現代音樂'},
       scroll:{en:"Scroll",zh:"向下捲動"},
       lbl_practice:{en:"Practice",zh:"創作"},
       idx_practice:{en:"Statement",zh:"自述"},
-      statement_main:{en:'My creative begins where the bar line loosens its grip — where harmony blends into color and a room becomes part of the instrument. where harmony blends into color and a room becomes part of the instrument. Always discoverying how sound shapes the way we feel and perceive the world.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
-      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in tradition but restless toward the future.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未知探索。'},
+      statement_main:{en:'My creative begins where the bar line loosens its grip — where harmony blends into color and a room becomes part of the instrument. Always discovering how sound shapes the way we feel and perceive the world.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
+      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in tradition but restless toward the future.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未來探問；流動、未解，並抗拒被歸類。'},
       lbl_work:{en:"Selected Work",zh:"精選作品"},
       idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・探索"},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
@@ -448,6 +445,21 @@
     var nav = document.getElementById('nav');
     var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
     onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+
+    // hero parallax
+    if(!reduce && hover){
+      var field = document.querySelector('.field');
+      var raf=null, tx=0, ty=0;
+      window.addEventListener('pointermove', function(e){
+        tx=(e.clientX/window.innerWidth-.5)*2; ty=(e.clientY/window.innerHeight-.5)*2;
+        if(!raf){ raf=requestAnimationFrame(function(){ field.style.setProperty('--mx',tx.toFixed(3)); field.style.setProperty('--my',ty.toFixed(3)); raf=null; }); }
+      }, {passive:true});
+      document.querySelectorAll('.orb-wrap').forEach(function(w){
+        var d=parseFloat(getComputedStyle(w).getPropertyValue('--depth'))||0;
+        (function tick(){ var mx=parseFloat(field.style.getPropertyValue('--mx'))||0, my=parseFloat(field.style.getPropertyValue('--my'))||0;
+          w.style.transform='translate('+(mx*d)+'px,'+(my*d)+'px)'; requestAnimationFrame(tick); })();
+      });
+    }
 
     // scroll reveal
     var items = document.querySelectorAll('[data-reveal]');
