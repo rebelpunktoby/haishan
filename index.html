@@ -28,9 +28,6 @@
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
-  body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-
   .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1.4rem,5vw,4.5rem);}
   .skip{position:absolute;left:-999px;top:0;z-index:300;background:var(--lumen);color:#04201b;
     padding:.6rem 1rem;border-radius:6px;font-family:var(--mono);font-size:.8rem;}
@@ -125,7 +122,6 @@
   .row .title .role{font-family:var(--sans);font-weight:300;font-size:.92rem;color:var(--haze);display:block;margin-top:.45rem;letter-spacing:.01em;line-height:1.55;}
   .row .title .role em{font-style:normal;color:var(--lumen);}
   
-  /* Interactive Work Links Styling */
   .work-link { display: inline-flex; align-items: baseline; gap: 0.4rem; color: inherit; transition: color .3s var(--ease); }
   .work-link:hover { color: var(--lumen); }
   .work-link .arr { font-family: var(--mono); font-size: 0.65em; color: var(--faint); transition: transform .3s var(--ease), color .3s var(--ease); }
@@ -180,6 +176,7 @@
   body.lang-zh .statement .hl,body.lang-zh .contact-head em,body.lang-zh .row .title .role em{font-style:normal;}
 
   @media(max-width:600px){
+    .nav-links a:nth-child(2),.nav-links a:nth-child(3){display:none;}
     .nav-links{gap:1.3rem;}
     .brand{font-size:.72rem;}
     .nav-right{gap:1.1rem;}
@@ -228,9 +225,6 @@
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
       <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
-      <div class="hero-meta">
-        <span data-i18n="hero_meta2">Conservatory · Jazz · Music Technology</span>
-      </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
   </section>
@@ -264,6 +258,13 @@
         </div>
         <div class="row" data-reveal>
           <div class="title">
+            <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
+            <span class="role" data-i18n="work1_role">Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival</span>
+          </div>
+          <div class="meta"><span class="yr">2024</span><span class="sub" data-i18n="work1_sub">Venice · Italy</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">
             <a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a>
             <span class="role" data-i18n="work2_role">Original Composition</span>
           </div>
@@ -287,13 +288,6 @@
             <a href="https://untitled.stream/library/project/8Cf3cV7HNGSS57Z9SdazQ" target="_blank" rel="noopener" class="work-link">Unreleased <span class="arr">↗</span></a>
             <span class="role" data-i18n="work6_role">Alt-Rock / Emo Rock</span>
           </div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title">
-            <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work1_role">Composer &amp; Producer</span>
-          </div>
-          <div class="meta"><span class="yr">2024</span></div>
         </div>
       </div>
     </div>
@@ -381,7 +375,7 @@
     statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
     lbl_work:{en:"Selected Work",zh:"精選作品"},
     idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
-    work1_role:{en:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival',zh:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival'},
+    work1_role:{en:'Composer &amp; Producer',zh:'Composer &amp; Producer'},
     work2_role:{en:"Original Composition",zh:"Original Composition"},
     work4_role:{en:"Original Composition",zh:"Original Composition"},
     work5_role:{en:"Contemporary Hiphop / R&B",zh:"Contemporary Hiphop / R&B"},
