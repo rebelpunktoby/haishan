@@ -60,10 +60,10 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Portrait - Directly referenced */
+  /* Portrait */
   .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
-    opacity:1; /* Increased visibility */
+    opacity:1; filter:contrast(1.2) brightness(1.5);
     -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
     mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);}
   @media(max-width:760px){.hero-portrait{width:72%;opacity:.6;}}
@@ -195,11 +195,18 @@
 
 <main>
   <section class="hero" aria-label="Introduction">
+    <div class="field" aria-hidden="true">
+      <div class="orb-wrap" style="--depth:16px"><span class="orb o1"></span></div>
+      <div class="orb-wrap" style="--depth:-22px"><span class="orb o2"></span></div>
+      <div class="orb-wrap" style="--depth:30px"><span class="orb o3"></span></div>
+      <div class="orb-wrap" style="--depth:-14px"><span class="orb o4"></span></div>
+      <div class="orb-wrap" style="--depth:38px"><span class="orb o5"></span></div>
+    </div>
     <div class="hero-portrait" aria-hidden="true"></div>
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
+      <p class="thesis" data-i18n="hero_thesis">於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。</p>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Conservatory · Jazz · Music Technology</span>
       </div>
@@ -226,7 +233,7 @@
             <a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
             <span class="role">OceanMountain</span>
           </div>
-          <div class="meta"><span class="yr">2026</span></div>
+          <div class="meta"><span class="yr">04.2026</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
@@ -239,32 +246,33 @@
             <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
             <span class="role">Composer &amp; Producer</span>
           </div>
-          <div class="meta"><span class="yr">2024</span></div>
+          <div class="meta"><span class="yr">09.2024</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a>
-            <span class="role">Original Composition</span>
+            <span class="role">Collab · Original Composition</span>
           </div>
-          <div class="meta"><span class="yr">2023</span></div>
+          <div class="meta"><span class="yr">08.2023</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" class="work-link">Angel Dust <span class="arr">↗</span></a>
-            <span class="role">Original Composition</span>
+            <span class="role">Collab · Original Composition</span>
           </div>
-          <div class="meta"><span class="yr">2022</span></div>
+          <div class="meta"><span class="yr">10.2022</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/track/X1j9gSyvFvgaNFcsLyDgC" target="_blank" rel="noopener" class="work-link">GONE MISSING <span class="arr">↗</span></a>
-            <span class="role">Contemporary Hiphop / R&B</span>
+            <span class="role">Collab · Contemporary Hiphop / R&B</span>
           </div>
+          <div class="meta"><span class="yr">12.2022</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/project/8Cf3cV7HNGSS57Z9SdazQ" target="_blank" rel="noopener" class="work-link">Unreleased <span class="arr">↗</span></a>
-            <span class="role">Alt-Rock / Emo Rock</span>
+            <span class="role">Collab · Alt-Rock / Emo Rock</span>
           </div>
         </div>
       </div>
@@ -275,18 +283,19 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
-        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">2025.10</span></div>
-        <div class="p" data-reveal><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">2025.10</span></div>
-        <div class="p" data-reveal><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
-        <div class="p" data-reveal><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
-        <div class="p" data-reveal><span class="v">Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small></span><span class="y">2020.03</span></div>
-        <div class="p" data-reveal><span class="v">Pianos, NYC<small>Breaking Sound · with Eric Leo</small></span><span class="y">2020.04</span></div>
-        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">2020.04</span></div>
-        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">2021.11</span></div>
-        <div class="p" data-reveal><span class="v">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>The Art of Transcription</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">10.2025</span></div>
+        <div class="p" data-reveal><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">10.2025</span></div>
+        <div class="p" data-reveal><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">05.2024</span></div>
+        <div class="p" data-reveal><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">11.2023</span></div>
+        <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>The Art of Transcription</small></span><span class="y">12.2021</span></div>
+        <div class="p" data-reveal><span class="v">MACE<small>Mannes American Composers Ensemble</small></span><span class="y">11.2021</span></div>
+        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.2021</span></div>
+        <div class="p" data-reveal><span class="v">Merkin Hall<small>Elite International Competition</small></span><span class="y">02.2021</span></div>
+        <div class="p" data-reveal><span class="v">Mannes Sound Festival<small>Art Along Save Me</small></span><span class="y">12.2020</span></div>
+        <div class="p" data-reveal><span class="v">Pianos, NYC<small>Breaking Sound · with Eric Leo</small></span><span class="y">04.2020</span></div>
+        <div class="p" data-reveal><span class="v">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.2020</span></div>
+        <div class="p" data-reveal><span class="v">Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small></span><span class="y">03.2020</span></div>
+        <div class="p" data-reveal><span class="v">Carnegie Hall<small>Elite International Competition</small></span><span class="y">02.2020</span></div>
       </div>
     </div>
   </section>
