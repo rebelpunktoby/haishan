@@ -19,12 +19,14 @@
     --serif:"Fraunces","Noto Serif TC",Georgia,serif;
     --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
     --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
+    --zh-font:"LXGW WenKai TC", sans-serif;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
   body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;overflow-x:hidden;}
+  body.lang-zh{font-family:var(--zh-font),var(--sans);}
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
@@ -58,7 +60,9 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Moody Portrait */
+  .hero-bg{position:absolute;inset:0;z-index:0;background-image:url('HYSAN.jpg');background-size:cover;background-position:center 20%;opacity:0.85;}
+  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(9,11,20,.7) 0%, rgba(9,11,20,.2) 40%, rgba(9,11,20,.9) 100%);}
+  
   .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
     opacity:0.85;filter:contrast(1.2) brightness(1.5);
@@ -165,30 +169,12 @@
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
 
-  /* Chinese view - LXGW WenKai */
-  body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;}
-  body.lang-zh .thesis{font-style:normal;font-weight:300;line-height:1.72;letter-spacing:.07em;}
-  body.lang-zh .statement{font-weight:300;line-height:1.78;letter-spacing:.07em;}
-  body.lang-zh .aside-note{font-weight:300;line-height:1.95;letter-spacing:.05em;}
-  body.lang-zh .contact-head{font-weight:300;line-height:1.5;letter-spacing:.05em;}
-  body.lang-zh .row .title{font-weight:400;line-height:1.5;letter-spacing:.04em;}
-  body.lang-zh .row .title .role,body.lang-zh .perf .p .v small{font-weight:300;}
-  body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .nav-links{letter-spacing:.22em;}
-  body.lang-zh .brand{letter-spacing:.16em;}
-
   @media(max-width:600px){
     .nav-links{gap:1.3rem;}
     .brand{font-size:.72rem;}
     .nav-right{gap:1.1rem;}
     .seclabel .idx{display:none;}
     .seclabel{margin-bottom:2.2rem;}
-  }
-  @media(prefers-reduced-motion:reduce){
-    html{scroll-behavior:auto;}
-    .orb{animation:none !important;}
-    .orb-wrap{transition:none;}
-    .scroll-cue .bar::after{animation:none;left:0;width:14px;}
-    [data-reveal]{opacity:1;transform:none;transition:none;}
   }
 </style>
 </head>
@@ -237,7 +223,7 @@
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
       <div class="statement-grid">
         <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
-        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
+        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across conservatory composition, jazz, and music technology. The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
       </div>
     </div>
   </section>
@@ -262,34 +248,34 @@
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work1_role">Composer &amp; Producer</span>
+            <span class="role">Composer &amp; Producer</span>
           </div>
           <div class="meta"><span class="yr">2024</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work2_role">Original Composition</span>
+            <span class="role">Original Composition</span>
           </div>
           <div class="meta"><span class="yr">2023</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" class="work-link">Angel Dust <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work4_role">Original Composition</span>
+            <span class="role">Original Composition</span>
           </div>
           <div class="meta"><span class="yr">2022</span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/track/X1j9gSyvFvgaNFcsLyDgC" target="_blank" rel="noopener" class="work-link">GONE MISSING <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work5_role">Contemporary Hiphop / R&B</span>
+            <span class="role">Contemporary Hiphop / R&B</span>
           </div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/project/8Cf3cV7HNGSS57Z9SdazQ" target="_blank" rel="noopener" class="work-link">Unreleased <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work6_role">Alt-Rock / Emo Rock</span>
+            <span class="role">Alt-Rock / Emo Rock</span>
           </div>
         </div>
       </div>
@@ -321,19 +307,19 @@
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="rule"></span><span class="idx" data-i18n="idx_edu">Training</span></div>
       <div class="rows">
         <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu1_title">New York University</span><span class="role" data-i18n="edu1_role">M.M., Music Technology</span></div>
-          <div class="meta"><span class="yr" data-i18n="edu1_yr">2025 — Now</span></div>
+          <div class="title">New York University<span class="role">M.M., Music Technology</span></div>
+          <div class="meta"><span class="yr">2025 — Now</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu2_title">The New School for Jazz &amp; Contemporary Music</span><span class="role" data-i18n="edu2_role">B.F.A., Jazz Piano</span></div>
+          <div class="title">The New School for Jazz &amp; Contemporary Music<span class="role">B.F.A., Jazz Piano</span></div>
           <div class="meta"><span class="yr">2019 — 2025</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><span class="role" data-i18n="edu3_role">Specialized Music Program, Piano · Guangzhou</span></div>
+          <div class="title">Affiliated High School of Xinghai Conservatory<span class="role">Specialized Music Program, Piano · Guangzhou</span></div>
           <div class="meta"><span class="yr">2013 — 2019</span></div>
         </div>
       </div>
-      <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_mentor">Mentorship</span><b>Yuri Kim · Brian Marsella · Elsa Nilsson · Noah Kellman</b></p>
+      <p class="mentor" data-reveal><span class="lbl">Mentorship</span><b>Yuri Kim · Brian Marsella · Elsa Nilsson · Noah Kellman</b></p>
     </div>
   </section>
 
@@ -352,8 +338,8 @@
 
 <footer>
   <div class="wrap foot-row">
-    <span data-i18n="foot_left"><b>Haishan Lai</b> — Pianist · Composer · Producer</span>
-    <span data-i18n="foot_right"><span id="yr"></span></span>
+    <span><b>Haishan Lai</b> — Pianist · Composer · Producer</span>
+    <span><span id="yr"></span></span>
   </div>
 </footer>
 
@@ -388,9 +374,7 @@
     contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
     link_email_k:{en:"Email",zh:"電子郵件"},
     link_phone_k:{en:"Phone",zh:"電話"},
-    link_links_k:{en:"Links",zh:"連結"},
-    foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴家 · 作曲家 · 音樂製作人'},
-    foot_right:{en:'<span id="yr"></span>',zh:'<span id="yr"></span>'}
+    link_links_k:{en:"Links",zh:"連結"}
   };
 
   var lang = 'en';
