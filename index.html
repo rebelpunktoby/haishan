@@ -26,7 +26,13 @@
   body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;overflow-x:hidden;}
-  body.lang-zh{font-family:var(--zh-font),sans-serif; font-size: 0.95rem; letter-spacing: 0.08em;}
+  
+  /* Applying your specific Chinese font styles */
+  body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;
+    font-family:var(--sans);font-weight:300;font-size:.88rem;letter-spacing:.1em;line-height:1.85;}
+  body.lang-zh .thesis,body.lang-zh .statement,body.lang-zh .contact-head,body.lang-zh .row .title,body.lang-zh .perf .p .v{font-weight:400;letter-spacing:.04em;}
+  body.lang-zh .eyebrow,body.lang-zh .nav-links,body.lang-zh .seclabel .tag,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .brand{letter-spacing:.22em;}
+
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
@@ -223,7 +229,7 @@
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">Impressionism in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions.</p>
+      <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Conservatory · Original · Contemporary Music</span>
       </div>
@@ -235,8 +241,8 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
       <div class="statement-grid">
-        <p class="statement" data-reveal data-i18n="statement_main">My creative begins where the bar line loosens its grip — where harmony blends into color and a room becomes part of the instrument. Always discovering how sound shapes the way we feel and perceive the world.</p>
-        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in tradition but restless toward the future.</p>
+        <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
+        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
       </div>
     </div>
   </section>
@@ -369,13 +375,13 @@
       nav_stage:{en:"Stage",zh:"演出"},
       nav_contact:{en:"Contact",zh:"聯絡"},
       hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
-      hero_thesis:{en:"Impressionism in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
+      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
       hero_meta2:{en:'Conservatory · Original · Contemporary Music',zh:'學院派・原創・現代音樂'},
       scroll:{en:"Scroll",zh:"向下捲動"},
       lbl_practice:{en:"Practice",zh:"創作"},
       idx_practice:{en:"Statement",zh:"自述"},
-      statement_main:{en:'My creative begins where the bar line loosens its grip — where harmony blends into color and a room becomes part of the instrument. Always discovering how sound shapes the way we feel and perceive the world.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
-      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in tradition but restless toward the future.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未來探問；流動、未解，並抗拒被歸類。'},
+      statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
+      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未來探問；流動、未解，並抗拒被歸類。'},
       lbl_work:{en:"Selected Work",zh:"精選作品"},
       idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・探索"},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
@@ -445,21 +451,6 @@
     var nav = document.getElementById('nav');
     var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
     onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
-
-    // hero parallax
-    if(!reduce && hover){
-      var field = document.querySelector('.field');
-      var raf=null, tx=0, ty=0;
-      window.addEventListener('pointermove', function(e){
-        tx=(e.clientX/window.innerWidth-.5)*2; ty=(e.clientY/window.innerHeight-.5)*2;
-        if(!raf){ raf=requestAnimationFrame(function(){ field.style.setProperty('--mx',tx.toFixed(3)); field.style.setProperty('--my',ty.toFixed(3)); raf=null; }); }
-      }, {passive:true});
-      document.querySelectorAll('.orb-wrap').forEach(function(w){
-        var d=parseFloat(getComputedStyle(w).getPropertyValue('--depth'))||0;
-        (function tick(){ var mx=parseFloat(field.style.getPropertyValue('--mx'))||0, my=parseFloat(field.style.getPropertyValue('--my'))||0;
-          w.style.transform='translate('+(mx*d)+'px,'+(my*d)+'px)'; requestAnimationFrame(tick); })();
-      });
-    }
 
     // scroll reveal
     var items = document.querySelectorAll('[data-reveal]');
