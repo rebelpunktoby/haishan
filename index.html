@@ -7,6 +7,7 @@
 <meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in feeling, progressive in form. Film scoring, recording, and live performance." />
 <style>
   :root{ --ink:#090B14; --mist:#ECEAF4; --lumen:#8FE3D2; }
+  *{box-sizing:border-box;}
   body{margin:0;background:var(--ink);color:var(--mist);font-family:system-ui, -apple-system, sans-serif;font-weight:300;line-height:1.6;}
   a{color:inherit;text-decoration:none;}
   .wrap{max-width:1180px;margin-inline:auto;padding-inline:2rem;}
@@ -22,9 +23,9 @@
   .hero{min-height:90svh;display:flex;align-items:center;padding-top:7rem;position:relative;overflow:hidden;}
   .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:50%;z-index:0;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center;
-    opacity:0.7; filter:brightness(1.05) saturate(0.95);
+    opacity:0.7; filter:brightness(1.1) saturate(0.95);
     -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);}
-  h1{font-family:serif;font-size:clamp(3rem,8vw,6rem);margin:0;line-height:1;}
+  h1{font-family:serif;font-size:clamp(3.5rem,8vw,6rem);margin:0;line-height:1;}
   .thesis{font-size:1.2rem;max-width:30ch;margin:2rem 0;line-height:1.4;font-style:italic;}
   
   /* Content */
@@ -32,12 +33,12 @@
   .seclabel{font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;margin-bottom:2rem;display:flex;align-items:center;}
   .rule{flex:1;height:1px;background:#333;margin-left:1rem;}
   .row{display:grid;grid-template-columns:1fr auto;gap:2rem;padding-block:1.5rem;border-top:1px solid #222;}
-  .row .title{font-size:1.2rem;}
+  .row .title{font-size:1.2rem;font-family:serif;}
   .row .role{display:block;font-size:.85rem;color:#999;margin-top:.3rem;}
   .meta{font-size:.8rem;color:#666;font-family:monospace;}
   .perf .p{display:flex;justify-content:space-between;padding-block:1rem;border-top:1px solid #222;}
-  .links{display:flex;gap:1rem;margin-top:2rem;}
-  .links a{padding:1rem;border:1px solid #333;}
+  .perf .p .v{font-family:serif;font-size:1.1rem;}
+  .perf .p .y{font-family:monospace;font-size:.8rem;color:#666;}
 </style>
 </head>
 <body>
@@ -102,7 +103,6 @@
     eyebrow: { en: "Pianist · Composer · Producer", zh: "鋼琴 · 作曲 · 音樂製作" },
     thesis: { en: "Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.", zh: "於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。" }
   };
-  
   document.getElementById('langToggle').addEventListener('click', function(){
     document.body.classList.toggle('lang-zh');
     const isZh = document.body.classList.contains('lang-zh');
