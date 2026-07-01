@@ -4,9 +4,6 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Haishan Lai — Pianist · Composer · Producer</title>
-<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in feeling, progressive in form. Film scoring, recording, and live performance." />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet" />
 <style>
   :root{
@@ -14,98 +11,70 @@
     --mist:#ECEAF4; --haze:#9B98B6; --faint:#6A6885;
     --line:#1F2236; --line-2:#2A2D44;
     --lumen:#8FE3D2;
-    --violet:#7C6BB3; --indigo:#5664C6; --teal:#3FA89C; --rose:#CE7E8E; --amber:#E2AC6E;
-    --wrap:1180px; --ease:cubic-bezier(.2,.7,.2,1);
-    --serif:"Fraunces","Noto Serif TC",Georgia,serif;
-    --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
-    --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
     --zh-font:"LXGW WenKai TC", sans-serif;
   }
   *{box-sizing:border-box;}
-  html{scroll-behavior:smooth;}
-  body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
-    font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
-    text-rendering:optimizeLegibility;overflow-x:hidden;}
-  body.lang-zh{font-family:var(--zh-font),sans-serif; font-size: 0.95rem; letter-spacing: 0.08em;}
+  body{margin:0;background:var(--ink);color:var(--mist);font-family:"Space Grotesk", sans-serif;font-weight:300;line-height:1.6;}
+  body.lang-zh{font-family:var(--zh-font),sans-serif;}
   a{color:inherit;text-decoration:none;}
-  ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
-  body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-
-  .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1.4rem,5vw,4.5rem);}
+  .wrap{max-width:1180px;margin-inline:auto;padding-inline:clamp(1.4rem,5vw,4.5rem);}
   
-  /* NAV */
-  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;
-    transition:background .5s var(--ease),border-color .5s var(--ease),backdrop-filter .5s;border-bottom:1px solid transparent;}
-  header.nav.scrolled{background:rgba(9,11,20,.72);backdrop-filter:blur(14px) saturate(1.2);border-bottom:1px solid var(--line);}
-  .nav-row{display:flex;align-items:center;justify-content:space-between;padding-top:1.1rem;padding-bottom:1.1rem;gap:1rem;}
-  .brand{font-family:var(--mono);font-size:.82rem;letter-spacing:.14em;text-transform:uppercase;color:var(--mist);}
-  .nav-links{display:flex;gap:2rem;font-family:var(--mono);font-size:.74rem;letter-spacing:.18em;text-transform:uppercase;color:var(--haze);}
-  .lang-toggle{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mist);background:transparent;
-    border:1px solid var(--line-2);border-radius:22px;padding:.36rem .82rem;cursor:pointer;
-    transition:border-color .35s var(--ease),color .35s var(--ease);}
+  /* Nav */
+  header.nav{position:fixed;top:0;left:0;right:0;z-index:100;background:rgba(9,11,20,.8);backdrop-filter:blur(10px);border-bottom:1px solid var(--line);}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding:1rem 0;}
+  .brand{font-family:monospace;font-size:.8rem;letter-spacing:.1em;text-transform:uppercase;}
+  .nav-links a{margin-left:2rem;font-family:monospace;font-size:.7rem;text-transform:uppercase;}
+  .lang-toggle{background:none;border:1px solid var(--line);color:white;cursor:pointer;padding:.3rem .7rem;font-family:monospace;font-size:.7rem;margin-left:2rem;}
 
-  /* HERO */
-  .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;overflow:hidden;}
-  
-  /* Smoother Portrait Integration */
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
+  /* Hero */
+  .hero{min-height:90svh;display:flex;align-items:center;padding-top:7rem;position:relative;overflow:hidden;}
+  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:50%;z-index:0;
     background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
-    opacity:0.5; filter:grayscale(0.5); /* Lowered contrast, added greyscale for blend */
-    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);
-    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.5) 50%,transparent 100%);}
-  
-  /* Texture Overlay for smoothness */
-  .hero-portrait::after{content:"";position:absolute;inset:0;pointer-events:none;opacity:0.2;
-    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
-    
-  @media(max-width:760px){.hero-portrait{width:72%;opacity:.3;}}
-  
-  .hero-inner{position:relative;z-index:3;width:100%;}
-  h1{font-family:var(--serif);font-weight:300;font-size:clamp(3.4rem,12vw,8.6rem);line-height:.92;margin:0;}
-  .thesis{font-family:var(--serif);font-style:italic;font-size:clamp(1.2rem,1.05rem + 1.4vw,2rem);margin:2.1rem 0 0;max-width:30ch;}
+    opacity:0.8; filter:brightness(1.1) saturate(1.1); /* Vibrant but smooth */
+    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.4) 50%,transparent 100%);}
+  h1{font-family:serif;font-size:clamp(3.5rem,10vw,8rem);margin:0;line-height:.9;}
+  .thesis{font-style:italic;font-size:1.5rem;max-width:30ch;margin:2rem 0;}
   
   /* Sections */
-  section.block{padding-block:clamp(4.5rem,9vw,8.5rem);position:relative;}
-  .seclabel{display:flex;align-items:center;gap:1rem;margin-bottom:2.8rem;}
-  .seclabel .tag{font-family:var(--mono);font-size:.76rem;letter-spacing:.28em;text-transform:uppercase;color:var(--lumen);}
-  .seclabel .rule{height:1px;background:var(--line);flex:1;}
+  section.block{padding-block:6rem;}
+  .seclabel{display:flex;align-items:center;gap:1rem;margin-bottom:3rem;font-family:monospace;font-size:.7rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lumen);}
+  .rule{flex:1;height:1px;background:var(--line);}
   
-  .row{display:grid;grid-template-columns:1fr auto;gap:1rem;padding-block:1.7rem;border-top:1px solid var(--line);}
-  .row .title{font-family:var(--serif);font-size:1.6rem;}
-  .row .role{display:block;font-family:var(--sans);font-size:.9rem;color:var(--haze);margin-top:.4rem;}
-  .row .meta{font-family:var(--mono);font-size:.8rem;color:var(--faint);}
+  .row{display:grid;grid-template-columns:1fr auto;gap:1rem;padding-block:1.5rem;border-top:1px solid var(--line);}
+  .title{font-family:serif;font-size:1.4rem;}
+  .role{display:block;font-size:.9rem;color:var(--haze);margin-top:.4rem;}
+  .meta{font-family:monospace;font-size:.8rem;color:var(--faint);}
 
   .perf{display:grid;grid-template-columns:1fr;gap:0;}
-  .perf .p{padding-block:1.4rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;}
-  .perf .p .v{font-family:var(--serif);font-size:1.1rem;}
-  .perf .p .y{font-family:var(--mono);font-size:.8rem;color:var(--faint);}
+  .perf .p{padding-block:1.2rem;border-top:1px solid var(--line);display:flex;justify-content:space-between;align-items:baseline;}
+  .perf .p .v{font-family:serif;font-size:1.1rem;}
+  .perf .p .y{font-family:monospace;font-size:.8rem;color:var(--faint);}
 </style>
 </head>
 <body>
 
-<header class="nav" id="nav"><div class="wrap nav-row">
+<header class="nav"><div class="wrap nav-row">
   <div class="brand">Haishan Lai / Toby Hysan</div>
   <div class="nav-right">
     <nav class="nav-links"><a href="#work">Work</a><a href="#stage">Stage</a><a href="#contact">Contact</a></nav>
-    <button class="lang-toggle" id="langToggle">繁</button>
+    <button class="lang-toggle" id="langToggle">繁 / EN</button>
   </div>
 </div></header>
 
 <main>
   <section class="hero">
     <div class="hero-portrait"></div>
-    <div class="wrap hero-inner">
-      <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span style="font-style:italic">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。</p>
+      <p class="thesis" data-i18n="thesis">於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。</p>
     </div>
   </section>
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="seclabel"><span class="tag">Selected Work</span><div class="rule"></div></div>
+      <div class="seclabel"><span>Selected Work</span><div class="rule"></div></div>
       <div class="rows">
         <div class="row"><div class="title"><a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank">FLOW / 04032026</a><span class="role">OceanMountain</span></div><div class="meta">04.2026</div></div>
         <div class="row"><div class="title"><a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank">Waves</a><span class="role">OceanMountain</span></div></div>
@@ -120,11 +89,11 @@
 
   <section class="block" id="stage">
     <div class="wrap">
-      <div class="seclabel"><span class="tag">On Stage</span><div class="rule"></div></div>
+      <div class="seclabel"><span>On Stage</span><div class="rule"></div></div>
       <div class="perf">
-        <div class="p"><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">10.2025</span></div>
+        <div class="p"><span class="v">Carnegie Hall<small>Guest Artist · Fang Tao Jiang</small></span><span class="y">10.2025</span></div>
         <div class="p"><span class="v">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">10.2025</span></div>
-        <div class="p"><span class="v">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">05.2024</span></div>
+        <div class="p"><span class="v">NYPL for the Performing Arts<small>Shelf Life</small></span><span class="y">05.2024</span></div>
         <div class="p"><span class="v">World Monuments Fund<small>Charity Concert</small></span><span class="y">11.2023</span></div>
         <div class="p"><span class="v">Mannes Sound Festival<small>The Art of Transcription</small></span><span class="y">12.2021</span></div>
         <div class="p"><span class="v">MACE<small>Mannes American Composers Ensemble</small></span><span class="y">11.2021</span></div>
@@ -141,15 +110,18 @@
 </main>
 
 <script>
-  var I18N = {
-    hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 音樂製作"},
-    hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。"}
+  const I18N = {
+    eyebrow: { en: "Pianist · Composer · Producer", zh: "鋼琴 · 作曲 · 音樂製作" },
+    thesis: { en: "Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.", zh: "於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。" }
   };
+  
   document.getElementById('langToggle').addEventListener('click', function(){
     document.body.classList.toggle('lang-zh');
-    var isZh = document.body.classList.contains('lang-zh');
-    document.querySelector('[data-i18n="hero_eyebrow"]').textContent = isZh ? I18N.hero_eyebrow.zh : I18N.hero_eyebrow.en;
-    document.querySelector('[data-i18n="hero_thesis"]').textContent = isZh ? I18N.hero_thesis.zh : I18N.hero_thesis.en;
+    const isZh = document.body.classList.contains('lang-zh');
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.getAttribute('data-i18n');
+      if(I18N[key]) el.textContent = I18N[key][isZh ? 'zh' : 'en'];
+    });
   });
 </script>
 </body>
