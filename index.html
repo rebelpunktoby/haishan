@@ -63,9 +63,9 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Portrait */
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
-    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
+  /* Moody Portrait */
+  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
+    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 25%;
     opacity:0.85; filter:grayscale(.28) contrast(1.05) brightness(0.95) saturate(.92);
     -webkit-mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);
     mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);}
@@ -238,7 +238,7 @@
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">Impressionist in expression, progressive in form — music that dissolves its own edges, for the screen, the stage, and in between dimensions.</p>
+      <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Conservatory · Original · Contemporary Music</span>
       </div>
@@ -250,7 +250,7 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
       <div class="statement-grid">
-        <p class="statement" data-reveal data-i18n="statement_main">My creative begins where the bar line loosens its grip — where harmony blends into color and space becomes part of the instrument. I move the frequency between environments, stages, and film, always discovering how sound shapes the way we feel and perceive the world.</p>
+        <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
         <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
       </div>
     </div>
@@ -383,16 +383,16 @@
       nav_work:{en:"Work",zh:"作品"},
       nav_stage:{en:"Stage",zh:"演出"},
       nav_contact:{en:"Contact",zh:"聯絡"},
-      hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 音樂製作"},
-      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。"},
+      hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
+      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
       hero_meta2:{en:'Conservatory · Original · Contemporary Music',zh:'學院派・原創・現代音樂'},
       scroll:{en:"Scroll",zh:"向下捲動"},
       lbl_practice:{en:"Practice",zh:"創作"},
       idx_practice:{en:"Statement",zh:"自述"},
-      statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知世界的方式。'},
-      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
+      statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
+      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未來探問；流動、未解，並抗拒被歸類。'},
       lbl_work:{en:"Selected Work",zh:"精選作品"},
-      idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
+      idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・探索"},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
@@ -427,11 +427,11 @@
       lbl_mentor:{en:"Mentorship",zh:"師承"},
       lbl_contact:{en:"Contact",zh:"聯絡"},
       idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
-      contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
+      contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際合作。'},
       link_email_k:{en:"Email",zh:"電子郵件"},
       link_phone_k:{en:"Phone",zh:"電話"},
       link_links_k:{en:"Links",zh:"連結"},
-      foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴 · 作曲 · 音樂製作'},
+      foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴 · 作曲 · 原創製作'},
       foot_right:{en:'<span id="yr"></span>',zh:'<span id="yr"></span>'}
     };
 
