@@ -4,7 +4,7 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Haishan Lai — Pianist · Composer · Producer</title>
-<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionism in feeling, progressive in form. Film scoring, recording, and live performance." />
+<meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between." />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -26,7 +26,10 @@
   body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;
     text-rendering:optimizeLegibility;overflow-x:hidden;}
-  body.lang-zh{font-family:var(--zh-font),sans-serif; font-size: 0.95rem; letter-spacing: 0.08em;}
+  body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;
+    font-family:var(--sans);font-weight:300;font-size:.88rem;letter-spacing:.1em;line-height:1.85;}
+  body.lang-zh .thesis,body.lang-zh .statement,body.lang-zh .contact-head,body.lang-zh .row .title,body.lang-zh .perf .p .v{font-weight:400;letter-spacing:.04em;}
+  body.lang-zh .eyebrow,body.lang-zh .nav-links,body.lang-zh .seclabel .tag,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .brand{letter-spacing:.22em;}
   a{color:inherit;text-decoration:none;}
   ::selection{background:rgba(143,227,210,.22);color:#fff;}
 
@@ -60,9 +63,9 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Portrait - Brightness and Opacity tuned to bring it back and reduce shine */
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:0;
-    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
+  /* Moody Portrait */
+  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
+    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 25%;
     opacity:0.85; filter:grayscale(.28) contrast(1.05) brightness(0.95) saturate(.92);
     -webkit-mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);
     mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);}
@@ -74,7 +77,7 @@
   .hero-portrait::after{content:"";position:absolute;inset:0;
     background:linear-gradient(180deg,transparent 58%,var(--ink) 100%);
     -webkit-mask-image:inherit;mask-image:inherit;}
-  @media(max-width:760px){.hero-portrait{width:72%;opacity:.6;}}
+  @media(max-width:760px){.hero-portrait{width:74%;opacity:.5;}}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
   .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
@@ -117,6 +120,7 @@
 
   .statement{font-family:var(--serif);font-weight:300;font-size:clamp(1.5rem,1.1rem + 1.9vw,2.6rem);
     line-height:1.36;letter-spacing:-.015em;color:#DEDBEC;max-width:24ch;}
+  .statement .hl{font-style:italic;color:#fff;}
   .statement-grid{display:grid;grid-template-columns:1fr;gap:2.5rem;}
   @media(min-width:860px){.statement-grid{grid-template-columns:1.55fr .9fr;gap:5rem;align-items:end;}.statement{max-width:none;}}
   .aside-note{font-family:var(--sans);font-size:1rem;color:var(--haze);line-height:1.7;max-width:36ch;}
@@ -141,6 +145,7 @@
 
   .row .meta{font-family:var(--mono);font-size:.82rem;color:var(--haze);letter-spacing:.06em;white-space:nowrap;}
   .row .meta .yr{color:var(--mist);display:block;font-size:.92rem;}
+  .row .meta .sub{display:block;color:var(--faint);font-size:.72rem;margin-top:.3rem;letter-spacing:.14em;text-transform:uppercase;}
 
   .perf{display:grid;grid-template-columns:1fr;gap:0;}
   @media(min-width:780px){.perf{grid-template-columns:1fr 1fr;column-gap:4.5rem;}}
@@ -174,6 +179,18 @@
 
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
+
+  /* Chinese view */
+  body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;}
+  body.lang-zh .thesis{font-style:normal;font-weight:300;line-height:1.72;letter-spacing:.07em;}
+  body.lang-zh .statement{font-weight:300;line-height:1.78;letter-spacing:.07em;}
+  body.lang-zh .aside-note{font-weight:300;line-height:1.95;letter-spacing:.05em;}
+  body.lang-zh .contact-head{font-weight:300;line-height:1.5;letter-spacing:.05em;}
+  body.lang-zh .row .title{font-weight:400;line-height:1.5;letter-spacing:.04em;}
+  body.lang-zh .row .title .role,body.lang-zh .perf .p .v small{font-weight:300;}
+  body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .nav-links{letter-spacing:.22em;}
+  body.lang-zh .brand{letter-spacing:.16em;}
+  body.lang-zh .statement .hl,body.lang-zh .contact-head em,body.lang-zh .row .title .role em{font-style:normal;}
 
   @media(max-width:600px){
     .nav-links{gap:1.3rem;}
@@ -221,9 +238,9 @@
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。</p>
+      <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
-        <span data-i18n="hero_meta2">Conservatory · Jazz · Music Technology</span>
+        <span data-i18n="hero_meta2">Conservatory · Original · Contemporary Music</span>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
@@ -234,7 +251,7 @@
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">Statement</span></div>
       <div class="statement-grid">
         <p class="statement" data-reveal data-i18n="statement_main">My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.</p>
-        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across conservatory composition, jazz, and music technology. The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
+        <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.</p>
       </div>
     </div>
   </section>
@@ -357,97 +374,115 @@
 </footer>
 
 <script>
-  (function(){
-    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    var hover  = window.matchMedia('(hover: hover)').matches;
+(function(){
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var hover  = window.matchMedia('(hover: hover)').matches;
 
-    var I18N = {
-      skip:{en:"Skip to content",zh:"跳至內容"},
-      nav_work:{en:"Work",zh:"作品"},
-      nav_stage:{en:"Stage",zh:"演出"},
-      nav_contact:{en:"Contact",zh:"聯絡"},
-      hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 音樂製作"},
-      hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的情感抒發，形式上的前衛主義——讓自身邊界融入在音樂，銀幕和舞台，以及維度之間。"},
-      hero_meta2:{en:'Conservatory · Jazz · Music Technology',zh:'學院派・爵士・音樂科技'},
-      scroll:{en:"Scroll",zh:"向下捲動"},
-      lbl_practice:{en:"Practice",zh:"創作"},
-      idx_practice:{en:"Statement",zh:"自述"},
-      statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知世界的方式。'},
-      statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
-      lbl_work:{en:"Selected Work",zh:"精選作品"},
-      idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
-      work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
-      work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
-      work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
-      work5_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
-      work6_role:{en:"Feature composition with Zekiizo",zh:"Feature composition with Zekiizo"},
-      work7_role:{en:"OceanMountain",zh:"OceanMountain"},
-      work8_role:{en:"OceanMountain",zh:"OceanMountain"},
-      lbl_stage:{en:"On Stage",zh:"現場演出"},
-      idx_stage:{en:"Selected Performances",zh:"精選場次"},
-      perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
-      perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>Elite International Competition</small>"},
-      perf3:{en:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>",zh:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>"},
-      perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"World Monuments Fund<small>Charity Concert</small>"},
-      perf5:{en:"Mannes Sound Festival<small>The Art of Transcription</small>",zh:"Mannes Sound Festival<small>The Art of Transcription</small>"},
-      perf6:{en:"MACE<small>Mannes American Composers Ensemble</small>",zh:"MACE<small>Mannes American Composers Ensemble</small>"},
-      perf7:{en:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>",zh:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>"},
-      perf8:{en:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>",zh:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>"},
-      perf9:{en:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>",zh:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>"},
-      perf10:{en:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>",zh:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>"},
-      perf11:{en:"The Green Room, Hoboken<small>with Eric Leo</small>",zh:"The Green Room, Hoboken<small>with Eric Leo</small>"},
-      perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>",zh:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>"},
-      perf13:{en:"Mannes Sound Festival<small>Art Along Save Me</small>",zh:"Mannes Sound Festival<small>Art Along Save Me</small>"},
-      lbl_edu:{en:"Education",zh:"學歷"},
-      idx_edu:{en:"Training",zh:"訓練歷程"},
-      edu1_title:{en:"New York University",zh:"New York University"},
-      edu1_role:{en:"M.M., Music Technology",zh:"M.M., Music Technology"},
-      edu1_yr:{en:"2025 — Present",zh:"2025 — 至今"},
-      edu2_title:{en:"The New School for Jazz and Contemporary Music",zh:"The New School for Jazz and Contemporary Music"},
-      edu2_role:{en:"B.F.A., Jazz Piano",zh:"B.F.A., Jazz Piano"},
-      edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"Affiliated High School of Xinghai Conservatory"},
-      edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"Specialized Music Program, Piano · Guangzhou"},
-      lbl_mentor:{en:"Mentorship",zh:"師承"},
-      lbl_contact:{en:"Contact",zh:"聯絡"},
-      idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
-      contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際實習機會。'},
-      link_email_k:{en:"Email",zh:"電子郵件"},
-      link_phone_k:{en:"Phone",zh:"電話"},
-      link_links_k:{en:"Links",zh:"連結"},
-      foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴 · 作曲 · 音樂製作'},
-      foot_right:{en:'<span id="yr"></span>',zh:'<span id="yr"></span>'}
-    };
+  var I18N = {
+    skip:{en:"Skip to content",zh:"跳至內容"},
+    nav_work:{en:"Work",zh:"作品"},
+    nav_stage:{en:"Stage",zh:"演出"},
+    nav_contact:{en:"Contact",zh:"聯絡"},
+    hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
+    hero_thesis:{en:"Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.",zh:"於印象派的表達，形式上的前衛主義——從自身邊界融入在音樂，銀幕和舞台，以至於維度之間。"},
+    hero_meta2:{en:'Conservatory · Original · Contemporary Music',zh:'學院派・原創・現代音樂'},
+    scroll:{en:"Scroll",zh:"向下捲動"},
+    lbl_practice:{en:"Practice",zh:"創作"},
+    idx_practice:{en:"Statement",zh:"自述"},
+    statement_main:{en:'My work begins where the bar line loosens its grip — where harmony blurs into color and a room becomes part of the instrument. I move between location recording, live performance, and film scoring, drawn always to the same question: how sound shapes the way we feel and perceive.',zh:'我的創作始於鬆開小節線的束縛——把和聲渲染的色彩與空間構成一體，讓頻率穿梭在意識、科技與自然之間。始終探討聲音如何形塑我們感受與感知的世界。'},
+    statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派，作曲、爵士與音樂科技。</strong>扎根於古典，卻始終向現代和未來探問；流動、未解，並抗拒被歸類。'},
+    lbl_work:{en:"Selected Work",zh:"精選作品"},
+    idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・探索"},
+    work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
+    work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
+    work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
+    work5_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
+    work6_role:{en:"Feature composition with Zekiizo",zh:"Feature composition with Zekiizo"},
+    work7_role:{en:"OceanMountain",zh:"OceanMountain"},
+    work8_role:{en:"OceanMountain",zh:"OceanMountain"},
+    lbl_stage:{en:"On Stage",zh:"現場演出"},
+    idx_stage:{en:"Selected Performances",zh:"精選場次"},
+    perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
+    perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>Elite International Competition</small>"},
+    perf3:{en:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>",zh:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>"},
+    perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"World Monuments Fund<small>Charity Concert</small>"},
+    perf5:{en:"Mannes Sound Festival<small>The Art of Transcription</small>",zh:"Mannes Sound Festival<small>The Art of Transcription</small>"},
+    perf6:{en:"MACE<small>Mannes American Composers Ensemble</small>",zh:"MACE<small>Mannes American Composers Ensemble</small>"},
+    perf7:{en:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>",zh:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>"},
+    perf8:{en:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>",zh:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>"},
+    perf9:{en:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>",zh:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>"},
+    perf10:{en:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>",zh:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>"},
+    perf11:{en:"The Green Room, Hoboken<small>with Eric Leo</small>",zh:"The Green Room, Hoboken<small>with Eric Leo</small>"},
+    perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>",zh:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>"},
+    perf13:{en:"Mannes Sound Festival<small>Art Along Save Me</small>",zh:"Mannes Sound Festival<small>Art Along Save Me</small>"},
+    lbl_edu:{en:"Education",zh:"學歷"},
+    idx_edu:{en:"Training",zh:"訓練歷程"},
+    edu1_title:{en:"New York University",zh:"New York University"},
+    edu1_role:{en:"M.M., Music Technology",zh:"M.M., Music Technology"},
+    edu1_yr:{en:"2025 — Present",zh:"2025 — 至今"},
+    edu2_title:{en:"The New School for Jazz and Contemporary Music",zh:"The New School for Jazz and Contemporary Music"},
+    edu2_role:{en:"B.F.A., Jazz Piano",zh:"B.F.A., Jazz Piano"},
+    edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"Affiliated High School of Xinghai Conservatory"},
+    edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"Specialized Music Program, Piano · Guangzhou"},
+    lbl_mentor:{en:"Mentorship",zh:"師承"},
+    lbl_contact:{en:"Contact",zh:"聯絡"},
+    idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
+    contact_head:{en:'Open to <em>scoring, collaboration,</em> and international internships.',zh:'開放<em>配樂、合作</em>與國際合作。'},
+    link_email_k:{en:"Email",zh:"電子郵件"},
+    link_phone_k:{en:"Phone",zh:"電話"},
+    link_links_k:{en:"Links",zh:"連結"},
+    foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴 · 作曲 · 原創製作'},
+    foot_right:{en:'<span id="yr"></span>',zh:'<span id="yr"></span>'}
+  };
 
-    var lang = 'en'; // Default loaded state
-    function setYear(){ var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear(); }
-    
-    function applyLang(next){
-      lang = next;
-      document.documentElement.setAttribute('lang', lang==='zh' ? 'zh-Hant' : 'en');
-      document.body.classList.toggle('lang-zh', lang==='zh');
-      document.querySelectorAll('[data-i18n]').forEach(function(el){
-        var k = el.getAttribute('data-i18n');
-        if(I18N[k] && I18N[k][lang] !== undefined){ el.innerHTML = I18N[k][lang]; }
-      });
-      setYear();
-      var btn = document.getElementById('langToggle');
-      btn.textContent = lang==='en' ? '繁' : 'EN'; // Single option text 
-      btn.setAttribute('aria-label', lang==='en' ? 'Switch to Traditional Chinese' : 'Switch to English');
-    }
-    
-    applyLang('en'); // Enforce English on load
-    document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
+  var lang = 'en'; // Default loaded state
+  function setYear(){ var y=document.getElementById('yr'); if(y) y.textContent=new Date().getFullYear(); }
+  
+  function applyLang(next){
+    lang = next;
+    document.documentElement.setAttribute('lang', lang==='zh' ? 'zh-Hant' : 'en');
+    document.body.classList.toggle('lang-zh', lang==='zh');
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var k = el.getAttribute('data-i18n');
+      if(I18N[k] && I18N[k][lang] !== undefined){ el.innerHTML = I18N[k][lang]; }
+    });
+    setYear();
+    var btn = document.getElementById('langToggle');
+    btn.textContent = lang==='en' ? '繁' : 'EN'; // Single option text 
+    btn.setAttribute('aria-label', lang==='en' ? 'Switch to Traditional Chinese' : 'Switch to English');
+  }
+  
+  applyLang('en'); // render English on load
+  document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
 
-    // nav backdrop
-    var nav = document.getElementById('nav');
-    var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
-    onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
+  // nav backdrop
+  var nav = document.getElementById('nav');
+  var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
+  onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-    // scroll reveal
-    var items = document.querySelectorAll('[data-reveal]');
-    var io = new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12});
+  // hero parallax
+  if(!reduce && hover){
+    var field = document.querySelector('.field');
+    var raf=null, tx=0, ty=0;
+    window.addEventListener('pointermove', function(e){
+      tx=(e.clientX/window.innerWidth-.5)*2; ty=(e.clientY/window.innerHeight-.5)*2;
+      if(!raf){ raf=requestAnimationFrame(function(){ field.style.setProperty('--mx',tx.toFixed(3)); field.style.setProperty('--my',ty.toFixed(3)); raf=null; }); }
+    }, {passive:true});
+    document.querySelectorAll('.orb-wrap').forEach(function(w){
+      var d=parseFloat(getComputedStyle(w).getPropertyValue('--depth'))||0;
+      (function tick(){ var mx=parseFloat(field.style.getPropertyValue('--mx'))||0, my=parseFloat(field.style.getPropertyValue('--my'))||0;
+        w.style.transform='translate('+(mx*d)+'px,'+(my*d)+'px)'; requestAnimationFrame(tick); })();
+    });
+  }
+
+  // scroll reveal
+  var items = document.querySelectorAll('[data-reveal]');
+  if(reduce || !('IntersectionObserver' in window)){ items.forEach(function(el){ el.classList.add('in'); }); }
+  else {
+    var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12,rootMargin:'0px 0px -7% 0px'});
     items.forEach(function(el){ io.observe(el); });
-  })();
+  }
+})();
 </script>
 </body>
 </html>
