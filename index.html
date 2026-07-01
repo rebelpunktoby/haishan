@@ -16,7 +16,6 @@
     --lumen:#8FE3D2;
     --violet:#7C6BB3; --indigo:#5664C6; --teal:#3FA89C; --rose:#CE7E8E; --amber:#E2AC6E;
     --wrap:1180px; --ease:cubic-bezier(.2,.7,.2,1);
-    /* Latin faces first, Traditional-Chinese faces as per-glyph fallback */
     --serif:"Fraunces","Noto Serif TC",Georgia,serif;
     --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
     --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
@@ -59,9 +58,13 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Moody Background Additions */
-  .hero-bg{position:absolute;inset:0;z-index:0;background-image:url('HYSAN.jpg');background-size:cover;background-position:center;opacity:0.65;mix-blend-mode:normal;}
-  .hero-overlay{position:absolute;inset:0;z-index:1;background:linear-gradient(180deg, rgba(9,11,20,.7) 0%, rgba(9,11,20,.2) 40%, rgba(9,11,20,.9) 100%);}
+  /* Moody Portrait */
+  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
+    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
+    opacity:0.8;filter:contrast(1.1) brightness(1.1);
+    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
+    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);}
+  @media(max-width:760px){.hero-portrait{width:72%;opacity:.4;}}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
   .orb-wrap{position:absolute;inset:0;transition:transform .8s var(--ease);will-change:transform;}
@@ -93,21 +96,6 @@
   .scroll-cue .bar{display:inline-block;width:40px;height:1px;background:var(--faint);position:relative;overflow:hidden;}
   .scroll-cue .bar::after{content:"";position:absolute;left:-40px;top:0;width:40px;height:1px;background:var(--lumen);animation:sweep 2.8s var(--ease) infinite;}
   @keyframes sweep{0%{left:-40px}60%,100%{left:40px}}
-
-  /* Hero portrait — HYSAN.jpg, faded low-key on the right */
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
-    background-image:url("HYSAN.jpg");background-size:cover;background-position:center 20%;
-    opacity:.24;filter:grayscale(.4) contrast(1.03) brightness(1.02);
-    -webkit-mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
-    mask-image:linear-gradient(to left,#000 0%,rgba(0,0,0,.72) 44%,transparent 94%);
-    mix-blend-mode:luminosity;}
-  .hero-portrait::after{content:"";position:absolute;inset:0;
-    background:linear-gradient(180deg,rgba(9,11,20,.3),rgba(9,11,20,0) 26%,rgba(9,11,20,0) 58%,var(--ink) 100%);}
-  @media(max-width:760px){.hero-portrait{width:72%;opacity:.14;}}
-
-  /* Stage subsection divider */
-  .perf .p.subhead{grid-column:1 / -1;border-top:0;padding:2.6rem 0 .3rem;}
-  .perf .p.subhead .subhead-label{font-family:var(--mono);font-size:.72rem;letter-spacing:.24em;text-transform:uppercase;color:var(--haze);}
 
   /* SECTIONS */
   section.block{padding-block:clamp(4.5rem,9vw,8.5rem);position:relative;}
@@ -145,8 +133,6 @@
 
   .row .meta{font-family:var(--mono);font-size:.82rem;color:var(--haze);letter-spacing:.06em;white-space:nowrap;}
   .row .meta .yr{color:var(--mist);display:block;font-size:.92rem;}
-  .row .meta .sub{display:block;color:var(--faint);font-size:.72rem;margin-top:.3rem;letter-spacing:.14em;text-transform:uppercase;}
-  .row .desc{grid-column:1 / -1;font-family:var(--sans);color:var(--haze);font-size:.98rem;line-height:1.7;max-width:64ch;margin-top:.5rem;}
 
   .perf{display:grid;grid-template-columns:1fr;gap:0;}
   @media(min-width:780px){.perf{grid-template-columns:1fr 1fr;column-gap:4.5rem;}}
@@ -181,7 +167,7 @@
   [data-reveal]{opacity:0;transform:translateY(20px);transition:opacity 1s var(--ease),transform 1s var(--ease);}
   [data-reveal].in{opacity:1;transform:none;}
 
-  /* Chinese view — minimal & artistic: LXGW WenKai, light weight, airy spacing */
+  /* Chinese view */
   body.lang-zh{--serif:"Fraunces","LXGW WenKai TC",Georgia,serif;--sans:"Space Grotesk","LXGW WenKai TC",system-ui,sans-serif;--mono:"Space Mono","LXGW WenKai TC",ui-monospace,monospace;}
   body.lang-zh .thesis{font-style:normal;font-weight:300;line-height:1.72;letter-spacing:.07em;}
   body.lang-zh .statement{font-weight:300;line-height:1.78;letter-spacing:.07em;}
@@ -189,7 +175,7 @@
   body.lang-zh .contact-head{font-weight:300;line-height:1.5;letter-spacing:.05em;}
   body.lang-zh .row .title{font-weight:400;line-height:1.5;letter-spacing:.04em;}
   body.lang-zh .row .title .role,body.lang-zh .perf .p .v small{font-weight:300;}
-  body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .subhead-label,body.lang-zh .nav-links{letter-spacing:.22em;}
+  body.lang-zh .seclabel .tag,body.lang-zh .eyebrow,body.lang-zh .cap h3,body.lang-zh .mentor .lbl,body.lang-zh .links a .k,body.lang-zh .nav-links{letter-spacing:.22em;}
   body.lang-zh .brand{letter-spacing:.16em;}
   body.lang-zh .statement .hl,body.lang-zh .contact-head em,body.lang-zh .row .title .role em{font-style:normal;}
 
@@ -244,7 +230,6 @@
       <p class="thesis" data-i18n="hero_thesis">Impressionist in feeling, progressive in form — music that dissolves its own edges, for the screen, the stage, and the spaces between.</p>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Conservatory · Jazz · Music Technology</span>
-        <span data-i18n="hero_meta3"><span class="dot">◆</span>&nbsp; Open to international work</span>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
@@ -266,10 +251,16 @@
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title">
-            <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work1_role">Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival</span>
+            <a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
+            <span class="role" data-i18n="work7_role">OceanMountain</span>
           </div>
-          <div class="meta"><span class="yr">2024</span><span class="sub" data-i18n="work1_sub">Venice · Italy</span></div>
+          <div class="meta"><span class="yr">2026</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">
+            <a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" class="work-link">Waves <span class="arr">↗</span></a>
+            <span class="role" data-i18n="work8_role">OceanMountain</span>
+          </div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
@@ -290,28 +281,19 @@
             <a href="https://untitled.stream/library/track/X1j9gSyvFvgaNFcsLyDgC" target="_blank" rel="noopener" class="work-link">GONE MISSING <span class="arr">↗</span></a>
             <span class="role" data-i18n="work5_role">Contemporary Hiphop / R&B</span>
           </div>
-          <div class="meta"><span class="yr"></span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
             <a href="https://untitled.stream/library/project/8Cf3cV7HNGSS57Z9SdazQ" target="_blank" rel="noopener" class="work-link">Unreleased <span class="arr">↗</span></a>
             <span class="role" data-i18n="work6_role">Alt-Rock / Emo Rock</span>
           </div>
-          <div class="meta"><span class="yr"></span></div>
         </div>
         <div class="row" data-reveal>
           <div class="title">
-            <a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work7_role">OceanMountain</span>
+            <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
+            <span class="role" data-i18n="work1_role">Composer &amp; Producer</span>
           </div>
-          <div class="meta"><span class="yr">2026</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title">
-            <a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" class="work-link">Waves <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work8_role">OceanMountain</span>
-          </div>
-          <div class="meta"><span class="yr"></span></div>
+          <div class="meta"><span class="yr">2024</span></div>
         </div>
       </div>
     </div>
@@ -321,19 +303,18 @@
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
-        <div class="p" data-reveal><span class="v" data-i18n="perf1">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf2">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf3">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf4">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf5">Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small></span><span class="y">’21 / ’20</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf6">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
-        <div class="p subhead" data-reveal><span class="subhead-label" data-i18n="stage_recent">Recent · 2025 – 26</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf7">Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small></span><span class="y">2025.10</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf8">The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small></span><span class="y">2025.10</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf3">NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small></span><span class="y">2024</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf4">World Monuments Fund<small>Charity Concert</small></span><span class="y">2023</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf9">Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small></span><span class="y">03.20</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf10">Pianos, NYC<small>Breaking Sound · with Eric Leo</small></span><span class="y">04.18</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf12">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.18 · 05.09</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf11">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.01</span></div>
-        <div class="p" data-reveal><span class="v" data-i18n="perf12">The Green Room, Hoboken<small>Contemporary Jazz Trio · own set</small></span><span class="y">04.18 · 05.09</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf6">Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small></span><span class="y">2021</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf5">Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small></span><span class="y">’21 / ’20</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf2">Merkin Hall<small>Elite International Competition</small></span><span class="y">2021</span></div>
+        <div class="p" data-reveal><span class="v" data-i18n="perf1">Carnegie Hall<small>Elite International Competition</small></span><span class="y">2020</span></div>
       </div>
     </div>
   </section>
@@ -400,38 +381,36 @@
     statement_aside:{en:'Trained across <strong>conservatory composition, jazz, and music technology.</strong> The result is music rooted in impressionism but restless toward the modern — flowing, unresolved, and a little resistant to category.',zh:'受訓於<strong>學院派作曲、爵士與音樂科技。</strong>於是有了這樣的音樂——扎根於印象派，卻始終向現代性探問；流動、未解，並略微抗拒被歸類。'},
     lbl_work:{en:"Selected Work",zh:"精選作品"},
     idx_work:{en:"Composition · Production · Film",zh:"作曲・製作・影像"},
-    work1_role:{en:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival',zh:'作曲 &amp; 製作 · <em>正式入選</em>，Venice Immersive — 81st Venice International Film Festival'},
-    work1_sub:{en:"Venice · Italy",zh:"威尼斯・義大利"},
-    work2_role:{en:"Original Composition",zh:"原創作品"},
-    work4_role:{en:"Original Composition",zh:"原創作品"},
-    work5_role:{en:"Contemporary Hiphop / R&B",zh:"當代嘻哈 / R&B"},
-    work6_role:{en:"Alt-Rock / Emo Rock",zh:"另類搖滾 / Emo Rock"},
+    work1_role:{en:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival',zh:'Composer &amp; Producer · <em>Official Selection</em>, Venice Immersive — 81st Venice International Film Festival'},
+    work2_role:{en:"Original Composition",zh:"Original Composition"},
+    work4_role:{en:"Original Composition",zh:"Original Composition"},
+    work5_role:{en:"Contemporary Hiphop / R&B",zh:"Contemporary Hiphop / R&B"},
+    work6_role:{en:"Alt-Rock / Emo Rock",zh:"Alt-Rock / Emo Rock"},
     work7_role:{en:"OceanMountain",zh:"OceanMountain"},
     work8_role:{en:"OceanMountain",zh:"OceanMountain"},
     lbl_stage:{en:"On Stage",zh:"現場演出"},
     idx_stage:{en:"Selected Performances",zh:"精選場次"},
-    perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>國際菁英大賽</small>"},
-    perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>國際菁英大賽</small>"},
+    perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
+    perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>Elite International Competition</small>"},
     perf3:{en:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>",zh:"NYPL for the Performing Arts<small>Lincoln Center · Shelf Life</small>"},
-    perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"World Monuments Fund<small>慈善音樂會</small>"},
+    perf4:{en:"World Monuments Fund<small>Charity Concert</small>",zh:"World Monuments Fund<small>Charity Concert</small>"},
     perf5:{en:"Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small>",zh:"Mannes Sound Festival<small>The Art of Transcription · Art Along Save Me</small>"},
-    perf6:{en:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>",zh:"Mannes American Composers Ensemble<small>MACE · 合奏團演奏</small>"},
-    stage_recent:{en:"Recent · 2025 – 26",zh:"近期演出 · 2025–26"},
-    perf7:{en:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>",zh:"Carnegie Hall<small>客座藝術家 · Fang Tao Jiang（女高音）</small>"},
-    perf8:{en:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>",zh:"The Broadway（布魯克林）<small>Breaking Sound · 與 Zekiizo 樂團</small>"},
-    perf9:{en:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>",zh:"Brooklyn Music Kitchen<small>Breaking Sound · 與 Zekiizo 樂團</small>"},
-    perf10:{en:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>",zh:"Pianos（紐約）<small>Breaking Sound · 與 Eric Leo</small>"},
-    perf11:{en:"The Green Room, Hoboken<small>with Eric Leo</small>",zh:"The Green Room（霍博肯）<small>與 Eric Leo</small>"},
-    perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio · own set</small>",zh:"The Green Room（霍博肯）<small>當代爵士三重奏 · 個人演出</small>"},
+    perf6:{en:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>",zh:"Mannes American Composers Ensemble<small>MACE · Ensemble Performer</small>"},
+    perf7:{en:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>",zh:"Carnegie Hall<small>Guest Artist · Fang Tao Jiang, Soprano</small>"},
+    perf8:{en:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>",zh:"The Broadway, Brooklyn<small>Breaking Sound · with Zekiizo</small>"},
+    perf9:{en:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>",zh:"Brooklyn Music Kitchen<small>Breaking Sound · with Zekiizo</small>"},
+    perf10:{en:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>",zh:"Pianos, NYC<small>Breaking Sound · with Eric Leo</small>"},
+    perf11:{en:"The Green Room, Hoboken<small>with Eric Leo</small>",zh:"The Green Room, Hoboken<small>with Eric Leo</small>"},
+    perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>",zh:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>"},
     lbl_edu:{en:"Education",zh:"學歷"},
     idx_edu:{en:"Training",zh:"訓練歷程"},
     edu1_title:{en:"New York University",zh:"New York University"},
-    edu1_role:{en:"M.M., Music Technology",zh:"音樂碩士（M.M.）・音樂科技"},
+    edu1_role:{en:"M.M., Music Technology",zh:"M.M., Music Technology"},
     edu1_yr:{en:"2025 — Now",zh:"2025 — 至今"},
     edu2_title:{en:"The New School for Jazz &amp; Contemporary Music",zh:"The New School for Jazz &amp; Contemporary Music"},
-    edu2_role:{en:"B.F.A., Jazz Piano",zh:"爵士鋼琴・藝術學士（B.F.A.）"},
-    edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"星海音樂學院附屬中學"},
-    edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"六年制音樂專業（鋼琴）· 廣州"},
+    edu2_role:{en:"B.F.A., Jazz Piano",zh:"B.F.A., Jazz Piano"},
+    edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"Affiliated High School of Xinghai Conservatory"},
+    edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"Specialized Music Program, Piano · Guangzhou"},
     lbl_mentor:{en:"Mentorship",zh:"師承"},
     lbl_contact:{en:"Contact",zh:"聯絡"},
     idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
@@ -440,7 +419,7 @@
     link_phone_k:{en:"Phone",zh:"電話"},
     link_links_k:{en:"Links",zh:"連結"},
     foot_left:{en:'<b>Haishan Lai</b> — Pianist · Composer · Producer',zh:'<b>Haishan Lai</b> — 鋼琴家 · 作曲家 · 音樂製作人'},
-    foot_right:{en:'New York · <span id="yr"></span>',zh:'紐約 · <span id="yr"></span>'}
+    foot_right:{en:'<span id="yr"></span>',zh:'<span id="yr"></span>'}
   };
 
   var lang = 'en';
