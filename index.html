@@ -72,12 +72,13 @@
   /* HERO */
   .hero{position:relative;min-height:100svh;display:flex;align-items:center;padding-top:7rem;padding-bottom:5rem;overflow:hidden;}
   
-  /* Moody Portrait */
-  .hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);z-index:1;pointer-events:none;
-    background-image:url("HYSAN.webp");background-size:cover;background-position:center 25%;
-    opacity:0.85; filter:grayscale(.28) contrast(1.05) brightness(0.95) saturate(.92);
-    -webkit-mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);
-    mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);}
+/* Moody Portrait */
+.hero-portrait{position:absolute;top:0;right:0;bottom:0;width:min(54%,660px);height:100%;z-index:1;pointer-events:none;
+  background-image:url("HYSAN.webp");background-size:cover;background-position:center 25%;
+  opacity:0.85; filter:grayscale(.28) contrast(1.05) brightness(0.95) saturate(.92);
+  -webkit-mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);
+  mask-image:linear-gradient(to left,#000 28%,rgba(0,0,0,.72) 60%,transparent 96%);
+  -webkit-transform:translateZ(0);transform:translateZ(0);}
   @media(max-width:760px){.hero-portrait{width:74%;opacity:.5;}}
   
   .field{position:absolute;inset:0;z-index:2;overflow:hidden;}
