@@ -196,6 +196,84 @@
     .scroll-cue .bar::after{animation:none;left:0;width:14px;}
     [data-reveal]{opacity:1;transform:none;transition:none;}
   }
+
+  /* POPUP CONTACT WINDOW STYLES */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(9, 11, 20, 0.85);
+    backdrop-filter: blur(12px) saturate(1.2);
+    -webkit-backdrop-filter: blur(12px) saturate(1.2);
+    z-index: 1000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.5s var(--ease);
+    padding: 1.5rem;
+  }
+  .modal-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
+  }
+  .modal-window {
+    background: var(--ink-2);
+    border: 1px solid var(--line-2);
+    width: 100%;
+    max-width: 480px;
+    padding: clamp(1.8rem, 5vw, 2.8rem);
+    position: relative;
+    transform: translateY(24px);
+    transition: transform 0.5s var(--ease);
+  }
+  .modal-overlay.active .modal-window {
+    transform: translateY(0);
+  }
+  .modal-close {
+    position: absolute;
+    top: 1.2rem;
+    right: 1.5rem;
+    background: transparent;
+    border: none;
+    color: var(--haze);
+    font-family: var(--mono);
+    font-size: .7rem;
+    cursor: pointer;
+    letter-spacing: .12em;
+    text-transform: lowercase;
+    transition: color .3s;
+  }
+  .modal-close:hover { color: var(--lumen); }
+  .modal-form { display: flex; flex-direction: column; gap: 1.2rem; margin-top: 1.8rem; }
+  .modal-form input, .modal-form textarea {
+    width: 100%;
+    padding: .85rem 1rem;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--mist);
+    font-family: var(--sans);
+    font-weight: 300;
+    font-size: .95rem;
+    outline: none;
+    transition: border-color .4s var(--ease);
+  }
+  .modal-form input:focus, .modal-form textarea:focus { border-color: var(--lumen); }
+  .modal-form textarea { resize: none; }
+  .modal-submit {
+    align-self: flex-start;
+    background: transparent;
+    color: var(--lumen);
+    border: 1px solid var(--lumen);
+    padding: .65rem 2.2rem;
+    font-family: var(--mono);
+    font-size: .74rem;
+    letter-spacing: .14em;
+    text-transform: uppercase;
+    cursor: pointer;
+    transition: background .4s, color .4s;
+  }
+  .modal-submit:hover { background: rgba(143,227,210,.12); }
 </style>
 </head>
 <body>
@@ -228,7 +306,7 @@
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis" data-i18n="hero_thesis">Impressionist in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions.</p>
+      <p class="thesis" data-i18n="hero_thesis">Impressionism in expression, progressive in form — music that dissolves edges. From the screen, to the stage, and stretch between dimensions.</p>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Conservatory · Original · Contemporary Music</span>
       </div>
@@ -359,6 +437,23 @@
   </section>
 </main>
 
+<div class="modal-overlay" id="contactModal">
+  <div class="modal-window">
+    <button class="modal-close" id="closeModal" aria-label="Close window">close // ✕</button>
+    <p class="eyebrow" style="margin-bottom: 0.2rem;">Reach Out</p>
+    <form action="https://api.web3forms.com/submit" method="POST" class="modal-form">
+      <input type="hidden" name="access_key" value="bf59822a-5e57-4902-93b7-86a65c0fca50">
+      <input type="checkbox" name="botcheck" class="hidden" style="display: none;">
+      
+      <input type="text" name="name" placeholder="name" required>
+      <input type="email" name="email" placeholder="email" required>
+      <textarea name="message" placeholder="message..." rows="5" required></textarea>
+      
+      <button type="submit" class="modal-submit">send</button>
+    </form>
+  </div>
+</div>
+
 <footer>
   <div class="wrap foot-row">
     <span data-i18n="foot_left"><b>Haishan Lai</b> — Pianist · Composer · Producer</span>
@@ -479,6 +574,33 @@
       var io=new IntersectionObserver(function(entries){ entries.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add('in'); io.unobserve(en.target); } }); },{threshold:0.12,rootMargin:'0px 0px -7% 0px'});
       items.forEach(function(el){ io.observe(el); });
     }
+
+    // MODAL WINDOW SCRIPT LOGIC
+    var modal = document.getElementById('contactModal');
+    var closeBtn = document.getElementById('closeModal');
+    var mailtoLinks = document.querySelectorAll('a[href^="mailto:"]');
+
+    mailtoLinks.forEach(function(link) {
+      link.addEventListener('click', function(event) {
+        event.preventDefault();
+        modal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+      });
+    });
+
+    function hideModal() {
+      modal.classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    closeBtn.addEventListener('click', hideModal);
+    modal.addEventListener('click', function(event) {
+      if (event.target === modal) hideModal();
+    });
+    window.addEventListener('keydown', function(event) {
+      if (event.key === 'Escape' && modal.classList.contains('active')) hideModal();
+    });
+
   })();
 </script>
 </body>
