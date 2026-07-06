@@ -48,6 +48,14 @@
       </button>
       <span class="mode-label" id="labelSpeakers">Speakers</span>
     </div>
+  <!-- Add inside the .console div in index.html, right after the existing .mode-switch div -->
+<div class="mode-switch" role="radiogroup" aria-label="Time system">
+  <span class="mode-label active" id="labelStandard">Standard Time</span>
+  <button id="timeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to I-Ching mode">
+    <span class="toggle-dot" aria-hidden="true"></span>
+  </button>
+  <span class="mode-label" id="labelIChing">I-Ching Mode</span>
+</div>  
   </div>
 
   <p class="sysmsg" id="sysmsg" role="status" aria-live="polite"></p>
