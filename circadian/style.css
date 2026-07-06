@@ -248,3 +248,10 @@ body {
   .mast { padding: 1.1rem 1.2rem; }
   .session-tag { display: none; }
 }
+
+/* Add to style.css — the second toggle reuses all existing .toggle styles.
+   Only addition: a distinct dot color for the I-Ching switch when active. */
+#timeToggle[aria-checked="true"] .toggle-dot {
+  background: #d4b96a;                       /* solar gold — jieqi active */
+  box-shadow: 0 0 10px rgba(212, 185, 106, 0.6);
+}
