@@ -1,0 +1,62 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>山海 — Circadian Engine β</title>
+<meta name="description" content="A generative circadian sound environment. OceanMountain beta.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Space+Grotesk:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<header class="mast">
+  <div class="wordmark">
+    <span class="hanzi">山海</span>
+    <span class="mark-en">OceanMountain</span>
+  </div>
+  <div class="session-tag">Circadian Engine <span class="beta">β</span></div>
+</header>
+
+<main class="stage">
+  <canvas id="horizon" aria-label="Live waveform of the drone"></canvas>
+
+  <div class="veil" id="veil">
+    <p class="veil-line">A sound environment tuned to this hour, this season.</p>
+    <button id="initBtn" class="init-btn" type="button">
+      <span class="init-ring" aria-hidden="true"></span>
+      INITIALIZE SYSTEM
+    </button>
+    <p class="veil-hint">Headphones recommended · begins from silence</p>
+  </div>
+
+  <div class="console" id="console" hidden>
+    <div class="readout">
+      <span id="clockReadout">—</span>
+      <span class="readout-divider" aria-hidden="true">/</span>
+      <span id="seasonReadout">—</span>
+    </div>
+
+    <div class="mode-switch" role="radiogroup" aria-label="Listening mode">
+      <span class="mode-label" id="labelPhones">Headphones</span>
+      <button id="modeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to speaker mode">
+        <span class="toggle-dot" aria-hidden="true"></span>
+      </button>
+      <span class="mode-label" id="labelSpeakers">Speakers</span>
+    </div>
+  </div>
+
+  <p class="sysmsg" id="sysmsg" role="status" aria-live="polite"></p>
+</main>
+
+<footer class="colophon">
+  <span>breath · tide · hour · season</span>
+</footer>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
