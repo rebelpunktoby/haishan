@@ -1,6 +1,5 @@
-// app.js — OceanMountain Circadian Engine β
+// app.js — OceanMountain Circadian Engine β · DMT.beta
 // Expects your RNBO export saved as ./export/patch.export.json
-// (default RNBO export folder name — adjust PATCH_URL if yours differs)
 
 const PATCH_URL = "export/patch.export.json";
 
@@ -19,6 +18,9 @@ const consoleEl = document.getElementById("console");
 const modeToggle = document.getElementById("modeToggle");
 const labelPhones = document.getElementById("labelPhones");
 const labelSpeakers = document.getElementById("labelSpeakers");
+const timeToggle = document.getElementById("timeToggle");
+const labelStandard = document.getElementById("labelStandard");
+const labelIChing = document.getElementById("labelIChing");
 const clockReadout = document.getElementById("clockReadout");
 const seasonReadout = document.getElementById("seasonReadout");
 const sysmsg = document.getElementById("sysmsg");
@@ -30,13 +32,26 @@ let device = null;
 let analyser = null;
 let waveData = null;
 let clockTimer = null;
+let ichingMode = false;
 
 const SEASONS = ["Winter", "Winter", "Spring", "Spring", "Spring", "Summer",
                  "Summer", "Summer", "Autumn", "Autumn", "Autumn", "Winter"];
 
+// TCM organ names indexed by meridian block hour (0,2,4...22)
+const ORGANS = {
+  0: "Gallbladder", 2: "Liver", 4: "Lungs", 6: "Large Intestine",
+  8: "Stomach", 10: "Spleen", 12: "Heart", 14: "Small Intestine",
+  16: "Bladder", 18: "Kidneys", 20: "Pericardium", 22: "Triple Burner"
+};
+
+// Jieqi season names keyed by the month integer we send
+const JIEQI_SEASONS = { 4: "Li Chun · Spring", 7: "Li Xia · Summer",
+                        10: "Li Qiu · Autumn", 1: "Li Dong · Winter" };
+
 // ---------- boot ----------
 initBtn.addEventListener("click", initialize, { once: true });
 modeToggle.addEventListener("click", onModeToggle);
+timeToggle.addEventListener("click", onTimeToggle);
 window.addEventListener("resize", sizeCanvas);
 sizeCanvas();
 drawIdleHorizon();
@@ -103,18 +118,57 @@ function loadRNBOScript(version) {
   });
 }
 
+// ---------- time systems ----------
+
+// TCM Organ Clock: fold the local hour into its 2-hour meridian block.
+// 23:00-00:59 -> 0, 01:00-02:59 -> 2, ... 21:00-22:59 -> 22
+function tcmMeridianHour(hour) {
+  if (hour === 23) return 0;
+  return Math.floor((hour + 1) / 2) * 2;
+}
+
+// Jieqi Solar Terms: map day-of-year to the season's representative month.
+// Boundaries (2026): Li Chun Feb 4 / Li Xia May 5 / Li Qiu Aug 7 / Li Dong Nov 7.
+function jieqiMonth(now) {
+  const start = new Date(now.getFullYear(), 0, 0);
+  const dayOfYear = Math.floor((now - start) / 86_400_000);
+
+  const LI_CHUN = 35;   // Feb 4
+  const LI_XIA = 125;   // May 5
+  const LI_QIU = 219;   // Aug 7
+  const LI_DONG = 311;  // Nov 7
+
+  if (dayOfYear >= LI_DONG || dayOfYear < LI_CHUN) return 1;  // Winter
+  if (dayOfYear >= LI_QIU) return 10;                         // Autumn
+  if (dayOfYear >= LI_XIA) return 7;                          // Summer
+  return 4;                                                   // Spring
+}
+
 // ---------- clock -> RNBO ----------
 function pushClock() {
   const now = new Date();
-  const month = now.getMonth() + 1; // 1-12
-  const hour = now.getHours();      // 0-23
+  const rawMonth = now.getMonth() + 1; // 1-12
+  const rawHour = now.getHours();      // 0-23
 
-  setParam(P_MONTH, month);
-  setParam(P_HOUR, hour);
+  let sendMonth, sendHour;
+
+  if (ichingMode) {
+    sendHour = tcmMeridianHour(rawHour);
+    sendMonth = jieqiMonth(now);
+  } else {
+    sendHour = rawHour;
+    sendMonth = rawMonth;
+  }
+
+  setParam(P_MONTH, sendMonth);
+  setParam(P_HOUR, sendHour);
 
   clockReadout.textContent =
-    `${String(hour).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  seasonReadout.textContent = SEASONS[month - 1];
+    `${String(rawHour).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
+
+  seasonReadout.textContent = ichingMode
+    ? `${JIEQI_SEASONS[sendMonth]} · ${ORGANS[sendHour]}`
+    : SEASONS[rawMonth - 1];
 }
 
 function setParam(id, value) {
@@ -140,6 +194,17 @@ function setMode(speakers) {
   labelPhones.classList.toggle("active", !speakers);
   labelSpeakers.classList.toggle("active", speakers);
   setParam(P_CAP, speakers ? CAP_SPEAKERS : CAP_HEADPHONES);
+}
+
+// ---------- standard / i-ching time mode ----------
+function onTimeToggle() {
+  ichingMode = timeToggle.getAttribute("aria-checked") !== "true";
+  timeToggle.setAttribute("aria-checked", String(ichingMode));
+  timeToggle.setAttribute("aria-label",
+    ichingMode ? "Switch to standard time" : "Switch to I-Ching mode");
+  labelStandard.classList.toggle("active", !ichingMode);
+  labelIChing.classList.toggle("active", ichingMode);
+  pushClock(); // apply the new time system immediately
 }
 
 // ---------- canvas ----------
