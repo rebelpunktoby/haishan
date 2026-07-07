@@ -76,16 +76,29 @@ class FMVoice {
     this.enable  = ctx.createGain(); this.enable.gain.value = 0;
     this.enableR = ctx.createGain(); this.enableR.gain.value = 0;
 
+    // warm sub-octave layer (pad body under the carrier)
+    this.subOsc = ctx.createOscillator();
+    this.subOsc.frequency.value = 0;
+    this.subGain = ctx.createGain();
+    this.subGain.gain.value = 0.35;
+    this.subOsc.connect(this.subGain);
+    this.subGain.connect(this.env);
+    this.subGain.connect(this.envR);
+
     const trimL = ctx.createGain(); trimL.gain.value = 0.2;
     const trimR = ctx.createGain(); trimR.gain.value = 0.2;
 
     this.oscL.connect(this.env);   this.env.connect(this.enable);
     this.enable.connect(trimL);    trimL.connect(destL);
+
     this.oscR.connect(this.envR);  this.envR.connect(this.enableR);
     this.enableR.connect(trimR);   trimR.connect(destR);
 
     const t = ctx.currentTime;
-    this.oscL.start(t); this.oscR.start(t); this.modOsc.start(t);
+    this.oscL.start(t);
+    this.oscR.start(t);
+    this.modOsc.start(t);
+    this.subOsc.start(t);
   }
 
   setHour(carrier, offset, fmBit, envBit, oct) {
@@ -98,6 +111,7 @@ class FMVoice {
     this.oscR.frequency.setTargetAtTime(fc + offset, t, GLIDE_TC);
     this.modOsc.frequency.setTargetAtTime(fmFreq, t, GLIDE_TC);
     this.modGain.gain.setTargetAtTime(dev, t, GLIDE_TC);
+    this.subOsc.frequency.setTargetAtTime(fc * 0.5, t, GLIDE_TC);
 
     this.attack = envBit ? 0.05 : 2.0;
     if (this.active) this.triggerEnv();
@@ -174,8 +188,10 @@ export class CircadianEngine {
     tanhR.connect(dwR); wetR.connect(dwR);
     const clipL = ctx.createWaveShaper(); clipL.curve = makeClipCurve();
     const clipR = ctx.createWaveShaper(); clipR.curve = makeClipCurve();
-    dwL.connect(clipL);
-    dwR.connect(clipR);
+    const warmL = ctx.createBiquadFilter(); warmL.type = "lowpass"; warmL.frequency.value = 2600; warmL.Q.value = 0.4;
+    const warmR = ctx.createBiquadFilter(); warmR.type = "lowpass"; warmR.frequency.value = 2600; warmR.Q.value = 0.4;
+    dwL.connect(warmL); warmL.connect(clipL);
+    dwR.connect(warmR); warmR.connect(clipR);
     const merger = ctx.createChannelMerger(2);
     clipL.connect(merger, 0, 0);
     clipR.connect(merger, 0, 1);
