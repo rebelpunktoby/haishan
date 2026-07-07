@@ -323,3 +323,61 @@ a.wordmark:hover .mark-en, a.wordmark:focus-visible .mark-en { color: var(--tide
 /* Phase 3A — pause state polish (append only) */
 #horizon { transition: opacity 2.5s ease; }
 body.is-paused #horizon { opacity: 0.55; }
+/* ============================================================
+   Phase 3B — responsive layout / mobile landscape polish
+   (append-only; desktop unchanged)
+   ============================================================ */
+
+/* dynamic viewport: track real visible height behind mobile browser bars */
+html, body { height: 100dvh; min-height: 100dvh; }
+
+/* safe-area breathing room for notches / home indicators */
+.console { padding-bottom: env(safe-area-inset-bottom, 0px); }
+
+/* readout scales fluidly instead of overflowing; still one line by default */
+.readout {
+  font-size: clamp(0.52rem, 1.6vw, 0.7rem);
+  letter-spacing: clamp(0.12em, 0.6vw, 0.26em);
+}
+
+/* ---------- mobile portrait ---------- */
+@media (max-width: 540px) {
+  .console { width: 94vw; gap: 0.8rem; bottom: 1.4rem; }
+  .mode-switch { width: min(100%, 340px); gap: 0.5rem; }
+  .mode-label { font-size: 0.56rem; letter-spacing: 0.14em; }
+  .power-btn { padding: 0.5rem 1.2rem; min-width: 7rem; }
+
+  /* only when physically too narrow: graceful wrap, never overflow */
+  .readout {
+    white-space: normal;
+    flex-wrap: wrap;
+    row-gap: 0.25rem;
+    line-height: 1.6;
+  }
+}
+
+/* ---------- phone landscape / short screens ---------- */
+@media (max-height: 520px) {
+  .mast { padding: 0.7rem 1.4rem; }
+  .colophon { padding: 0.6rem 1.4rem; }
+
+  .veil { gap: 1rem; }
+  .veil-line { font-size: clamp(0.95rem, 3.5vh, 1.2rem); }
+  .init-btn { padding: 0.7rem 1.9rem; }
+  .veil-hint { display: none; }
+
+  .console { bottom: 0.9rem; gap: 0.55rem; }
+  .mode-switch { gap: 0.5rem; }
+  .mode-label { font-size: 0.56rem; }
+  .toggle { width: 44px; height: 24px; }
+  .toggle-dot { width: 14px; height: 14px; }
+  .toggle[aria-checked="true"] .toggle-dot { transform: translateX(20px); }
+  .power-btn { padding: 0.4rem 1.1rem; min-width: 6.5rem; margin-top: 0; }
+}
+
+/* ---------- very short landscape (older phones, browser UI showing) ---------- */
+@media (max-height: 400px) {
+  .colophon { display: none; }
+  .console { bottom: 0.6rem; gap: 0.4rem; }
+  .readout { font-size: 0.5rem; }
+}
