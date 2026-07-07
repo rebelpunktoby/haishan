@@ -19,27 +19,27 @@
     <span class="hanzi">山海</span>
     <span class="mark-en">OceanMountain</span>
   </a>
-  <div class="session-tag">DMT<span class="beta">.beta</span></div>
+<div class="session-tag">DMT <span class="beta">β</span></div>
 </header>
 
 <main class="stage">
   <canvas id="horizon" aria-label="Live waveform of the drone"></canvas>
 
   <div class="veil" id="veil">
-    <p class="veil-line">A sound environment tuned to this hour, this season.</p>
-    <button id="initBtn" class="init-btn" type="button">
-      <span class="init-ring" aria-hidden="true"></span>
-      INITIALIZE SYSTEM
-    </button>
-    <p class="veil-hint">Headphones recommended · begins from silence</p>
+<p class="veil-line">FLOW with the CONSCIOUSNESS</p>
+<button id="initBtn" class="init-btn" type="button" aria-label="Initialize system">
+  <span class="init-ring" aria-hidden="true"></span>
+  ∞
+</button>
+<p class="veil-hint">Headphones recommended · Embrace the moment now</p>
   </div>
 
   <div class="console" id="console" hidden>
-    <div class="readout">
-      <span id="clockReadout">—</span>
-      <span class="readout-divider" aria-hidden="true">/</span>
-      <span id="seasonReadout">—</span>
-    </div>
+<div class="readout readout-stack">
+  <span id="clockReadout" class="readout-time">—</span>
+  <span id="seasonReadout" class="readout-season">—</span>
+  <span id="bodyReadout" class="readout-body">—</span>
+</div>
 
     <div class="mode-switch" role="radiogroup" aria-label="Listening mode">
       <span class="mode-label" id="labelPhones">Headphones</span>
@@ -48,13 +48,13 @@
       </button>
       <span class="mode-label" id="labelSpeakers">Speakers</span>
     </div>
-  <!-- Add inside the .console div in index.html, right after the existing .mode-switch div -->
+    
 <div class="mode-switch" role="radiogroup" aria-label="Time system">
   <span class="mode-label active" id="labelStandard">Standard Time</span>
-  <button id="timeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to I-Ching mode">
+<button id="timeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to I-CHING TIME">
     <span class="toggle-dot" aria-hidden="true"></span>
   </button>
-  <span class="mode-label" id="labelIChing">I-Ching Mode</span>
+  <span class="mode-label" id="labelIChing">I-CHING TIME</span>
 </div>
 <button id="powerBtn" class="power-btn" type="button" aria-label="Pause the sound">PAUSE</button>
 </div>
@@ -66,6 +66,6 @@
   <span>breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="app.js?v=2"></script>
 </body>
 </html>
