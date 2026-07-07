@@ -280,3 +280,43 @@ a.wordmark:hover .mark-en, a.wordmark:focus-visible .mark-en { color: var(--tide
   border-color: var(--tide);
   outline: none;
 }
+/* Phase 2.5 — compact one-line symbolic UI */
+
+.beta {
+  font-family: var(--font-ui);
+  font-size: inherit;
+  letter-spacing: inherit;
+  color: var(--tide);
+}
+
+.console {
+  width: min(94vw, 760px);
+}
+
+.readout {
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap;
+  white-space: nowrap;
+  width: 100%;
+}
+
+.mode-switch {
+  display: grid;
+  grid-template-columns: 1fr 52px 1fr;
+  width: min(100%, 460px);
+  align-items: center;
+  justify-items: center;
+  gap: 0.9rem;
+}
+
+.mode-label {
+  width: 100%;
+  text-align: center;
+}
+
+.power-btn {
+  align-self: center;
+  min-width: 8rem;
+  margin-top: 0.1rem;
+}
