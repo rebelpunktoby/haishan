@@ -29,6 +29,9 @@ let analyser = null;
 let waveData = null;
 let smoothWave = null;
 let frameCount = 0;
+const VIZ_POINTS = 128;                       // downsampled tidal contour
+let vizCurve = new Float32Array(VIZ_POINTS);
+let rmsGlow = 0;                              // slow-eased loudness for the glow pool
 let clockTimer = null;
 let suspendTimer = null;
 let ichingMode = false;
@@ -273,66 +276,89 @@ function drawIdleHorizon() {
 }
 
 const WAVE_LAYERS = [
-  { yOff: 0,  alpha: 0.85, width: 1.4, tideAmp: 5,  tideSpeed: 0.00010, phase: 0.0 },
-  { yOff: 7,  alpha: 0.30, width: 1.0, tideAmp: 8,  tideSpeed: 0.00007, phase: 2.1 },
-  { yOff: -6, alpha: 0.20, width: 0.8, tideAmp: 11, tideSpeed: 0.00005, phase: 4.4 }
+  { yOff: -6, ampMul: 1.25, alpha: 0.16, width: 0.8, tideAmp: 11, tideSpeed: 0.00005, drift: 14, phase: 4.4 }, // far — wide, faint
+  { yOff: 0,  ampMul: 1.0,  alpha: 0.80, width: 1.4, tideAmp: 5,  tideSpeed: 0.00010, drift: 8,  phase: 0.0 }, // main horizon
+  { yOff: 7,  ampMul: 0.6,  alpha: 0.26, width: 1.0, tideAmp: 8,  tideSpeed: 0.00007, drift: 20, phase: 2.1 }  // near — shimmer breath
 ];
 
 function drawWave(nowMs) {
   requestAnimationFrame(drawWave);
   if (!analyser) return;
 
-  // visual power eases toward the play state — settles, never freezes
   const target = playing ? 1 : 0;
   visualPower += (target - visualPower) * 0.012;
 
-  // half speed: only advance the wave every second frame
+  // advance audio + contour every second frame (unchanged cadence)
   frameCount++;
   if (frameCount % 2 === 0) {
     analyser.getFloatTimeDomainData(waveData);
     for (let i = 0; i < waveData.length; i++) {
       smoothWave[i] += (waveData[i] - smoothWave[i]) * 0.06;
     }
+    // downsample to a tidal contour: block-average, then ease toward it
+    const block = Math.floor(smoothWave.length / VIZ_POINTS);
+    for (let p = 0; p < VIZ_POINTS; p++) {
+      let sum = 0;
+      const base = p * block;
+      for (let j = 0; j < block; j++) sum += smoothWave[base + j];
+      vizCurve[p] += (sum / block - vizCurve[p]) * 0.08;
+    }
+    // cheap loudness trace for the glow pool (every 16th sample)
+    let sq = 0;
+    for (let i = 0; i < smoothWave.length; i += 16) sq += smoothWave[i] * smoothWave[i];
+    rmsGlow += (Math.sqrt(sq / (smoothWave.length / 16)) - rmsGlow) * 0.05;
   }
 
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const mid = h / 2;
-  const amp = h * 0.2 * (0.15 + 0.85 * visualPower);
+  const amp = h * 0.34 * (0.15 + 0.85 * visualPower);
+  const t = nowMs || 0;
 
   ctx2d.clearRect(0, 0, w, h);
 
-  // soft glow pool behind the horizon
-  const glowAlpha = 0.05 + 0.1 * visualPower;
-  const glow = ctx2d.createRadialGradient(w / 2, mid, 0, w / 2, mid, Math.max(w, h) * 0.55);
-  glow.addColorStop(0, `rgba(159, 216, 196, ${glowAlpha})`);
+  // breathing glow pool: visualPower + ~40s tide + gentle loudness swell
+  const glowTide = 0.5 + 0.5 * Math.sin(t * 0.00016);
+  const glowAlpha = (0.04 + 0.09 * visualPower) * (0.75 + 0.25 * glowTide) + rmsGlow * 0.10 * visualPower;
+  const glowR = Math.max(w, h) * (0.45 + 0.12 * glowTide);
+  const glow = ctx2d.createRadialGradient(w / 2, mid, 0, w / 2, mid, glowR);
+  glow.addColorStop(0, `rgba(159, 216, 196, ${Math.min(glowAlpha, 0.2)})`);
   glow.addColorStop(1, "rgba(159, 216, 196, 0)");
   ctx2d.fillStyle = glow;
   ctx2d.fillRect(0, 0, w, h);
 
-  const step = w / smoothWave.length;
-  const t = nowMs || 0;
+  // three tidal layers reading one shared contour
+  const step = w / (VIZ_POINTS - 1);
+  ctx2d.lineJoin = "round";
+  ctx2d.lineCap = "round";
 
-  for (const layer of WAVE_LAYERS) {
-    const tide = Math.sin(t * layer.tideSpeed + layer.phase) * layer.tideAmp * (0.3 + 0.7 * visualPower);
-    ctx2d.lineWidth = layer.width;
-    ctx2d.strokeStyle = `rgba(159, 216, 196, ${layer.alpha * (0.35 + 0.65 * visualPower)})`;
-    ctx2d.shadowColor = `rgba(159, 216, 196, ${0.5 * visualPower})`;
-    ctx2d.shadowBlur = 12 * visualPower;
-    ctx2d.lineJoin = "round";
+  for (const L of WAVE_LAYERS) {
+    const tide = Math.sin(t * L.tideSpeed + L.phase) * L.tideAmp * (0.3 + 0.7 * visualPower);
+    const driftX = Math.sin(t * L.tideSpeed * 1.7 + L.phase) * L.drift * visualPower;
+    const layerAmp = amp * L.ampMul;
+
+    ctx2d.lineWidth = L.width;
+    ctx2d.strokeStyle = `rgba(159, 216, 196, ${L.alpha * (0.35 + 0.65 * visualPower)})`;
+    ctx2d.shadowColor = `rgba(159, 216, 196, ${0.45 * visualPower})`;
+    ctx2d.shadowBlur = 10 * visualPower;
 
     ctx2d.beginPath();
-    for (let i = 0; i < smoothWave.length; i++) {
-      const x = i * step;
-      const drift = Math.sin(x * 0.008 + t * layer.tideSpeed * 2 + layer.phase) * layer.tideAmp * 0.4 * visualPower;
-      const y = mid + layer.yOff + tide + drift + smoothWave[i] * amp;
-      i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+    let px = driftX;
+    let py = mid + L.yOff + tide + vizCurve[0] * layerAmp;
+    ctx2d.moveTo(px, py);
+    for (let p = 1; p < VIZ_POINTS; p++) {
+      const x = p * step + driftX;
+      const y = mid + L.yOff + tide + vizCurve[p] * layerAmp;
+      // midpoint quadratic: continuous contour, no sample-vertex feel
+      ctx2d.quadraticCurveTo(px, py, (px + x) / 2, (py + y) / 2);
+      px = x; py = y;
     }
+    ctx2d.lineTo(px, py);
     ctx2d.stroke();
   }
 
-  // faint moonlight core on the main line
+  // faint moonlight core on the last-drawn (main-adjacent) contour
   ctx2d.shadowBlur = 0;
-  ctx2d.strokeStyle = `rgba(232, 227, 213, ${0.15 + 0.3 * visualPower})`;
+  ctx2d.strokeStyle = `rgba(232, 227, 213, ${0.12 + 0.28 * visualPower})`;
   ctx2d.lineWidth = 0.6;
   ctx2d.stroke();
 }
