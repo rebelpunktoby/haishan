@@ -16,6 +16,7 @@ const labelIChing = document.getElementById("labelIChing");
 const powerBtn = document.getElementById("powerBtn");
 const clockReadout = document.getElementById("clockReadout");
 const seasonReadout = document.getElementById("seasonReadout");
+const bodyReadout = document.getElementById("bodyReadout");
 const sysmsg = document.getElementById("sysmsg");
 const canvas = document.getElementById("horizon");
 const ctx2d = canvas.getContext("2d");
@@ -30,17 +31,50 @@ let clockTimer = null;
 let ichingMode = false;
 let playing = false;
 
-const SEASONS = ["Winter", "Winter", "Spring", "Spring", "Spring", "Summer",
-                 "Summer", "Summer", "Autumn", "Autumn", "Autumn", "Winter"];
+const JIEQI_24 = [
+  { m: 2, d: 4,  zh: "立春", title: "Threshold of Emergence" },
+  { m: 2, d: 19, zh: "雨水", title: "Aqueous Dissolution" },
+  { m: 3, d: 5,  zh: "驚蟄", title: "The Subterranean Shock" },
+  { m: 3, d: 20, zh: "春分", title: "Vernal Symmetry" },
+  { m: 4, d: 4,  zh: "清明", title: "Lucid Horizon" },
+  { m: 4, d: 20, zh: "穀雨", title: "Somatic Incubation" },
 
-const ORGANS = {
-  0: "Gallbladder", 2: "Liver", 4: "Lungs", 6: "Large Intestine",
-  8: "Stomach", 10: "Spleen", 12: "Heart", 14: "Small Intestine",
-  16: "Bladder", 18: "Kidneys", 20: "Pericardium", 22: "Triple Burner"
+  { m: 5, d: 5,  zh: "立夏", title: "Ignition of Flux" },
+  { m: 5, d: 21, zh: "小滿", title: "Lesser Concrescence" },
+  { m: 6, d: 5,  zh: "芒種", title: "The Drive of Fruition" },
+  { m: 6, d: 21, zh: "夏至", title: "Zenith of Amplitude" },
+  { m: 7, d: 7,  zh: "小暑", title: "Thermal Entropy" },
+  { m: 7, d: 22, zh: "大暑", title: "Maximal Saturation" },
+
+  { m: 8, d: 7,  zh: "立秋", title: "Threshold of Contraction" },
+  { m: 8, d: 23, zh: "處暑", title: "Recession of the Flame" },
+  { m: 9, d: 7,  zh: "白露", title: "Crystalline Condensation" },
+  { m: 9, d: 23, zh: "秋分", title: "Autumnal Symmetry" },
+  { m: 10, d: 8, zh: "寒露", title: "Descent into Shadow" },
+  { m: 10, d: 23, zh: "霜降", title: "Suspension of Form" },
+
+  { m: 11, d: 7,  zh: "立冬", title: "The Submersion Point" },
+  { m: 11, d: 22, zh: "小雪", title: "Sensory Attenuation" },
+  { m: 12, d: 7,  zh: "大雪", title: "Absolute Muteness" },
+  { m: 12, d: 21, zh: "冬至", title: "The Nadir of Novelty" },
+  { m: 1, d: 5,   zh: "小寒", title: "Gestation in the Void" },
+  { m: 1, d: 20,  zh: "大寒", title: "The Absolute Limit" }
+];
+
+const BODY_TIME_STATES = {
+  0:  { channel: "足少陽膽經", zh: "黃鐘一陽", title: "The Midnight Catalyst" },
+  2:  { channel: "足厥陰肝經", zh: "震雷萌動", title: "The Visionary Labyrinth" },
+  4:  { channel: "手太陰肺經", zh: "天地交泰", title: "The Pranic Threshold" },
+  6:  { channel: "手陽明大腸經", zh: "商音肅降", title: "The Entropic Release" },
+  8:  { channel: "足陽明胃經", zh: "厚德載物", title: "The Somatic Crucible" },
+  10: { channel: "足太陰脾經", zh: "黃中通理", title: "The Cognitive Synthesizer" },
+  12: { channel: "手少陰心經", zh: "離明虛中", title: "The Sovereign Resonance" },
+  14: { channel: "手太陽小腸經", zh: "辨物居方", title: "The Signal Discriminator" },
+  16: { channel: "足太陽膀胱經", zh: "天一生水", title: "The Oceanic Axis" },
+  18: { channel: "足少陰腎經", zh: "歸根復命", title: "The Primordial Root" },
+  20: { channel: "手厥陰心包經", zh: "和光同塵", title: "Guardian of the Inner Sanctum" },
+  22: { channel: "手少陽三焦經", zh: "大音希聲", title: "The Interstitial Matrix" }
 };
-
-const JIEQI_SEASONS = { 4: "Li Chun · Spring", 7: "Li Xia · Summer",
-                        10: "Li Qiu · Autumn", 1: "Li Dong · Winter" };
 
 initBtn.addEventListener("click", initialize, { once: true });
 modeToggle.addEventListener("click", onModeToggle);
@@ -105,14 +139,31 @@ function tcmMeridianHour(hour) {
   return Math.floor((hour + 1) / 2) * 2;
 }
 
-function jieqiMonth(now) {
-  const start = new Date(now.getFullYear(), 0, 0);
-  const dayOfYear = Math.floor((now - start) / 86_400_000);
-  const LI_CHUN = 35, LI_XIA = 125, LI_QIU = 219, LI_DONG = 311;
-  if (dayOfYear >= LI_DONG || dayOfYear < LI_CHUN) return 1;
-  if (dayOfYear >= LI_QIU) return 10;
-  if (dayOfYear >= LI_XIA) return 7;
-  return 4;
+function currentJieqi(now) {
+  const year = now.getFullYear();
+  const today = new Date(year, now.getMonth(), now.getDate()).getTime();
+
+  // Default for Jan 1–4: previous cycle is still 冬至.
+  let current = JIEQI_24.find(term => term.zh === "冬至") ?? JIEQI_24[0];
+  let currentTime = new Date(year - 1, current.m - 1, current.d).getTime();
+
+  for (const term of JIEQI_24) {
+    const termTime = new Date(year, term.m - 1, term.d).getTime();
+
+    if (termTime <= today && termTime >= currentTime) {
+      current = term;
+      currentTime = termTime;
+    }
+  }
+
+  return current;
+}
+
+function engineMonthFromJieqi(term) {
+  if (["立春", "雨水", "驚蟄", "春分", "清明", "穀雨"].includes(term.zh)) return 4;
+  if (["立夏", "小滿", "芒種", "夏至", "小暑", "大暑"].includes(term.zh)) return 7;
+  if (["立秋", "處暑", "白露", "秋分", "寒露", "霜降"].includes(term.zh)) return 10;
+  return 1;
 }
 
 function pushClock() {
@@ -120,10 +171,14 @@ function pushClock() {
   const rawMonth = now.getMonth() + 1;
   const rawHour = now.getHours();
 
+  const term = currentJieqi(now);
+  const bodyHour = tcmMeridianHour(rawHour);
+  const bodyState = BODY_TIME_STATES[bodyHour] ?? BODY_TIME_STATES[0];
+
   let sendMonth, sendHour;
   if (ichingMode) {
-    sendHour = tcmMeridianHour(rawHour);
-    sendMonth = jieqiMonth(now);
+    sendHour = bodyHour;
+    sendMonth = engineMonthFromJieqi(term);
   } else {
     sendHour = rawHour;
     sendMonth = rawMonth;
@@ -132,12 +187,11 @@ function pushClock() {
   if (engine) engine.update(sendMonth, sendHour);
 
   clockReadout.textContent =
-    `${String(rawHour).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")}`;
-  seasonReadout.textContent = ichingMode
-    ? `${JIEQI_SEASONS[sendMonth]} · ${ORGANS[sendHour]}`
-    : SEASONS[rawMonth - 1];
-}
+    `${String(rawHour).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} · ${String(rawMonth).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
 
+  seasonReadout.textContent = `${term.zh} · ${term.title}`;
+  bodyReadout.textContent = `${bodyState.zh} · ${bodyState.title}`;
+}
 function onModeToggle() {
   const nowSpeakers = modeToggle.getAttribute("aria-checked") !== "true";
   setMode(nowSpeakers);
@@ -156,7 +210,7 @@ function onTimeToggle() {
   ichingMode = timeToggle.getAttribute("aria-checked") !== "true";
   timeToggle.setAttribute("aria-checked", String(ichingMode));
   timeToggle.setAttribute("aria-label",
-    ichingMode ? "Switch to standard time" : "Switch to I-Ching mode");
+    ichingMode ? "Switch to standard time" : "Switch to I-CHING TIME");
   labelStandard.classList.toggle("active", !ichingMode);
   labelIChing.classList.toggle("active", ichingMode);
   pushClock();
