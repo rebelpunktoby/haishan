@@ -1,5 +1,6 @@
 // app.js — OceanMountain Circadian Engine · DMT.beta
-import { CircadianEngine } from "./engine.js?v=4";
+// Phase 3A: master breath fade on play/pause + ocean glow visual.
+import { CircadianEngine } from "./engine.js?v=5";
 
 const CAP_HEADPHONES = 1000;
 const CAP_SPEAKERS = 2;
@@ -23,13 +24,17 @@ const ctx2d = canvas.getContext("2d");
 
 let audioCtx = null;
 let engine = null;
+let masterGain = null;
 let analyser = null;
 let waveData = null;
 let smoothWave = null;
 let frameCount = 0;
 let clockTimer = null;
+let suspendTimer = null;
 let ichingMode = false;
 let playing = false;
+let rafStarted = false;
+let visualPower = 0;
 
 const JIEQI_24 = [
   { m: 2, d: 4,  zh: "立春", title: "Threshold of Emergence" },
@@ -92,23 +97,35 @@ async function initialize() {
 
     engine = new CircadianEngine(audioCtx);
 
+    // master breath fade: engine.output -> masterGain -> analyser -> destination
+    masterGain = audioCtx.createGain();
+    masterGain.gain.value = 0;
+
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 2048;
     waveData = new Float32Array(analyser.fftSize);
     smoothWave = new Float32Array(analyser.fftSize);
 
-    engine.output.connect(analyser);
+    engine.output.connect(masterGain);
+    masterGain.connect(analyser);
     analyser.connect(audioCtx.destination);
 
     pushClock();
     clockTimer = setInterval(pushClock, 30_000);
     setMode(false);
+
+    // breathe in over ~2.5s
+    fadeMaster(1, 0.8);
     playing = true;
+    document.body.classList.remove("is-paused");
 
     veil.classList.add("dissolved");
     consoleEl.hidden = false;
     status("");
-    requestAnimationFrame(drawWave);
+    if (!rafStarted) {
+      rafStarted = true;
+      requestAnimationFrame(drawWave);
+    }
   } catch (err) {
     console.error(err);
     status(`init failed — ${err.message}`);
@@ -116,20 +133,38 @@ async function initialize() {
   }
 }
 
-// ---------- play / stop ----------
+// exponential approach: time constant tc reaches ~95% in 3*tc
+function fadeMaster(target, tc) {
+  const t = audioCtx.currentTime;
+  masterGain.gain.cancelScheduledValues(t);
+  masterGain.gain.setTargetAtTime(target, t, tc);
+}
+
+// ---------- play / pause (breath envelope) ----------
 async function onPowerToggle() {
-  if (!audioCtx) return;
+  if (!audioCtx || !masterGain) return;
+
   if (playing) {
-    await audioCtx.suspend();
+    // breathe out (~3s), then sleep
     playing = false;
+    document.body.classList.add("is-paused");
     powerBtn.textContent = "PLAY";
     powerBtn.setAttribute("aria-label", "Resume the sound");
+    fadeMaster(0, 1.0);
+    clearTimeout(suspendTimer);
+    suspendTimer = setTimeout(() => {
+      if (!playing && audioCtx.state === "running") audioCtx.suspend();
+    }, 3200);
   } else {
-    await audioCtx.resume();
+    // wake, then breathe in (~2.5s)
+    clearTimeout(suspendTimer);
+    if (audioCtx.state === "suspended") await audioCtx.resume();
     pushClock();
     playing = true;
+    document.body.classList.remove("is-paused");
     powerBtn.textContent = "PAUSE";
     powerBtn.setAttribute("aria-label", "Pause the sound");
+    fadeMaster(1, 0.8);
   }
 }
 
@@ -216,7 +251,7 @@ function onTimeToggle() {
   pushClock();
 }
 
-// ---------- canvas ----------
+// ---------- canvas: ocean glow / mellow tide ----------
 function sizeCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = canvas.clientWidth * dpr;
@@ -235,15 +270,24 @@ function drawIdleHorizon() {
   ctx2d.stroke();
 }
 
-function drawWave() {
+const WAVE_LAYERS = [
+  { yOff: 0,  alpha: 0.85, width: 1.4, tideAmp: 5,  tideSpeed: 0.00010, phase: 0.0 },
+  { yOff: 7,  alpha: 0.30, width: 1.0, tideAmp: 8,  tideSpeed: 0.00007, phase: 2.1 },
+  { yOff: -6, alpha: 0.20, width: 0.8, tideAmp: 11, tideSpeed: 0.00005, phase: 4.4 }
+];
+
+function drawWave(nowMs) {
   requestAnimationFrame(drawWave);
   if (!analyser) return;
+
+  // visual power eases toward the play state — settles, never freezes
+  const target = playing ? 1 : 0;
+  visualPower += (target - visualPower) * 0.012;
 
   // half speed: only advance the wave every second frame
   frameCount++;
   if (frameCount % 2 === 0) {
     analyser.getFloatTimeDomainData(waveData);
-    // watery inertia: each point drifts slowly toward the live signal
     for (let i = 0; i < waveData.length; i++) {
       smoothWave[i] += (waveData[i] - smoothWave[i]) * 0.06;
     }
@@ -251,27 +295,42 @@ function drawWave() {
 
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const mid = h / 2;
-  const amp = h * 0.2;   // gentler swell than before
+  const amp = h * 0.2 * (0.15 + 0.85 * visualPower);
 
   ctx2d.clearRect(0, 0, w, h);
 
-  ctx2d.lineWidth = 1.4;
-  ctx2d.strokeStyle = "#9fd8c4";
-  ctx2d.shadowColor = "rgba(159, 216, 196, 0.7)";
-  ctx2d.shadowBlur = 14;
-  ctx2d.lineJoin = "round";
+  // soft glow pool behind the horizon
+  const glowAlpha = 0.05 + 0.1 * visualPower;
+  const glow = ctx2d.createRadialGradient(w / 2, mid, 0, w / 2, mid, Math.max(w, h) * 0.55);
+  glow.addColorStop(0, `rgba(159, 216, 196, ${glowAlpha})`);
+  glow.addColorStop(1, "rgba(159, 216, 196, 0)");
+  ctx2d.fillStyle = glow;
+  ctx2d.fillRect(0, 0, w, h);
 
-  ctx2d.beginPath();
   const step = w / smoothWave.length;
-  for (let i = 0; i < smoothWave.length; i++) {
-    const x = i * step;
-    const y = mid + smoothWave[i] * amp;
-    i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
-  }
-  ctx2d.stroke();
+  const t = nowMs || 0;
 
+  for (const layer of WAVE_LAYERS) {
+    const tide = Math.sin(t * layer.tideSpeed + layer.phase) * layer.tideAmp * (0.3 + 0.7 * visualPower);
+    ctx2d.lineWidth = layer.width;
+    ctx2d.strokeStyle = `rgba(159, 216, 196, ${layer.alpha * (0.35 + 0.65 * visualPower)})`;
+    ctx2d.shadowColor = `rgba(159, 216, 196, ${0.5 * visualPower})`;
+    ctx2d.shadowBlur = 12 * visualPower;
+    ctx2d.lineJoin = "round";
+
+    ctx2d.beginPath();
+    for (let i = 0; i < smoothWave.length; i++) {
+      const x = i * step;
+      const drift = Math.sin(x * 0.008 + t * layer.tideSpeed * 2 + layer.phase) * layer.tideAmp * 0.4 * visualPower;
+      const y = mid + layer.yOff + tide + drift + smoothWave[i] * amp;
+      i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
+    }
+    ctx2d.stroke();
+  }
+
+  // faint moonlight core on the main line
   ctx2d.shadowBlur = 0;
-  ctx2d.strokeStyle = "rgba(232, 227, 213, 0.45)";
+  ctx2d.strokeStyle = `rgba(232, 227, 213, ${0.15 + 0.3 * visualPower})`;
   ctx2d.lineWidth = 0.6;
   ctx2d.stroke();
 }
