@@ -1,12 +1,9 @@
-// app.js — OceanMountain Circadian Engine β · DMT.beta
-// Native Web Audio build — no RNBO, no external dependencies.
-
-import { CircadianEngine } from "./engine.js";
+// app.js — OceanMountain Circadian Engine · DMT.beta
+import { CircadianEngine } from "./engine.js?v=3";
 
 const CAP_HEADPHONES = 1000;
 const CAP_SPEAKERS = 2;
 
-// ---------- DOM ----------
 const initBtn = document.getElementById("initBtn");
 const veil = document.getElementById("veil");
 const consoleEl = document.getElementById("console");
@@ -16,6 +13,7 @@ const labelSpeakers = document.getElementById("labelSpeakers");
 const timeToggle = document.getElementById("timeToggle");
 const labelStandard = document.getElementById("labelStandard");
 const labelIChing = document.getElementById("labelIChing");
+const powerBtn = document.getElementById("powerBtn");
 const clockReadout = document.getElementById("clockReadout");
 const seasonReadout = document.getElementById("seasonReadout");
 const sysmsg = document.getElementById("sysmsg");
@@ -26,8 +24,11 @@ let audioCtx = null;
 let engine = null;
 let analyser = null;
 let waveData = null;
+let smoothWave = null;
+let frameCount = 0;
 let clockTimer = null;
 let ichingMode = false;
+let playing = false;
 
 const SEASONS = ["Winter", "Winter", "Spring", "Spring", "Spring", "Summer",
                  "Summer", "Summer", "Autumn", "Autumn", "Autumn", "Winter"];
@@ -41,10 +42,10 @@ const ORGANS = {
 const JIEQI_SEASONS = { 4: "Li Chun · Spring", 7: "Li Xia · Summer",
                         10: "Li Qiu · Autumn", 1: "Li Dong · Winter" };
 
-// ---------- boot ----------
 initBtn.addEventListener("click", initialize, { once: true });
 modeToggle.addEventListener("click", onModeToggle);
 if (timeToggle) timeToggle.addEventListener("click", onTimeToggle);
+if (powerBtn) powerBtn.addEventListener("click", onPowerToggle);
 window.addEventListener("resize", sizeCanvas);
 sizeCanvas();
 drawIdleHorizon();
@@ -52,29 +53,24 @@ drawIdleHorizon();
 async function initialize() {
   try {
     status("waking the engine…");
-
-    // 1. Unlock WebAudio inside the user gesture
     audioCtx = new (window.AudioContext || window.webkitAudioContext)();
     if (audioCtx.state === "suspended") await audioCtx.resume();
 
-    // 2. Build the native DSP graph (replaces RNBO device creation)
     engine = new CircadianEngine(audioCtx);
 
-    // 3. Analyser between engine and speakers
     analyser = audioCtx.createAnalyser();
     analyser.fftSize = 2048;
-    analyser.smoothingTimeConstant = 0.85;
     waveData = new Float32Array(analyser.fftSize);
+    smoothWave = new Float32Array(analyser.fftSize);
 
     engine.output.connect(analyser);
     analyser.connect(audioCtx.destination);
 
-    // 4. Prime clock + mode, start pollers
     pushClock();
     clockTimer = setInterval(pushClock, 30_000);
-    setMode(false); // default: headphones
+    setMode(false);
+    playing = true;
 
-    // 5. Reveal console, dissolve veil, start drawing
     veil.classList.add("dissolved");
     consoleEl.hidden = false;
     status("");
@@ -83,6 +79,23 @@ async function initialize() {
     console.error(err);
     status(`init failed — ${err.message}`);
     initBtn.addEventListener("click", initialize, { once: true });
+  }
+}
+
+// ---------- play / stop ----------
+async function onPowerToggle() {
+  if (!audioCtx) return;
+  if (playing) {
+    await audioCtx.suspend();
+    playing = false;
+    powerBtn.textContent = "PLAY";
+    powerBtn.setAttribute("aria-label", "Resume the sound");
+  } else {
+    await audioCtx.resume();
+    pushClock();
+    playing = true;
+    powerBtn.textContent = "PAUSE";
+    powerBtn.setAttribute("aria-label", "Pause the sound");
   }
 }
 
@@ -102,7 +115,6 @@ function jieqiMonth(now) {
   return 4;
 }
 
-// ---------- clock -> engine ----------
 function pushClock() {
   const now = new Date();
   const rawMonth = now.getMonth() + 1;
@@ -126,7 +138,6 @@ function pushClock() {
     : SEASONS[rawMonth - 1];
 }
 
-// ---------- headphone / speaker mode ----------
 function onModeToggle() {
   const nowSpeakers = modeToggle.getAttribute("aria-checked") !== "true";
   setMode(nowSpeakers);
@@ -141,7 +152,6 @@ function setMode(speakers) {
   if (engine) engine.setOffsetCap(speakers ? CAP_SPEAKERS : CAP_HEADPHONES);
 }
 
-// ---------- standard / i-ching time mode ----------
 function onTimeToggle() {
   ichingMode = timeToggle.getAttribute("aria-checked") !== "true";
   timeToggle.setAttribute("aria-checked", String(ichingMode));
@@ -152,7 +162,7 @@ function onTimeToggle() {
   pushClock();
 }
 
-// ---------- canvas (unchanged) ----------
+// ---------- canvas ----------
 function sizeCanvas() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
   canvas.width = canvas.clientWidth * dpr;
@@ -175,30 +185,39 @@ function drawWave() {
   requestAnimationFrame(drawWave);
   if (!analyser) return;
 
-  analyser.getFloatTimeDomainData(waveData);
+  // half speed: only advance the wave every second frame
+  frameCount++;
+  if (frameCount % 2 === 0) {
+    analyser.getFloatTimeDomainData(waveData);
+    // watery inertia: each point drifts slowly toward the live signal
+    for (let i = 0; i < waveData.length; i++) {
+      smoothWave[i] += (waveData[i] - smoothWave[i]) * 0.06;
+    }
+  }
+
   const w = canvas.clientWidth, h = canvas.clientHeight;
   const mid = h / 2;
-  const amp = h * 0.38;
+  const amp = h * 0.2;   // gentler swell than before
 
   ctx2d.clearRect(0, 0, w, h);
 
-  ctx2d.lineWidth = 1.6;
+  ctx2d.lineWidth = 1.4;
   ctx2d.strokeStyle = "#9fd8c4";
-  ctx2d.shadowColor = "rgba(159, 216, 196, 0.85)";
-  ctx2d.shadowBlur = 18;
+  ctx2d.shadowColor = "rgba(159, 216, 196, 0.7)";
+  ctx2d.shadowBlur = 14;
   ctx2d.lineJoin = "round";
 
   ctx2d.beginPath();
-  const step = w / waveData.length;
-  for (let i = 0; i < waveData.length; i++) {
+  const step = w / smoothWave.length;
+  for (let i = 0; i < smoothWave.length; i++) {
     const x = i * step;
-    const y = mid + waveData[i] * amp;
+    const y = mid + smoothWave[i] * amp;
     i === 0 ? ctx2d.moveTo(x, y) : ctx2d.lineTo(x, y);
   }
   ctx2d.stroke();
 
   ctx2d.shadowBlur = 0;
-  ctx2d.strokeStyle = "rgba(232, 227, 213, 0.55)";
+  ctx2d.strokeStyle = "rgba(232, 227, 213, 0.45)";
   ctx2d.lineWidth = 0.6;
   ctx2d.stroke();
 }
