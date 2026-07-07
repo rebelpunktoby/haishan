@@ -86,6 +86,8 @@ modeToggle.addEventListener("click", onModeToggle);
 if (timeToggle) timeToggle.addEventListener("click", onTimeToggle);
 if (powerBtn) powerBtn.addEventListener("click", onPowerToggle);
 window.addEventListener("resize", sizeCanvas);
+if (window.visualViewport) window.visualViewport.addEventListener("resize", sizeCanvas);
+window.addEventListener("orientationchange", () => setTimeout(sizeCanvas, 250));
 sizeCanvas();
 drawIdleHorizon();
 
