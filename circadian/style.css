@@ -320,3 +320,6 @@ a.wordmark:hover .mark-en, a.wordmark:focus-visible .mark-en { color: var(--tide
   min-width: 8rem;
   margin-top: 0.1rem;
 }
+/* Phase 3A — pause state polish (append only) */
+#horizon { transition: opacity 2.5s ease; }
+body.is-paused #horizon { opacity: 0.55; }
