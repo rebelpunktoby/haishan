@@ -1,5 +1,5 @@
 // app.js — OceanMountain Circadian Engine · DMT.beta
-import { CircadianEngine } from "./engine.js?v=3";
+import { CircadianEngine } from "./engine.js?v=4";
 
 const CAP_HEADPHONES = 1000;
 const CAP_SPEAKERS = 2;
