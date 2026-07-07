@@ -1,6 +1,7 @@
-// engine.js — OceanMountain PHRASE 1, native Web Audio port (v2 — complete)
-// 4 FM time engines + Am-cluster drone, YinYang_Brain season/harmony logic,
-// master mixer: tanh saturation + 350/525ms cross-feedback delay + clip.
+// engine.js — OceanMountain PHRASE 1, native Web Audio port
+// v5 — Phase 3A: de-sharpened FM, slower envelopes, per-voice tidal breathing,
+// darker master warmth. Architecture unchanged: 4 FM voices + drone,
+// tanh saturation + 350/525ms cross-feedback delay + clip.
 
 // ---------- DATA (from PHRASE_1.maxpat) ----------
 const ICHING = [
@@ -47,16 +48,17 @@ function makeNegCosWave(ctx) {
   );
 }
 
-const GLIDE_TC = 1.3;   // seconds (time constant) — ~4s perceived glide
-const XFADE_TC = 1.0;   // seconds — quadrant crossfade
-const FM_BETA = 0.4 * 2 * Math.PI;
+const GLIDE_TC = 1.3;        // seconds (time constant) — ~4s perceived glide
+const XFADE_TC = 1.0;        // seconds — quadrant crossfade
+const FM_BETA = 0.18 * 2 * Math.PI;   // de-sharpened (was 0.4 cycles)
+const ENV_PEAK = 0.5;        // envelope sustain target (was 0.7)
 
 // ---------- one FM time-engine voice ----------
 class FMVoice {
-  constructor(ctx, destL, destR) {
+  constructor(ctx, destL, destR, breathRate) {
     this.ctx = ctx;
     this.active = false;
-    this.attack = 2.0;                 // ALWAYS defined before any trigger
+    this.attack = 3.2;                 // ALWAYS defined before any trigger
 
     this.oscL = ctx.createOscillator();
     this.oscR = ctx.createOscillator();
@@ -80,25 +82,42 @@ class FMVoice {
     this.subOsc = ctx.createOscillator();
     this.subOsc.frequency.value = 0;
     this.subGain = ctx.createGain();
-    this.subGain.gain.value = 0.35;
+    this.subGain.gain.value = 0.25;
     this.subOsc.connect(this.subGain);
     this.subGain.connect(this.env);
     this.subGain.connect(this.envR);
+
+    // tidal breathing stage: env -> enable -> breathGain -> trim -> bus
+    this.breathGain  = ctx.createGain(); this.breathGain.gain.value = 0;
+    this.breathGainR = ctx.createGain(); this.breathGainR.gain.value = 0;
+    const breathLfo = ctx.createOscillator();
+    breathLfo.frequency.value = breathRate;      // 0.04–0.065 Hz per voice
+    const breathDepth = ctx.createGain(); breathDepth.gain.value = 0.11;
+    const breathBase = ctx.createConstantSource(); breathBase.offset.value = 0.9;
+    breathLfo.connect(breathDepth);
+    breathDepth.connect(this.breathGain.gain);
+    breathDepth.connect(this.breathGainR.gain);
+    breathBase.connect(this.breathGain.gain);
+    breathBase.connect(this.breathGainR.gain);
 
     const trimL = ctx.createGain(); trimL.gain.value = 0.2;
     const trimR = ctx.createGain(); trimR.gain.value = 0.2;
 
     this.oscL.connect(this.env);   this.env.connect(this.enable);
-    this.enable.connect(trimL);    trimL.connect(destL);
+    this.enable.connect(this.breathGain);
+    this.breathGain.connect(trimL); trimL.connect(destL);
 
     this.oscR.connect(this.envR);  this.envR.connect(this.enableR);
-    this.enableR.connect(trimR);   trimR.connect(destR);
+    this.enableR.connect(this.breathGainR);
+    this.breathGainR.connect(trimR); trimR.connect(destR);
 
     const t = ctx.currentTime;
     this.oscL.start(t);
     this.oscR.start(t);
     this.modOsc.start(t);
     this.subOsc.start(t);
+    breathLfo.start(t);
+    breathBase.start(t);
   }
 
   setHour(carrier, offset, fmBit, envBit, oct) {
@@ -113,7 +132,7 @@ class FMVoice {
     this.modGain.gain.setTargetAtTime(dev, t, GLIDE_TC);
     this.subOsc.frequency.setTargetAtTime(fc * 0.5, t, GLIDE_TC);
 
-    this.attack = envBit ? 0.05 : 2.0;
+    this.attack = envBit ? 0.45 : 3.2;
     if (this.active) this.triggerEnv();
   }
 
@@ -122,7 +141,7 @@ class FMVoice {
     const tc = Math.max(this.attack / 3, 0.01);   // never 0 / NaN
     [this.env.gain, this.envR.gain].forEach(g => {
       g.cancelScheduledValues(t);
-      g.setTargetAtTime(0.7, t, tc);
+      g.setTargetAtTime(ENV_PEAK, t, tc);
     });
   }
 
@@ -188,8 +207,8 @@ export class CircadianEngine {
     tanhR.connect(dwR); wetR.connect(dwR);
     const clipL = ctx.createWaveShaper(); clipL.curve = makeClipCurve();
     const clipR = ctx.createWaveShaper(); clipR.curve = makeClipCurve();
-    const warmL = ctx.createBiquadFilter(); warmL.type = "lowpass"; warmL.frequency.value = 2600; warmL.Q.value = 0.4;
-    const warmR = ctx.createBiquadFilter(); warmR.type = "lowpass"; warmR.frequency.value = 2600; warmR.Q.value = 0.4;
+    const warmL = ctx.createBiquadFilter(); warmL.type = "lowpass"; warmL.frequency.value = 2000; warmL.Q.value = 0.35;
+    const warmR = ctx.createBiquadFilter(); warmR.type = "lowpass"; warmR.frequency.value = 2000; warmR.Q.value = 0.35;
     dwL.connect(warmL); warmL.connect(clipL);
     dwR.connect(warmR); warmR.connect(clipR);
     const merger = ctx.createChannelMerger(2);
@@ -197,12 +216,12 @@ export class CircadianEngine {
     clipR.connect(merger, 0, 1);
     this.output = merger;
 
-    // ===== FOUR TIME ENGINES =====
+    // ===== FOUR TIME ENGINES (each with its own tidal breath rate) =====
     this.voices = [
-      new FMVoice(ctx, this.timeBusL, this.timeBusR),
-      new FMVoice(ctx, this.timeBusL, this.timeBusR),
-      new FMVoice(ctx, this.timeBusL, this.timeBusR),
-      new FMVoice(ctx, this.timeBusL, this.timeBusR)
+      new FMVoice(ctx, this.timeBusL, this.timeBusR, 0.040),
+      new FMVoice(ctx, this.timeBusL, this.timeBusR, 0.052),
+      new FMVoice(ctx, this.timeBusL, this.timeBusR, 0.065),
+      new FMVoice(ctx, this.timeBusL, this.timeBusR, 0.046)
     ];
 
     // ===== DRONE =====
