@@ -276,9 +276,9 @@ function drawIdleHorizon() {
 }
 
 const WAVE_LAYERS = [
-  { yOff: -6, ampMul: 1.25, alpha: 0.16, width: 0.8, tideAmp: 11, tideSpeed: 0.00005, drift: 14, phase: 4.4 }, // far — wide, faint
-  { yOff: 0,  ampMul: 1.0,  alpha: 0.80, width: 1.4, tideAmp: 5,  tideSpeed: 0.00010, drift: 8,  phase: 0.0 }, // main horizon
-  { yOff: 7,  ampMul: 0.6,  alpha: 0.26, width: 1.0, tideAmp: 8,  tideSpeed: 0.00007, drift: 20, phase: 2.1 }  // near — shimmer breath
+  { yOff: -8, ampMul: 1.38, alpha: 0.11, width: 1.0, tideAmp: 13, tideSpeed: 0.000035, drift: 18, phase: 4.4 }, // far — wider, slower mist
+  { yOff: 0,  ampMul: 1.0,  alpha: 0.82, width: 1.45, tideAmp: 5,  tideSpeed: 0.00010,  drift: 7,  phase: 0.0, core: true }, // main horizon
+  { yOff: 8,  ampMul: 0.52, alpha: 0.21, width: 0.9, tideAmp: 7,  tideSpeed: 0.00013,  drift: 16, phase: 2.1 }  // near — faint shimmer
 ];
 
 function drawWave(nowMs) {
@@ -316,10 +316,20 @@ function drawWave(nowMs) {
 
   ctx2d.clearRect(0, 0, w, h);
 
+  const hazeAlpha = 0.014 + 0.026 * visualPower;
+  const haze = ctx2d.createLinearGradient(0, 0, 0, h);
+  haze.addColorStop(0, "rgba(159, 216, 196, 0)");
+  haze.addColorStop(0.42, `rgba(159, 216, 196, ${hazeAlpha * 0.35})`);
+  haze.addColorStop(0.5, `rgba(232, 227, 213, ${hazeAlpha})`);
+  haze.addColorStop(0.58, `rgba(159, 216, 196, ${hazeAlpha * 0.28})`);
+  haze.addColorStop(1, "rgba(159, 216, 196, 0)");
+  ctx2d.fillStyle = haze;
+  ctx2d.fillRect(0, 0, w, h);
+
   // breathing glow pool: visualPower + ~40s tide + gentle loudness swell
   const glowTide = 0.5 + 0.5 * Math.sin(t * 0.00016);
-  const glowAlpha = (0.04 + 0.09 * visualPower) * (0.75 + 0.25 * glowTide) + rmsGlow * 0.10 * visualPower;
-  const glowR = Math.max(w, h) * (0.45 + 0.12 * glowTide);
+  const glowAlpha = (0.055 + 0.115 * visualPower) * (0.72 + 0.28 * glowTide) + rmsGlow * 0.12 * visualPower;
+  const glowR = Math.max(w, h) * (0.54 + 0.16 * glowTide);
   const glow = ctx2d.createRadialGradient(w / 2, mid, 0, w / 2, mid, glowR);
   glow.addColorStop(0, `rgba(159, 216, 196, ${Math.min(glowAlpha, 0.2)})`);
   glow.addColorStop(1, "rgba(159, 216, 196, 0)");
@@ -330,6 +340,25 @@ function drawWave(nowMs) {
   const step = w / (VIZ_POINTS - 1);
   ctx2d.lineJoin = "round";
   ctx2d.lineCap = "round";
+
+  const reflectTide = Math.sin(t * 0.000055 + 1.7) * 5 * (0.25 + 0.75 * visualPower);
+  const reflectAmp = amp * 0.36;
+  ctx2d.shadowColor = `rgba(159, 216, 196, ${0.12 * visualPower})`;
+  ctx2d.shadowBlur = 18 * visualPower;
+  ctx2d.strokeStyle = `rgba(159, 216, 196, ${0.035 + 0.055 * visualPower})`;
+  ctx2d.lineWidth = 2.2;
+  ctx2d.beginPath();
+  let rx = 0;
+  let ry = mid + h * 0.105 + reflectTide - vizCurve[0] * reflectAmp;
+  ctx2d.moveTo(rx, ry);
+  for (let p = 1; p < VIZ_POINTS; p++) {
+    const x = p * step;
+    const y = mid + h * 0.105 + reflectTide - vizCurve[p] * reflectAmp;
+    ctx2d.quadraticCurveTo(rx, ry, (rx + x) / 2, (ry + y) / 2);
+    rx = x; ry = y;
+  }
+  ctx2d.lineTo(rx, ry);
+  ctx2d.stroke();
 
   for (const L of WAVE_LAYERS) {
     const tide = Math.sin(t * L.tideSpeed + L.phase) * L.tideAmp * (0.3 + 0.7 * visualPower);
@@ -354,13 +383,13 @@ function drawWave(nowMs) {
     }
     ctx2d.lineTo(px, py);
     ctx2d.stroke();
+    if (L.core) {
+      ctx2d.shadowBlur = 0;
+      ctx2d.strokeStyle = `rgba(232, 227, 213, ${0.12 + 0.28 * visualPower})`;
+      ctx2d.lineWidth = 0.6;
+      ctx2d.stroke();
+    }
   }
-
-  // faint moonlight core on the last-drawn (main-adjacent) contour
-  ctx2d.shadowBlur = 0;
-  ctx2d.strokeStyle = `rgba(232, 227, 213, ${0.12 + 0.28 * visualPower})`;
-  ctx2d.lineWidth = 0.6;
-  ctx2d.stroke();
 }
 
 function status(msg) { sysmsg.textContent = msg; }
