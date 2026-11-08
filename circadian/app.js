@@ -229,8 +229,8 @@ function pushClock() {
   clockReadout.textContent =
     `${String(rawHour).padStart(2, "0")}:${String(now.getMinutes()).padStart(2, "0")} · ${String(rawMonth).padStart(2, "0")}.${String(now.getDate()).padStart(2, "0")}`;
 
-  seasonReadout.textContent = `${term.zh} · ${term.title}`;
-  bodyReadout.textContent = `${bodyState.zh} · ${bodyState.title}`;
+  setReadoutPair(seasonReadout, term.zh, term.title);
+  setReadoutPair(bodyReadout, bodyState.zh, bodyState.title);
 }
 function onModeToggle() {
   const nowSpeakers = modeToggle.getAttribute("aria-checked") !== "true";
@@ -375,3 +375,10 @@ function drawWave(nowMs) {
 }
 
 function status(msg) { sysmsg.textContent = msg; }
+
+// readout: Chinese name above its English title
+function setReadoutPair(el, zh, en) {
+  const z = document.createElement("span"); z.className = "ro-zh"; z.textContent = zh;
+  const e = document.createElement("span"); e.className = "ro-en"; e.textContent = en;
+  el.replaceChildren(z, e);
+}

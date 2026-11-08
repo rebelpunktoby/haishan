@@ -10,7 +10,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Space+Grotesk:wght@300;400;500&family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="style.css?v=4">
+<link rel="stylesheet" href="style.css?v=5">
 </head>
 <body>
 
@@ -34,12 +34,13 @@
 <p class="veil-hint">Headphones recommended · Embrace the moment now</p>
   </div>
 
+  <div class="readout-stack" id="readout">
+    <span id="clockReadout" class="ro-time">—</span>
+    <span id="seasonReadout" class="ro-pair"></span>
+    <span id="bodyReadout" class="ro-pair"></span>
+  </div>
+
   <div class="console" id="console" hidden>
-<div class="readout readout-stack">
-  <span id="clockReadout" class="readout-time">—</span>
-  <span id="seasonReadout" class="readout-season">—</span>
-  <span id="bodyReadout" class="readout-body">—</span>
-</div>
 
     <div class="mode-switch" role="radiogroup" aria-label="Listening mode">
       <span class="mode-label" id="labelPhones">Headphones</span>
@@ -64,9 +65,9 @@
   <aside class="idea" id="idea" aria-hidden="true" aria-labelledby="ideaTitle">
     <div class="idea-inner">
       <p class="idea-kicker" id="ideaTitle">山海 · OceanMountain</p>
-      <p class="idea-en">OceanMountain listens before it speaks.<br>The season is its ground, the hour its tide;<br>the weather and the room pass through.<br>Nothing is scored in advance —<br>only what truly sounds is remembered.</p>
+      <p class="idea-en">A generative sound work,<br>shaped by the hour and the season.<br>The solar terms form its ground;<br>the double&#8209;hours, its tide.<br>Nothing is composed in advance.<br>It proceeds one step at a time,<br>retaining only what has truly sounded.</p>
       <span class="idea-rule" aria-hidden="true"></span>
-      <p class="idea-zh">山海先聆聽，而後發聲。<br>以節氣為地，以時辰為潮，<br>天氣與空間從中流過。<br>沒有預先寫定的樂譜，<br>只記得真正響起的聲音。</p>
+      <p class="idea-zh">一件隨時辰與節氣而生的聲音作品。<br>以二十四節氣為地，<br>以十二時辰為潮。<br>無預先寫定之樂譜，<br>音樂一步一步而行，<br>唯留真正響起之聲。</p>
       <button class="idea-close" id="ideaClose" type="button">Close</button>
     </div>
   </aside>
@@ -79,7 +80,7 @@
   <span>breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app.js?v=4"></script>
+<script type="module" src="app.js?v=5"></script>
 <script>
 (function(){
   var btn=document.getElementById('ideaBtn'), box=document.getElementById('idea'), close=document.getElementById('ideaClose');

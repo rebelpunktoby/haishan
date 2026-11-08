@@ -493,3 +493,54 @@ html, body { height: 100dvh; min-height: 100dvh; }
 @media (prefers-reduced-motion: reduce) {
   .idea, .idea-inner { transition: none; }
 }
+
+/* ============================================================
+   Phase 3D — readout as a stacked caption above the horizon (append only)
+   ============================================================ */
+.readout-stack {
+  position: absolute;
+  z-index: 2;
+  top: clamp(1.6rem, 10vh, 6rem);
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(92vw, 560px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+  text-align: center;
+  pointer-events: none;
+  opacity: 0;
+  transition: opacity 2.2s ease;
+}
+.veil.dissolved ~ .readout-stack { opacity: 1; }
+body.is-paused .readout-stack { opacity: 0.55; }
+.ro-time {
+  font-size: 0.64rem;
+  letter-spacing: 0.32em;
+  text-indent: 0.32em;
+  color: var(--mist);
+  font-variant-numeric: tabular-nums;
+}
+.ro-pair { display: flex; flex-direction: column; align-items: center; gap: 0.4rem; }
+.ro-pair:empty { display: none; }
+.ro-zh {
+  font-family: "Noto Sans TC", var(--font-ui), sans-serif;
+  font-weight: 300;
+  font-size: clamp(1rem, 1.8vw, 1.25rem);
+  letter-spacing: 0.14em;
+  text-indent: 0.14em;
+  color: var(--moon);
+}
+.ro-en {
+  font-size: 0.58rem;
+  letter-spacing: 0.3em;
+  text-indent: 0.3em;
+  text-transform: uppercase;
+  color: var(--mist);
+}
+@media (max-height: 520px) {
+  .readout-stack { top: 0.7rem; width: auto; flex-direction: row; align-items: baseline; gap: 1.6rem; white-space: nowrap; }
+  .ro-pair { flex-direction: row; align-items: baseline; gap: 0.55rem; }
+  .ro-zh { font-size: 0.82rem; }
+}

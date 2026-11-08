@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>Sketch 4A — 山海 OceanMountain β</title>
+<meta name="description" content="Sketch 4A — a breathing drone study for 山海 OceanMountain. Beta, by Haishan Lai." />
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Space+Grotesk:wght@300;400;500&family=Space+Mono&family=Noto+Serif+TC:wght@300;400&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#090B14; --ink-2:#0C0F1C;
+    --mist:#ECEAF4; --haze:#9B98B6; --faint:#6A6885;
+    --line:#1F2236; --line-2:#2A2D44;
+    --lumen:#8FE3D2; --violet:#7C6BB3; --teal:#3FA89C; --amber:#E2AC6E;
+    --wrap:1180px; --ease:cubic-bezier(.2,.7,.2,1);
+    --serif:"Fraunces","Noto Serif TC",Georgia,serif;
+    --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
+    --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
+    font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body.lang-zh{font-size:.9rem;letter-spacing:.06em;line-height:1.9;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:rgba(143,227,210,.22);color:#fff;}
+  :focus-visible{outline:2px solid var(--lumen);outline-offset:4px;border-radius:2px;}
+  body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1rem,5vw,4.5rem);}
+
+  /* BETA BAND — the emphasis */
+  .band{position:fixed;top:0;left:0;right:0;z-index:101;background:var(--amber);color:#1d1408;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;text-align:center;padding:.38rem 1rem;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  @media(max-width:520px){.band{font-size:.6rem;letter-spacing:.12em;}}
+  body.lang-zh .band{letter-spacing:.3em;}
+
+  /* NAV */
+  header.nav{position:fixed;top:1.65rem;left:0;right:0;z-index:100;border-bottom:1px solid transparent;
+    transition:background .5s var(--ease),border-color .5s var(--ease);}
+  header.nav.scrolled{background:rgba(9,11,20,.78);backdrop-filter:blur(14px);border-bottom-color:var(--line);}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding-block:1rem;gap:1rem;}
+  .brand{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;}
+  .brand b{color:var(--lumen);font-weight:400;}
+  .nav-right{display:flex;align-items:center;gap:1.6rem;}
+  .nav-links{display:flex;gap:1.8rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--haze);}
+  .nav-links a:hover{color:var(--mist);}
+  .nav-links a.nav-omt{color:var(--lumen);} .nav-links a.nav-omt span{font-family:var(--serif);}
+  .lang-toggle{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mist);background:transparent;
+    border:1px solid var(--line-2);border-radius:22px;padding:.36rem .82rem;cursor:pointer;line-height:1;}
+  .lang-toggle:hover{border-color:var(--lumen);color:var(--lumen);}
+
+  /* HERO + PLAYER */
+  .hero{position:relative;padding-top:8.5rem;padding-bottom:3rem;}
+  .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.3em;text-transform:uppercase;color:var(--haze);margin:0 0 1.4rem;}
+  .pill{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+    border:1px solid currentColor;border-radius:22px;padding:.32rem .8rem;line-height:1;white-space:nowrap;}
+  .pill::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:currentColor;}
+  .pill.wip{color:var(--amber);} .pill.wip::before{animation:pulse 2.4s var(--ease) infinite;}
+  .pill.done{color:var(--lumen);} .pill.next{color:var(--violet);} .pill.off{color:var(--faint);}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,10vw,7.4rem);line-height:.95;letter-spacing:-.02em;margin:1.2rem 0 0;}
+  h1 em{font-style:italic;font-weight:300;color:var(--lumen);}
+  .thesis{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.15rem,1rem + 1.2vw,1.8rem);
+    line-height:1.36;color:#D7D4E6;max-width:32ch;margin:1.6rem 0 0;}
+  body.lang-zh .thesis{font-style:normal;letter-spacing:.06em;line-height:1.7;}
+
+  .player{position:relative;margin-top:3rem;border:1px solid var(--line-2);border-radius:18px;overflow:hidden;background:var(--ink-2);}
+  .stage{position:relative;}
+  #horizon{display:block;width:100%;height:clamp(220px,38vh,380px);}
+  .play-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;pointer-events:none;}
+  .play{pointer-events:auto;width:5.4rem;height:5.4rem;border-radius:50%;border:1px solid var(--lumen);background:rgba(9,11,20,.45);
+    color:var(--lumen);cursor:pointer;display:grid;place-items:center;transition:transform .4s var(--ease),background .4s var(--ease);}
+  .play:hover{transform:scale(1.05);background:rgba(143,227,210,.1);}
+  .play svg{width:1.6rem;height:1.6rem;}
+  .play .i-pause{display:none;} .player.on .play .i-play{display:none;} .player.on .play .i-pause{display:block;}
+  .play-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--haze);}
+  .player.on .play-wrap{justify-content:flex-end;padding-bottom:1.2rem;}
+  .player.on .play{width:3.4rem;height:3.4rem;}
+  .player.on .play-label{display:none;}
+
+  .controls{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem 2rem;padding:1.4rem clamp(1rem,3vw,2rem);border-top:1px solid var(--line);}
+  @media(max-width:640px){.controls{grid-template-columns:1fr;}}
+  .ctl label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--haze);margin-bottom:.55rem;}
+  .ctl output{color:var(--mist);letter-spacing:.06em;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line-2);border-radius:2px;outline-offset:8px;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;}
+  .player-foot{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;justify-content:space-between;align-items:baseline;
+    padding:1rem clamp(1rem,3vw,2rem) 1.2rem;border-top:1px solid var(--line);font-size:.86rem;color:var(--haze);}
+  .player-foot .clock{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;color:var(--mist);}
+  .notyet{color:var(--amber);}
+  .hint{margin:.9rem 0 0;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);}
+
+  /* SECTIONS */
+  section.block{padding-block:clamp(3.5rem,8vw,6.5rem);border-top:1px solid var(--line);}
+  .seclabel{display:flex;align-items:center;gap:1rem;margin-bottom:2.4rem;}
+  .seclabel .tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;color:var(--lumen);white-space:nowrap;}
+  .seclabel .rule{height:1px;background:var(--line-2);flex:1;}
+  .seclabel .idx{font-family:var(--mono);font-size:.74rem;color:var(--faint);}
+  .lead{font-family:var(--serif);font-weight:300;font-size:clamp(1.3rem,1.05rem + 1.3vw,2.1rem);line-height:1.4;color:#DEDBEC;max-width:34ch;margin:0;}
+  body.lang-zh .lead{letter-spacing:.05em;line-height:1.75;}
+  .body{color:var(--haze);max-width:62ch;margin:1.4rem 0 0;}
+  .body strong{color:var(--mist);font-weight:500;}
+  h3{font-family:var(--mono);font-weight:400;font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--haze);margin:3.4rem 0 1.2rem;}
+
+  .chain{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:c;}
+  .chain li{display:grid;grid-template-columns:2.4rem minmax(9rem,14rem) 1fr;gap:.2rem 1.2rem;align-items:baseline;padding:1rem 0;border-top:1px solid var(--line);}
+  .chain li::before{counter-increment:c;content:counter(c,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--faint);}
+  .chain .k{font-family:var(--serif);font-size:1.25rem;color:var(--mist);}
+  .chain .v{color:var(--haze);}
+  .chain li:last-child .k{color:var(--lumen);}
+  @media(max-width:640px){.chain li{grid-template-columns:2rem 1fr;}.chain .v{grid-column:2;}}
+
+  .formula{font-family:var(--mono);font-size:clamp(.8rem,.72rem + .4vw,1rem);line-height:2.1;color:var(--mist);
+    border:1px solid var(--line-2);border-radius:14px;padding:1.4rem clamp(1rem,3vw,1.8rem);background:var(--ink-2);overflow-wrap:anywhere;}
+  .formula .op{color:var(--lumen);padding-inline:.35em;}
+  .formula .res{color:var(--faint);}
+  .formula small{display:block;margin-top:.6rem;font-size:.74rem;line-height:1.7;color:var(--haze);}
+
+  .families{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  @media(max-width:760px){.families{grid-template-columns:repeat(2,1fr);}}
+  .families div{background:var(--ink);padding:1.2rem 1.1rem;}
+  .families b{display:block;font-family:var(--serif);font-weight:300;font-size:2.4rem;line-height:1;color:var(--mist);}
+  .families span{display:block;margin-top:.5rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--haze);}
+  .families em{display:block;margin-top:.5rem;font-style:normal;font-size:.9rem;color:var(--faint);letter-spacing:.08em;}
+
+  .laws{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.4rem 2.4rem;}
+  .laws li{border-top:1px solid var(--line-2);padding-top:1rem;}
+  .laws b{display:block;font-family:var(--serif);font-weight:400;font-size:1.2rem;line-height:1.3;color:var(--mist);}
+  .laws span{display:block;margin-top:.45rem;color:var(--haze);font-size:.95rem;}
+
+  .register{margin-top:3rem;border-left:2px solid var(--amber);padding:.4rem 0 .4rem 1.2rem;color:var(--haze);max-width:62ch;font-size:.95rem;}
+  .register strong{color:var(--mist);font-weight:500;}
+
+  .ledger{display:flex;flex-direction:column;}
+  .ledger .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4rem 1.6rem;align-items:center;padding:1.15rem 0;border-top:1px solid var(--line);}
+  .ledger .r:last-child{border-bottom:1px solid var(--line);}
+  .ledger .t{font-family:var(--serif);font-size:clamp(1.05rem,.95rem + .5vw,1.35rem);color:var(--mist);}
+  .ledger .t small{display:block;font-family:var(--sans);font-size:.85rem;color:var(--faint);margin-top:.15rem;}
+  @media(max-width:520px){.ledger .r{grid-template-columns:1fr;}}
+
+  footer{border-top:1px solid var(--line);padding-block:2.4rem 3rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--faint);}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;}
+  footer a:hover{color:var(--lumen);}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
+</style>
+</head>
+<body>
+
+<div class="band" data-i18n="band">Beta · Sketch 4A · A study in progress</div>
+
+<header class="nav" id="nav">
+  <div class="wrap nav-row">
+    <a class="brand" href="/">Haishan&nbsp;Lai <b>/</b> 山海</a>
+    <div class="nav-right">
+      <nav class="nav-links" aria-label="Page">
+        <a href="/circadian/" class="nav-omt">OMT&nbsp;<span>β</span></a>
+      </nav>
+      <button class="lang-toggle" id="langToggle" type="button" aria-label="Switch to Traditional Chinese">繁</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section class="hero" id="listen">
+    <div class="wrap">
+      <p class="eyebrow" data-i18n="eyebrow">山海 OceanMountain · β</p>
+      <span class="pill wip" data-i18n="pill">Study in progress</span>
+      <h1>Sketch <em>4A</em></h1>
+      <p class="thesis" data-i18n="thesis">One drone on A, breathing — a study of how far a single tone can travel with breath, brightness and space.</p>
+
+      <div class="player" id="player">
+        <div class="stage">
+        <canvas id="horizon" aria-hidden="true"></canvas>
+        <div class="play-wrap">
+          <button class="play" id="playBtn" type="button" aria-pressed="false" aria-label="Begin listening">
+            <svg class="i-play" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M8 5.5v13l10.5-6.5z"/></svg>
+            <svg class="i-pause" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M7 5h3.4v14H7zM13.6 5H17v14h-3.4z"/></svg>
+          </button>
+          <span class="play-label" data-i18n="play_label">Begin listening</span>
+        </div>
+        </div>
+        <div class="controls">
+          <div class="ctl">
+            <label for="breath"><span data-i18n="c_breath">Breath</span><output id="breathOut">9 s</output></label>
+            <input type="range" id="breath" min="5" max="16" step="0.5" value="9" />
+          </div>
+          <div class="ctl">
+            <label for="bright"><span data-i18n="c_bright">Brightness</span><output id="brightOut">45</output></label>
+            <input type="range" id="bright" min="0" max="100" step="1" value="45" />
+          </div>
+          <div class="ctl">
+            <label for="space"><span data-i18n="c_space">Space</span><output id="spaceOut">40</output></label>
+            <input type="range" id="space" min="0" max="100" step="1" value="40" />
+          </div>
+        </div>
+        <div class="player-foot">
+          <span><span data-i18n="local">Your local time</span> · <span class="clock" id="clock">—</span></span>
+          <span class="notyet" data-i18n="notyet">The hour, the season and the room are not yet connected — here, you shape it by hand.</span>
+        </div>
+      </div>
+      <p class="hint" data-i18n="hint">Headphones recommended · Starts softly · Runs in your browser; nothing is recorded</p>
+    </div>
+  </section>
+
+
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <a href="/" data-i18n="back">← Haishan Lai</a>
+    <a href="/circadian/" data-i18n="to_engine">OMT engine β ↗</a>
+    <span data-i18n="foot">Beta — this page changes as the work does. © <span id="yr"></span></span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var I18N = {
+    band:{en:"Beta · Sketch 4A · A study in progress",zh:"測試版 · 草圖 4A · 習作進行中"},
+    eyebrow:{en:"山海 OceanMountain · β",zh:"山海 OceanMountain · β"},
+    pill:{en:"Study in progress",zh:"習作進行中"},
+    thesis:{en:"One drone on A, breathing — a study of how far a single tone can travel with breath, brightness and space.",zh:"一個會呼吸的 A 持續音——<br>只憑呼吸、明暗與空間，能走多遠。"},
+    play_label:{en:"Begin listening",zh:"開始聆聽"},
+    c_breath:{en:"Breath",zh:"呼吸"}, c_bright:{en:"Brightness",zh:"明暗"}, c_space:{en:"Space",zh:"空間"},
+    local:{en:"Your local time",zh:"你的當地時間"},
+    notyet:{en:"The hour, the season and the room are not yet connected — here, you shape it by hand.",zh:"時辰、節氣與空間尚未接入——此處由你親手塑形。"},
+    hint:{en:"Headphones recommended · Starts softly · Runs in your browser; nothing is recorded",zh:"建議使用耳機 · 聲音輕輕淡入 · 於瀏覽器中運行，不作任何錄音"},
+    back:{en:"← Haishan Lai",zh:"← Haishan Lai"},
+    to_engine:{en:"OMT engine β ↗",zh:"OMT 引擎 β ↗"},
+    foot:{en:'Beta — this page changes as the work does. © <span id="yr"></span>',zh:'測試版——本頁隨作品而變。© <span id="yr"></span>'}
+  };
+
+  var lang = "en";
+  var playing = false;
+  function setYear(){ var y=document.getElementById("yr"); if(y) y.textContent=new Date().getFullYear(); }
+  function playAria(){
+    var b=document.getElementById("playBtn");
+    var en = playing ? "Pause" : "Begin listening", zh = playing ? "暫停" : "開始聆聽";
+    b.setAttribute("aria-label", lang==="en"?en:zh);
+  }
+  function applyLang(next){
+    lang = next;
+    document.documentElement.setAttribute("lang", lang==="zh" ? "zh-Hant" : "en");
+    document.body.classList.toggle("lang-zh", lang==="zh");
+    document.querySelectorAll("[data-i18n]").forEach(function(el){
+      var k=el.getAttribute("data-i18n");
+      if(I18N[k] && I18N[k][lang]!==undefined) el.innerHTML=I18N[k][lang];
+    });
+    setYear(); playAria();
+    var btn=document.getElementById("langToggle");
+    btn.textContent = lang==="en" ? "繁" : "EN";
+    btn.setAttribute("aria-label", lang==="en" ? "Switch to Traditional Chinese" : "Switch to English");
+  }
+  setYear();
+  document.getElementById("langToggle").addEventListener("click", function(){ applyLang(lang==="en"?"zh":"en"); });
+
+  var nav=document.getElementById("nav");
+  function onScroll(){ nav.classList.toggle("scrolled", window.scrollY>30); }
+  onScroll(); window.addEventListener("scroll", onScroll, {passive:true});
+
+  // Local civil time — shown only; not yet wired into the sound.
+  function tick(){
+    var d=new Date(), h=String(d.getHours()).padStart(2,"0"), m=String(d.getMinutes()).padStart(2,"0");
+    document.getElementById("clock").textContent = h+":"+m;
+  }
+  tick(); setInterval(tick, 20000);
+
+  /* ---------- Sound sketch 4A: native Web Audio, no libraries ---------- */
+  var A = null;
+  var ui = {
+    breath: document.getElementById("breath"),
+    bright: document.getElementById("bright"),
+    space:  document.getElementById("space")
+  };
+  function cutoffFor(v){ return 180*Math.pow(2600/180, v/100); }   // 180 Hz – 2.6 kHz, exponential
+  function readBreath(){ return parseFloat(ui.breath.value); }
+  function readCut(){ return cutoffFor(parseFloat(ui.bright.value)); }
+  function readSpace(){ return parseFloat(ui.space.value)/100; }
+
+  function build(){
+    var Ctx = window.AudioContext || window.webkitAudioContext;
+    if(!Ctx) return null;
+    var ctx = new Ctx();
+    var g = {ctx:ctx};
+
+    g.master = ctx.createGain(); g.master.gain.value = 0;
+    g.analyser = ctx.createAnalyser(); g.analyser.fftSize = 1024;
+    g.master.connect(g.analyser); g.analyser.connect(ctx.destination);
+
+    // three sine voices on A, each with its own slow pitch drift
+    var sum = ctx.createGain(); sum.gain.value = 1;
+    [[110,.30,.011],[165,.20,.017],[440,.085,.023]].forEach(function(v){
+      var o=ctx.createOscillator(); o.type="sine"; o.frequency.value=v[0];
+      var vg=ctx.createGain(); vg.gain.value=v[1];
+      var drift=ctx.createOscillator(); drift.frequency.value=v[2];
+      var dAmt=ctx.createGain(); dAmt.gain.value=4;            // ±4 cents
+      drift.connect(dAmt); dAmt.connect(o.detune);
+      o.connect(vg); vg.connect(sum); o.start(); drift.start();
+    });
+
+    // gentle saturation so brightness is audible on pure sines
+    var shaper = ctx.createWaveShaper(), n=1024, curve=new Float32Array(n), k=1.8, norm=Math.tanh(k);
+    for(var i=0;i<n;i++){ var x=i/(n-1)*2-1; curve[i]=Math.tanh(k*x)/norm; }
+    shaper.curve=curve; shaper.oversample="2x";
+
+    g.filter = ctx.createBiquadFilter(); g.filter.type="lowpass"; g.filter.Q.value=.8; g.filter.frequency.value=readCut();
+    g.breathGain = ctx.createGain(); g.breathGain.gain.value=.58;
+    sum.connect(shaper); shaper.connect(g.filter); g.filter.connect(g.breathGain);
+
+    // one shared breath: moves level and opens the filter a little on each inhale
+    g.lfo = ctx.createOscillator(); g.lfo.frequency.value = 1/readBreath();
+    g.lfoAmp = ctx.createGain(); g.lfoAmp.gain.value=.4;
+    g.lfoCut = ctx.createGain(); g.lfoCut.gain.value=readCut()*.35;
+    g.lfo.connect(g.lfoAmp); g.lfoAmp.connect(g.breathGain.gain);
+    g.lfo.connect(g.lfoCut); g.lfoCut.connect(g.filter.frequency);
+    g.lfo.start();
+
+    // dry + delay space
+    g.dry = ctx.createGain(); g.dry.gain.value=1;
+    g.send = ctx.createGain();
+    g.delay = ctx.createDelay(3); g.delay.delayTime.value=.92;
+    g.fbTone = ctx.createBiquadFilter(); g.fbTone.type="lowpass"; g.fbTone.frequency.value=1600;
+    g.fb = ctx.createGain();
+    g.wet = ctx.createGain();
+    g.breathGain.connect(g.dry); g.dry.connect(g.master);
+    g.breathGain.connect(g.send); g.send.connect(g.delay);
+    g.delay.connect(g.fbTone); g.fbTone.connect(g.fb); g.fb.connect(g.delay);
+    g.fbTone.connect(g.wet); g.wet.connect(g.master);
+    setSpace(g, readSpace(), true);
+    return g;
+  }
+  function setSpace(g, s, now){
+    var t=g.ctx.currentTime, tc = now ? 0.01 : 0.4;
+    g.send.gain.setTargetAtTime(.25+.75*s, t, tc);
+    g.fb.gain.setTargetAtTime(.18+.4*s, t, tc);
+    g.wet.gain.setTargetAtTime(.75*s, t, tc);
+    g.dry.gain.setTargetAtTime(1-.35*s, t, tc);
+  }
+
+  ui.breath.addEventListener("input", function(){
+    document.getElementById("breathOut").textContent = ui.breath.value+" s";
+    if(A) A.lfo.frequency.setTargetAtTime(1/readBreath(), A.ctx.currentTime, .8);
+  });
+  ui.bright.addEventListener("input", function(){
+    document.getElementById("brightOut").textContent = ui.bright.value;
+    if(A){ var c=readCut(), t=A.ctx.currentTime;
+      A.filter.frequency.setTargetAtTime(c, t, .3); A.lfoCut.gain.setTargetAtTime(c*.35, t, .3); }
+  });
+  ui.space.addEventListener("input", function(){
+    document.getElementById("spaceOut").textContent = ui.space.value;
+    if(A) setSpace(A, readSpace(), false);
+  });
+
+  var player=document.getElementById("player"), stopTimer=null;
+  document.getElementById("playBtn").addEventListener("click", function(){
+    if(!A){ A = build(); if(!A){ return; } }
+    var t;
+    if(!playing){
+      clearTimeout(stopTimer);
+      A.ctx.resume().then(function(){
+        t=A.ctx.currentTime;
+        A.master.gain.cancelScheduledValues(t);
+        A.master.gain.setValueAtTime(A.master.gain.value, t);
+        A.master.gain.setTargetAtTime(.6, t, 1.4);       // slow fade in
+      });
+      playing=true;
+    } else {
+      t=A.ctx.currentTime;
+      A.master.gain.cancelScheduledValues(t);
+      A.master.gain.setValueAtTime(A.master.gain.value, t);
+      A.master.gain.setTargetAtTime(0, t, .6);
+      stopTimer=setTimeout(function(){ if(!playing) A.ctx.suspend(); }, 3500);
+      playing=false;
+    }
+    player.classList.toggle("on", playing);
+    this.setAttribute("aria-pressed", String(playing));
+    playAria();
+    if(playing) startDraw();
+  });
+
+  /* ---------- Horizon: drawn from what actually sounds (analyser level) ---------- */
+  var cv=document.getElementById("horizon"), cx=cv.getContext("2d");
+  var reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  var W=0,H=0,dpr=Math.min(window.devicePixelRatio||1,2), level=0, buf=null, raf=null, t0=performance.now();
+  function size(){
+    W=cv.clientWidth; H=cv.clientHeight;
+    cv.width=Math.round(W*dpr); cv.height=Math.round(H*dpr);
+    cx.setTransform(dpr,0,0,dpr,0,0); draw(performance.now());
+  }
+  function ridge(x){ return Math.sin(x*2.1+.4)*.5+Math.sin(x*5.3+1.7)*.22+Math.sin(x*11.9)*.08; }
+  function draw(now){
+    var t=reduce?0:(now-t0)/1000;
+    if(A && buf){
+      A.analyser.getFloatTimeDomainData(buf);
+      var s=0; for(var i=0;i<buf.length;i++) s+=buf[i]*buf[i];
+      level += (Math.sqrt(s/buf.length) - level)*.08;
+    }
+    var L=Math.min(1, level*6);
+    cx.clearRect(0,0,W,H);
+    var glow=cx.createRadialGradient(W*.5,H*.62,0,W*.5,H*.62,Math.max(W,H)*.6);
+    glow.addColorStop(0,"rgba(124,107,179,"+(.10+.22*L).toFixed(3)+")"); glow.addColorStop(1,"rgba(9,11,20,0)");
+    cx.fillStyle=glow; cx.fillRect(0,0,W,H);
+    // mountain
+    cx.beginPath(); cx.moveTo(0,H);
+    for(var x=0;x<=W;x+=6){ var u=x/W; cx.lineTo(x, H*.56 - ridge(u*3)*H*(.12+.05*L)); }
+    cx.lineTo(W,H); cx.closePath(); cx.fillStyle="rgba(42,45,68,.55)"; cx.fill();
+    // ocean lines
+    for(var j=0;j<3;j++){
+      cx.beginPath();
+      var base=H*(.68+j*.09), amp=H*(.006+.04*L)*(1-j*.25), ph=t*(.22+j*.07);
+      for(var x2=0;x2<=W;x2+=5){ var u2=x2/W;
+        var y=base+Math.sin(u2*9+ph+j)*amp+Math.sin(u2*23-ph*1.6)*amp*.35;
+        if(x2===0) cx.moveTo(x2,y); else cx.lineTo(x2,y); }
+      cx.strokeStyle= j===0 ? "rgba(143,227,210,"+(.35+.5*L).toFixed(3)+")" : "rgba(143,227,210,"+(.12+.18*L).toFixed(3)+")";
+      cx.lineWidth = j===0 ? 1.2 : 1; cx.stroke();
+    }
+  }
+  function loop(now){
+    draw(now);
+    if(playing || level>.0005) raf=requestAnimationFrame(loop); else raf=null;
+  }
+  function startDraw(){ if(!buf && A) buf=new Float32Array(A.analyser.fftSize); if(!raf) raf=requestAnimationFrame(loop); }
+  if(window.ResizeObserver) new ResizeObserver(size).observe(cv); else window.addEventListener("resize", size);
+  size();
+})();
+</script>
+</body>
+</html>

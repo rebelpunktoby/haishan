@@ -314,6 +314,7 @@
 
   .brand{white-space:nowrap;}
   .nav-links a.nav-beta{color:var(--lumen);}
+  .nav-links a.nav-beta span{font-family:var(--serif);}
   @media(max-width:600px){.nav-links a[href="#next"]{display:none;}}
   .nav-links a{white-space:nowrap;}
   @media(max-width:420px){.nav-links{gap:.95rem;letter-spacing:.12em;}.nav-right{gap:.8rem;}.brand{letter-spacing:.1em;}}
@@ -330,7 +331,7 @@
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
         <a href="#work" data-i18n="nav_work">Work</a>
-        <a href="/circadian/" class="nav-beta" data-i18n="nav_beta">OMT</a>
+        <a href="/circadian/" class="nav-beta" data-i18n="nav_beta">OMT&nbsp;<span>β</span></a>
         <a href="#stage" data-i18n="nav_stage">Stage</a>
         <a href="#contact" data-i18n="nav_contact">Contact</a>
       </nav>
@@ -428,12 +429,19 @@
 
   <section class="block" id="omt">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag">OMT</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">Beta</span></div>
+      <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">Works in progress</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title">
             <a href="/circadian/" class="work-link"><span data-i18n="art2_title">山海 OceanMountain</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="art2_role">Sound that moves with the hour and the season.</span>
+            <span class="role" data-i18n="art2_role">A generative sound work shaped by the hour and the season.</span>
+          </div>
+          <div class="meta"><span class="yr">2026</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title">
+            <a href="/omt/" class="work-link"><span data-i18n="omt2_title">Sketch 4A</span> <span class="arr">↗</span></a>
+            <span class="role" data-i18n="omt2_role">A breathing drone study — breath, brightness, space.</span>
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
@@ -590,8 +598,10 @@
     var I18N = {
       skip:{en:"Skip to content",zh:"跳至內容"},
       nav_work:{en:"Work",zh:"作品"},
-      nav_beta:{en:'OMT',zh:'OMT'},
-      idx_omt:{en:'Beta',zh:'測試版'},
+      nav_beta:{en:'OMT&nbsp;<span>β</span>',zh:'OMT&nbsp;<span>β</span>'},
+      idx_omt:{en:'Works in progress',zh:'製作中'},
+      omt2_title:{en:'Sketch 4A',zh:'草圖 4A'},
+      omt2_role:{en:'A breathing drone study — breath, brightness, space.',zh:'一個會呼吸的持續音習作——呼吸、明暗、空間。'},
       omt_sub:{en:'Beta · Live',zh:'測試版 · 線上'},
       nav_stage:{en:"Stage",zh:"演出"},
       nav_contact:{en:"Contact",zh:"聯絡"},
@@ -622,7 +632,7 @@
       art1_title:{en:"Prepared Piano × Dance",zh:"預置鋼琴 × 舞蹈"},
       art1_role:{en:"Free improvisation with a contemporary dancer — prepared piano, live sampling of room and body sounds, and movement that shapes the sound in a closed loop. Mexico City.",zh:"與當代舞者的自由即興——預置鋼琴、即時取樣空間與身體的聲響，讓動作在閉環中塑造聲音。墨西哥城。"},
       art2_title:{en:"山海 OceanMountain",zh:"山海 OceanMountain"},
-      art2_role:{en:"Sound that moves with the hour and the season.",zh:"隨時辰與節氣流動的聲音。"},
+      art2_role:{en:"A generative sound work shaped by the hour and the season.",zh:"一件隨時辰與節氣而生的聲音作品。"},
       idx_work:{en:"Play · Composition · Experience",zh:"演奏・作曲・體驗"},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
