@@ -133,7 +133,7 @@ async function initialize() {
     }
   } catch (err) {
     console.error(err);
-    status(`init failed — ${err.message}`);
+    status("The sound couldn’t start. Tap ∞ to try again.");
     initBtn.addEventListener("click", initialize, { once: true });
   }
 }
@@ -267,7 +267,18 @@ function sizeCanvas() {
 function drawIdleHorizon() {
   const w = canvas.clientWidth, h = canvas.clientHeight;
   ctx2d.clearRect(0, 0, w, h);
-  ctx2d.strokeStyle = "rgba(159, 216, 196, 0.25)";
+  // horizon parts around the centre so it never cuts through the ∞ button
+  const clear = Math.min(0.45, 90 / w), fade = Math.min(0.2, 110 / w);  // px-based gap clears the button on any screen
+  const g = ctx2d.createLinearGradient(0, 0, w, 0);
+  g.addColorStop(0, "rgba(159, 216, 196, 0)");
+  g.addColorStop(Math.min(0.12, 0.5 - clear - fade - 0.01), "rgba(159, 216, 196, 0.25)");
+  g.addColorStop(0.5 - clear - fade, "rgba(159, 216, 196, 0.18)");
+  g.addColorStop(0.5 - clear, "rgba(159, 216, 196, 0)");
+  g.addColorStop(0.5 + clear, "rgba(159, 216, 196, 0)");
+  g.addColorStop(0.5 + clear + fade, "rgba(159, 216, 196, 0.18)");
+  g.addColorStop(Math.max(0.88, 0.5 + clear + fade + 0.01), "rgba(159, 216, 196, 0.25)");
+  g.addColorStop(1, "rgba(159, 216, 196, 0)");
+  ctx2d.strokeStyle = g;
   ctx2d.lineWidth = 1;
   ctx2d.beginPath();
   ctx2d.moveTo(0, h / 2);
