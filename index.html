@@ -320,6 +320,20 @@
   @media(max-width:420px){.nav-links{gap:.95rem;letter-spacing:.12em;}.nav-right{gap:.8rem;}.brand{letter-spacing:.1em;}}
   @media(max-width:600px){.brand-alt{display:none;}}
   @media(prefers-reduced-motion:reduce){.hero .thesis .ln{animation:none;opacity:1;transform:none;}.perf-more{transition:none;}}
+  /* WORK — covers */
+  .row .title.has-cover{--cv:88px;display:grid;grid-template-columns:var(--cv) minmax(0,1fr);column-gap:1.4rem;align-items:center;}
+  .row .title.has-cover .cover{grid-row:1 / span 2;}
+  .row .title.has-cover .work-link{align-self:end;}
+  .row .title.has-cover .role{align-self:start;}
+  .cover{display:block;width:var(--cv);height:var(--cv);overflow:hidden;border:1px solid var(--line-2);
+    background:linear-gradient(135deg,rgba(124,107,179,.10),rgba(63,168,156,.05));}
+  .cover img{display:block;width:100%;height:100%;object-fit:cover;filter:saturate(.9) brightness(.94);
+    transition:transform .9s var(--ease),filter .9s var(--ease);}
+  .row:hover .cover img{transform:scale(1.06);filter:saturate(1.05) brightness(1);}
+  .cover.blank{border:0;background:none;}
+  .row[hidden],[hidden]{display:none !important;}
+  @media(min-width:760px){#work .row{align-items:center;}}
+  @media(max-width:600px){.row .title.has-cover{--cv:64px;column-gap:1rem;}#work .row .meta{padding-left:calc(64px + 1rem);}}
 </style>
 </head>
 <body>
@@ -376,48 +390,55 @@
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="rule"></span><span class="idx" data-i18n="idx_work">Play · Composition · Experience</span></div>
       <div class="rows">
         <div class="row" data-reveal>
-          <div class="title">
-            <a href="https://on.soundcloud.com/Hz7JsU6xR1t1QMlmqh" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work7_role">OceanMountain</span>
+          <div class="title has-cover">
+            <a class="cover" href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/flow.webp" alt="Cover drawing for FLOW / 04032026" width="96" height="96" loading="lazy" decoding="async"></a>
+            <a href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
+            <span class="role" data-i18n="work7_role">OceanMountain · Cover drawing by Haishan&nbsp;Lai</span>
           </div>
           <div class="meta"><span class="yr">04.2026</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title">
+          <div class="title has-cover">
+            <a class="cover" href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/waves.webp" alt="Cover drawing for Waves" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" class="work-link">Waves <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work8_role">OceanMountain</span>
+            <span class="role" data-i18n="work8_role">OceanMountain · Cover drawing by Haishan&nbsp;Lai</span>
           </div>
         </div>
-        <div class="row" data-reveal>
-          <div class="title">
+        <div class="row" data-reveal hidden>
+          <div class="title has-cover">
+            <span class="cover blank" aria-hidden="true"></span>
             <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
             <span class="role" data-i18n="work1_role">Composer &amp; Producer</span>
           </div>
           <div class="meta"><span class="yr">09.2024</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title">
+          <div class="title has-cover">
+            <a class="cover" href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/rain.webp" alt="Cover of Rain (Mood for Love)" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a>
             <span class="role" data-i18n="work2_role">Feature composition with Eric Leo</span>
           </div>
           <div class="meta"><span class="yr">08.2023</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title">
+          <div class="title has-cover">
+            <a class="cover" href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/angel-dust.webp" alt="Cover of Angel Dust" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" class="work-link">Angel Dust <span class="arr">↗</span></a>
             <span class="role" data-i18n="work4_role">Feature composition with Eric Leo</span>
           </div>
           <div class="meta"><span class="yr">10.2022</span></div>
         </div>
-        <div class="row" data-reveal>
-          <div class="title">
+        <div class="row" data-reveal hidden>
+          <div class="title has-cover">
+            <span class="cover blank" aria-hidden="true"></span>
             <a href="https://untitled.stream/library/track/X1j9gSyvFvgaNFcsLyDgC" target="_blank" rel="noopener" class="work-link">GONE MISSING <span class="arr">↗</span></a>
             <span class="role" data-i18n="work5_role">Feature composition with Eric Leo</span>
           </div>
           <div class="meta"><span class="yr">12.2022</span></div>
         </div>
-        <div class="row" data-reveal>
-          <div class="title">
+        <div class="row" data-reveal hidden>
+          <div class="title has-cover">
+            <span class="cover blank" aria-hidden="true"></span>
             <a href="https://untitled.stream/library/project/8Cf3cV7HNGSS57Z9SdazQ" target="_blank" rel="noopener" class="work-link">Unreleased <span class="arr">↗</span></a>
             <span class="role" data-i18n="work6_role">Feature composition with Zekiizo</span>
           </div>
@@ -639,8 +660,8 @@
       work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work5_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work6_role:{en:"Feature composition with Zekiizo",zh:"Feature composition with Zekiizo"},
-      work7_role:{en:"OceanMountain",zh:"OceanMountain"},
-      work8_role:{en:"OceanMountain",zh:"OceanMountain"},
+      work7_role:{en:"OceanMountain · Cover drawing by Haishan&nbsp;Lai",zh:"OceanMountain · 封面手繪：Haishan&nbsp;Lai"},
+      work8_role:{en:"OceanMountain · Cover drawing by Haishan&nbsp;Lai",zh:"OceanMountain · 封面手繪：Haishan&nbsp;Lai"},
       lbl_listen:{en:"Full Catalog",zh:"完整作品"},
       lbl_stage:{en:"On Stage",zh:"現場演出"},
       idx_stage:{en:"Selected Performances",zh:"精選場次"},
