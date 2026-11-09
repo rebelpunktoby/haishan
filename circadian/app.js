@@ -1,6 +1,6 @@
 // app.js — OceanMountain Circadian Engine · DMT.beta
 // Phase 3A: master breath fade on play/pause + ocean glow visual.
-import { CircadianEngine } from "./engine.js?v=5";
+import { CircadianEngine } from "./engine.js?v=6";
 
 const CAP_HEADPHONES = 1000;
 const CAP_SPEAKERS = 2;
@@ -243,7 +243,10 @@ function setMode(speakers) {
     speakers ? "Switch to headphone mode" : "Switch to speaker mode");
   labelPhones.classList.toggle("active", !speakers);
   labelSpeakers.classList.toggle("active", speakers);
-  if (engine) engine.setOffsetCap(speakers ? CAP_SPEAKERS : CAP_HEADPHONES);
+  if (engine) {
+    engine.setOffsetCap(speakers ? CAP_SPEAKERS : CAP_HEADPHONES);
+    engine.setPresence(speakers ? 0.5 : 0.35);   // more upper partials on small speakers
+  }
 }
 
 function onTimeToggle() {

@@ -1,4 +1,5 @@
 // engine.js — OceanMountain PHRASE 1, native Web Audio port
+// v6 — gain staging: low-band presence partials, 32 Hz subsonic HP, makeup + gentle compressor.
 // v5 — Phase 3A: de-sharpened FM, slower envelopes, per-voice tidal breathing,
 // darker master warmth. Architecture unchanged: 4 FM voices + drone,
 // tanh saturation + 350/525ms cross-feedback delay + clip.
@@ -39,6 +40,13 @@ function makeTanhCurve(n = 2048) {
 function makeClipCurve(n = 2048) {
   const c = new Float32Array(n);
   for (let i = 0; i < n; i++) c[i] = Math.max(-1, Math.min(1, (i / (n - 1)) * 2 - 1));
+  return c;
+}
+
+// asymmetric soft curve: adds gentle 2nd/3rd harmonics so low tones read on small speakers
+function makePresenceCurve(n = 2048, bias = 0.35) {
+  const c = new Float32Array(n), off = Math.tanh(bias), norm = Math.tanh(1 + bias) - off;
+  for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1; c[i] = (Math.tanh(x + bias) - off) / norm; }
   return c;
 }
 
@@ -211,10 +219,37 @@ export class CircadianEngine {
     const warmR = ctx.createBiquadFilter(); warmR.type = "lowpass"; warmR.frequency.value = 2000; warmR.Q.value = 0.35;
     dwL.connect(warmL); warmL.connect(clipL);
     dwR.connect(warmR); warmR.connect(clipR);
+    // ===== PRESENCE (v6): harmonics of the low tones, high-passed, mixed in parallel =====
+    // The composition stays untouched; this only makes 55–110 Hz fundamentals
+    // perceptible on laptop / phone speakers via their upper partials.
+    const presence = (src, dest) => {
+      const lo1 = ctx.createBiquadFilter(); lo1.type = "lowpass"; lo1.frequency.value = 180; lo1.Q.value = 0.707;
+      const lo2 = ctx.createBiquadFilter(); lo2.type = "lowpass"; lo2.frequency.value = 180; lo2.Q.value = 0.707;
+      const drive = ctx.createGain(); drive.gain.value = 9.0;
+      const shaper = ctx.createWaveShaper(); shaper.curve = makePresenceCurve(); shaper.oversample = "2x";
+      const hp1 = ctx.createBiquadFilter(); hp1.type = "highpass"; hp1.frequency.value = 210; hp1.Q.value = 0.707;
+      const hp2 = ctx.createBiquadFilter(); hp2.type = "highpass"; hp2.frequency.value = 210; hp2.Q.value = 0.707;
+      const lp  = ctx.createBiquadFilter(); lp.type = "lowpass";  lp.frequency.value = 1800; lp.Q.value = 0.5;
+      const amt = ctx.createGain(); amt.gain.value = 0;
+      src.connect(lo1); lo1.connect(lo2); lo2.connect(drive); drive.connect(shaper); shaper.connect(hp1); hp1.connect(hp2); hp2.connect(lp); lp.connect(amt); amt.connect(dest);
+      return amt;
+    };
+    this.presenceL = presence(dwL, clipL);
+    this.presenceR = presence(dwR, clipR);
+
     const merger = ctx.createChannelMerger(2);
     clipL.connect(merger, 0, 0);
     clipR.connect(merger, 0, 1);
-    this.output = merger;
+
+    // ===== MASTER (v6): subsonic clean-up, makeup gain, gentle peak control =====
+    const subHP = ctx.createBiquadFilter(); subHP.type = "highpass"; subHP.frequency.value = 32; subHP.Q.value = 0.707;
+    this.makeup = ctx.createGain(); this.makeup.gain.value = 1.4;
+    const comp = ctx.createDynamicsCompressor();
+    comp.threshold.value = -16; comp.knee.value = 8; comp.ratio.value = 3;
+    comp.attack.value = 0.01; comp.release.value = 0.35;
+    merger.connect(subHP); subHP.connect(this.makeup); this.makeup.connect(comp);
+    this.output = comp;
+    this.setPresence(0.35);
 
     // ===== FOUR TIME ENGINES (each with its own tidal breath rate) =====
     this.voices = [
@@ -252,6 +287,12 @@ export class CircadianEngine {
     this.droneOscs.forEach(o => o.start(t));
     lfo.start(t);
     lfoOffset.start(t);
+  }
+
+  // presence of upper partials (0 = off); speaker mode uses more
+  setPresence(amount) {
+    const t = this.ctx.currentTime;
+    [this.presenceL.gain, this.presenceR.gain].forEach(g => g.setTargetAtTime(amount, t, 0.4));
   }
 
   setOffsetCap(cap) {
