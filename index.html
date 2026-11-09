@@ -5,6 +5,20 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 <title>Haishan Lai — Pianist · Composer · Producer</title>
 <meta name="description" content="Haishan Lai (Toby Hysan) — pianist, composer, and producer. Impressionist in expression, progressive in form&nbsp;— music that dissolves edges, from the screen to the stage, and stretches into different dimensions." />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#090B14">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Haishan Lai">
+<meta property="og:title" content="Haishan Lai — Pianist · Composer · Producer">
+<meta property="og:description" content="Pianist, composer and producer. Impressionism in expression, progressive in form.">
+<meta property="og:url" content="https://oceanmountainlai.art/">
+<meta property="og:image" content="https://oceanmountainlai.art/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oceanmountainlai.art/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet" />
@@ -334,6 +348,30 @@
   .row[hidden],[hidden]{display:none !important;}
   @media(min-width:760px){#work .row{align-items:center;}}
   @media(max-width:600px){.row .title.has-cover{--cv:64px;column-gap:1rem;}#work .row .meta{padding-left:calc(64px + 1rem);}}
+  /* WORK — album (Hoboken 07030) */
+  .row.album{--cv:88px;}
+  .row.album .album-name{align-self:end;}
+  .cover.stack{position:relative;border:0;background:none;overflow:visible;}
+  .cover.stack img{position:absolute;width:78%;height:78%;object-fit:cover;border:1px solid var(--line-2);
+    transition:transform .9s var(--ease);}
+  .cover.stack img:first-child{left:0;top:0;opacity:.85;}
+  .cover.stack img:last-child{right:0;bottom:0;box-shadow:-6px -6px 18px rgba(9,11,20,.65);}
+  .row.album:hover .cover.stack img:first-child{transform:translate(-3px,-3px);}
+  .row.album:hover .cover.stack img:last-child{transform:translate(3px,3px);}
+  .row.album .tracks,.row.album .track-toggle{grid-column:1 / -1;}
+  .tracks{display:grid;grid-template-rows:0fr;transition:grid-template-rows .8s var(--ease);}
+  .tracks.open{grid-template-rows:1fr;}
+  .tracks-inner{overflow:hidden;min-height:0;}
+  .tracklist{list-style:none;margin:0;padding:.9rem 0 0 calc(var(--cv) + 1.4rem);}
+  .tracklist li{display:grid;grid-template-columns:2.2rem minmax(0,1fr) auto;align-items:baseline;gap:.8rem;padding:.55rem 0;border-top:1px solid var(--line);
+    font-family:var(--serif);font-size:1.12rem;color:var(--mist);}
+  .tracklist .n,.tracklist .ty{font-family:var(--mono);font-size:.74rem;letter-spacing:.08em;color:var(--faint);}
+  .tracklist .t{color:var(--haze);}
+  .track-toggle{justify-self:start;margin:1rem 0 0 calc(var(--cv) + 1.4rem);background:none;border:0;border-bottom:1px solid var(--line-2);padding:.25rem 0;cursor:pointer;
+    font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);transition:color .4s var(--ease),border-color .4s var(--ease);}
+  .track-toggle:hover{color:var(--lumen);border-color:var(--lumen);}
+  @media(max-width:600px){.row.album{--cv:64px;}.tracklist{padding-left:0;}.track-toggle{margin-left:calc(64px + 1rem);}.tracklist li{font-size:1rem;}}
+  @media(prefers-reduced-motion:reduce){.tracks{transition:none;}}
 </style>
 </head>
 <body>
@@ -404,37 +442,22 @@
             <span class="role" data-i18n="work8_role">OceanMountain · Cover drawing by Haishan&nbsp;Lai</span>
           </div>
         </div>
-        <div class="row" data-reveal hidden>
+        <div class="row album" data-reveal>
           <div class="title has-cover">
-            <span class="cover blank" aria-hidden="true"></span>
-            <a href="https://untitled.stream/library/project/uAwz0DsY9GpeebN4rsgYS" target="_blank" rel="noopener" class="work-link">Echoes of Ash Valley <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work1_role">Composer &amp; Producer</span>
+            <span class="cover stack" aria-hidden="true"><img src="covers/rain.webp" alt="" width="96" height="96" loading="lazy" decoding="async"><img src="covers/angel-dust.webp" alt="" width="96" height="96" loading="lazy" decoding="async"></span>
+            <span class="album-name">Hoboken 07030</span>
+            <span class="role" data-i18n="album1_role">Eric Leo · Feature composition</span>
           </div>
-          <div class="meta"><span class="yr">09.2024</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title has-cover">
-            <a class="cover" href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/rain.webp" alt="Cover of Rain (Mood for Love)" width="96" height="96" loading="lazy" decoding="async"></a>
-            <a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work2_role">Feature composition with Eric Leo</span>
-          </div>
-          <div class="meta"><span class="yr">08.2023</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title has-cover">
-            <a class="cover" href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/angel-dust.webp" alt="Cover of Angel Dust" width="96" height="96" loading="lazy" decoding="async"></a>
-            <a href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" class="work-link">Angel Dust <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work4_role">Feature composition with Eric Leo</span>
-          </div>
-          <div class="meta"><span class="yr">10.2022</span></div>
-        </div>
-        <div class="row" data-reveal hidden>
-          <div class="title has-cover">
-            <span class="cover blank" aria-hidden="true"></span>
-            <a href="https://untitled.stream/library/track/X1j9gSyvFvgaNFcsLyDgC" target="_blank" rel="noopener" class="work-link">GONE MISSING <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work5_role">Feature composition with Eric Leo</span>
-          </div>
-          <div class="meta"><span class="yr">12.2022</span></div>
+          <div class="meta"><span class="yr">2022 — 24</span></div>
+          <div class="tracks" id="tracks1"><div class="tracks-inner">
+            <ol class="tracklist">
+              <li><span class="n">01</span><a href="https://youtu.be/Nkgu44pjRZI?si=FvQlKZkSDzCceeXP" target="_blank" rel="noopener" class="work-link">Angel Dust <span class="arr">↗</span></a><span class="ty">10.2022</span></li>
+              <li><span class="n">02</span><span class="t">Gone Missing</span><span class="ty">12.2022</span></li>
+              <li><span class="n">03</span><a href="https://www.youtube.com/watch?v=DWR2JrDC5kE" target="_blank" rel="noopener" class="work-link">Rain <span style="font-style:italic">(Mood for Love)</span> <span class="arr">↗</span></a><span class="ty">08.2023</span></li>
+              <li><span class="n">04</span><span class="t">Echoes of Ash Valley</span><span class="ty">09.2024</span></li>
+            </ol>
+          </div></div>
+          <button class="track-toggle" id="trackToggle1" type="button" aria-expanded="false" aria-controls="tracks1"><span data-i18n="track_more">Tracklist · 4</span></button>
         </div>
         <div class="row" data-reveal hidden>
           <div class="title has-cover">
@@ -660,6 +683,9 @@
       work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work5_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work6_role:{en:"Feature composition with Zekiizo",zh:"Feature composition with Zekiizo"},
+      album1_role:{en:"Eric Leo · Feature composition",zh:"Eric Leo · 合作作曲"},
+      track_more:{en:"Tracklist · 4",zh:"曲目 · 4"},
+      track_less:{en:"Close",zh:"收起"},
       work7_role:{en:"OceanMountain · Cover drawing by Haishan&nbsp;Lai",zh:"OceanMountain · 封面手繪：Haishan&nbsp;Lai"},
       work8_role:{en:"OceanMountain · Cover drawing by Haishan&nbsp;Lai",zh:"OceanMountain · 封面手繪：Haishan&nbsp;Lai"},
       lbl_listen:{en:"Full Catalog",zh:"完整作品"},
@@ -721,6 +747,19 @@
     // Initial State: English
     setYear();
     document.getElementById('langToggle').addEventListener('click', function(){ applyLang(lang==='en'?'zh':'en'); });
+    // Album tracklist — expand / collapse
+    (function(){
+      var btn=document.getElementById('trackToggle1'), box=document.getElementById('tracks1');
+      if(!btn||!box) return;
+      btn.addEventListener('click', function(){
+        var open=!box.classList.contains('open');
+        box.classList.toggle('open', open);
+        btn.setAttribute('aria-expanded', String(open));
+        var lbl=btn.querySelector('[data-i18n]');
+        lbl.setAttribute('data-i18n', open?'track_less':'track_more');
+        lbl.innerHTML=I18N[open?'track_less':'track_more'][lang];
+      });
+    })();
     // On Stage — expand / collapse
     (function(){
       var btn=document.getElementById('perfToggle'), box=document.getElementById('perfMore');
