@@ -427,7 +427,7 @@
 .hero-E .tempo{--o:.62;left:clamp(1.4rem,5vw,4.5rem);top:46%;font-family:var(--mono);font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--faint);white-space:nowrap;}
 /* 3–5 · the sentence, as dynamics */
 .hero-E .l1{--o:.58;left:clamp(5rem,9vw,8.5rem);top:30%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.92rem,.8rem + .45vw,1.15rem);letter-spacing:.02em;color:var(--haze);white-space:nowrap;}
-.hero-E .l2{--o:.9;left:clamp(9rem,22vw,20rem);top:41%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.25rem,1rem + 1vw,1.9rem);letter-spacing:-.005em;color:#E6E1EC;white-space:nowrap;}
+.hero-E .l2{--o:.66;left:clamp(9rem,22vw,20rem);top:41%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.25rem,1rem + 1vw,1.9rem);letter-spacing:-.005em;color:var(--haze);white-space:nowrap;}
 .hero-E .l3{--o:.66;left:clamp(6rem,14vw,13rem);top:55%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.95rem,.85rem + .5vw,1.25rem);letter-spacing:.02em;color:var(--haze);white-space:nowrap;}
 body.lang-zh .hero-E .l1,body.lang-zh .hero-E .l2,body.lang-zh .hero-E .l3{font-family:var(--zh-font);font-style:normal;letter-spacing:.26em;}
 .hero-E .tempo{top:21%;left:clamp(5rem,9vw,8.5rem);}
@@ -444,9 +444,9 @@ body.lang-zh .hero-E .pp{font-family:var(--zh-font);font-style:normal;letter-spa
   font-family:var(--serif);font-weight:300;font-size:clamp(9rem,27vw,23rem);line-height:1;letter-spacing:-.03em;
   transform:translate(var(--sx,0px),var(--sy,0px));}
 body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,20rem);letter-spacing:.02em;bottom:-.14em;}
-.hero-E .ff{position:relative;z-index:2;color:#F2EEE4;opacity:0;filter:blur(18px);letter-spacing:.14em;}
+.hero-E .ff{position:relative;z-index:2;color:#CFC9BC;opacity:0;filter:blur(18px);letter-spacing:.14em;}
 .hero-E .ff.in{animation:ffIn 4.4s var(--ease) forwards;}
-@keyframes ffIn{to{opacity:.92;filter:blur(0);letter-spacing:inherit}}
+@keyframes ffIn{to{opacity:.8;filter:blur(0);letter-spacing:inherit}}
 .hero-E .echo{position:absolute;left:0;top:0;z-index:1;color:#CFCBE6;pointer-events:none;opacity:0;letter-spacing:inherit;
   transform:translate(calc(var(--ax,0)*var(--lag) + var(--off)),calc(var(--ay,0)*var(--lag)*.7 + var(--off)*.8));}
 .hero-E .echo{color:#A9C4BC;mix-blend-mode:screen;}
@@ -470,7 +470,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 @media(prefers-reduced-motion:reduce){
   .hero-E .nrule{opacity:.55;}
   .hero-E .w,.hero-E .w.in{animation:none;opacity:var(--o,1);filter:none;transform:none;}
-  .hero-E .ff,.hero-E .ff.in{animation:none;opacity:.92;filter:none;letter-spacing:inherit;}
+  .hero-E .ff,.hero-E .ff.in{animation:none;opacity:.8;filter:none;letter-spacing:inherit;}
   .hero-E .echo{display:none;}
 }
 
@@ -986,14 +986,14 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
   function cycle(){
     var dur=12000+Math.random()*5000, quiet=.3+Math.random()*.15, loose=zh()? .24+Math.random()*.08 : .08+Math.random()*.05;
     var tight=zh()? '.02em' : '-.03em';
-    var kf=[{opacity:.92,letterSpacing:tight,filter:'blur(0px)',offset:0},
-            {opacity:1,letterSpacing:tight,filter:'blur(0px)',offset:.38},
+    var kf=[{opacity:.78,letterSpacing:tight,filter:'blur(0px)',offset:0},
+            {opacity:.84,letterSpacing:tight,filter:'blur(0px)',offset:.38},
             {opacity:quiet,letterSpacing:loose+'em',filter:'blur(2.6px)',offset:.7},
-            {opacity:.92,letterSpacing:tight,filter:'blur(0px)',offset:1}];
+            {opacity:.78,letterSpacing:tight,filter:'blur(0px)',offset:1}];
     var opts={duration:dur,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'};
     var a=ff.animate(kf,opts);
     // delay echoes: same breath, later and quieter
-    echoes.forEach(function(e,i){ var lag=(i+1)*650; var s=i?.055:.12;
+    echoes.forEach(function(e,i){ var lag=(i+1)*650; var s=i?.04:.08;
       e.animate(kf.map(function(k){ return {opacity:k.opacity*s,letterSpacing:k.letterSpacing,filter:k.filter,offset:k.offset}; }),Object.assign({},opts,{delay:lag})); });
     // call and response: "dissolves" leans in while "edges." fades
     pp.animate([{opacity:.72,letterSpacing:zh()?'.32em':'.04em',offset:0},{opacity:.72,offset:.5},{opacity:.95,letterSpacing:zh()?'.4em':'.09em',offset:.74},{opacity:.72,letterSpacing:zh()?'.32em':'.04em',offset:1}],opts);
