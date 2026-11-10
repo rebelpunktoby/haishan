@@ -409,6 +409,72 @@
   @media(max-width:600px){.row.album{--cv:64px;}.tracklist{padding-left:0;}.track-toggle{margin-left:calc(64px + 1rem);}.tracklist li{font-size:1rem;}}
   @media(prefers-reduced-motion:reduce){.tracks{transition:none;}}
 </style>
+<style>
+
+/* ===== Variant E · one phrase, pp → ff ===== */
+.hero-E{align-items:stretch;padding:0;}
+.hero-E .hero-inner{position:relative;z-index:3;min-height:100svh;}
+.hero-E .ink,.hero-E .hero-rail,.hero-E .hero-meta{display:none;}
+.hero-E .w{position:absolute;margin:0;opacity:0;filter:blur(6px);transform:translateY(6px);}
+.hero-E .w.in{animation:wIn 2.6s var(--ease) forwards;}
+@keyframes wIn{to{opacity:var(--o,1);filter:blur(0);transform:none}}
+/* 1 · the name — thin, vertical, along the left edge */
+.hero-E .name{--o:.72;left:clamp(1.3rem,2.6vw,2.4rem);top:7.2rem;writing-mode:vertical-rl;
+  font-family:var(--serif);font-weight:300;font-size:clamp(.82rem,.76rem + .25vw,1rem);letter-spacing:.34em;text-transform:uppercase;color:var(--mist);white-space:nowrap;}
+.hero-E .nrule{position:absolute;left:calc(clamp(1.3rem,2.6vw,2.4rem) + .45em);top:calc(7.2rem + 9.6em);width:1px;height:2.6rem;background:var(--lumen);opacity:0;}
+.hero-E .nrule.in{animation:wIn 2.6s var(--ease) forwards;--o:.55;}
+/* 2 · tempo marking */
+.hero-E .tempo{--o:.62;left:clamp(1.4rem,5vw,4.5rem);top:46%;font-family:var(--mono);font-size:.62rem;letter-spacing:.38em;text-transform:uppercase;color:var(--faint);white-space:nowrap;}
+/* 3–5 · the sentence, as dynamics */
+.hero-E .l1{--o:.58;left:clamp(5rem,9vw,8.5rem);top:30%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.92rem,.8rem + .45vw,1.15rem);letter-spacing:.02em;color:var(--haze);white-space:nowrap;}
+.hero-E .l2{--o:.9;left:clamp(9rem,22vw,20rem);top:41%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.25rem,1rem + 1vw,1.9rem);letter-spacing:-.005em;color:#E6E1EC;white-space:nowrap;}
+.hero-E .l3{--o:.66;left:clamp(6rem,14vw,13rem);top:55%;font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.95rem,.85rem + .5vw,1.25rem);letter-spacing:.02em;color:var(--haze);white-space:nowrap;}
+body.lang-zh .hero-E .l1,body.lang-zh .hero-E .l2,body.lang-zh .hero-E .l3{font-family:var(--zh-font);font-style:normal;letter-spacing:.26em;}
+.hero-E .tempo{top:21%;left:clamp(5rem,9vw,8.5rem);}
+/* color — warmer ink, less screen-purple; a trace of the portrait's teal and amber */
+.hero-E .o1{opacity:.4;}.hero-E .o4{opacity:.28;}.hero-E .o2{opacity:.56;}.hero-E .o5{opacity:.46;}
+.hero-E.hero::after{background:radial-gradient(ellipse 85% 75% at 42% 48%,rgba(6,5,10,0) 50%,rgba(6,5,10,.68) 100%),
+  linear-gradient(90deg,rgba(6,5,10,.42) 0%,rgba(6,5,10,0) 14%,rgba(6,5,10,0) 86%,rgba(6,5,10,.46) 100%);}
+/* 6 · pp */
+.hero-E .pp{--o:.72;left:clamp(7rem,30vw,22rem);bottom:clamp(14rem,37vh,25rem);
+  font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.95rem,.8rem + .5vw,1.25rem);letter-spacing:.04em;color:var(--haze);white-space:nowrap;}
+body.lang-zh .hero-E .pp{font-family:var(--zh-font);font-style:normal;letter-spacing:.32em;}
+/* 4 · ff — the breathing word, with two delayed echoes */
+.hero-E .ffw{position:absolute;left:-.06em;bottom:-.26em;margin:0;white-space:nowrap;
+  font-family:var(--serif);font-weight:300;font-size:clamp(9rem,27vw,23rem);line-height:1;letter-spacing:-.03em;
+  transform:translate(var(--sx,0px),var(--sy,0px));}
+body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,20rem);letter-spacing:.02em;bottom:-.14em;}
+.hero-E .ff{position:relative;z-index:2;color:#F2EEE4;opacity:0;filter:blur(18px);letter-spacing:.14em;}
+.hero-E .ff.in{animation:ffIn 4.4s var(--ease) forwards;}
+@keyframes ffIn{to{opacity:.92;filter:blur(0);letter-spacing:inherit}}
+.hero-E .echo{position:absolute;left:0;top:0;z-index:1;color:#CFCBE6;pointer-events:none;opacity:0;letter-spacing:inherit;
+  transform:translate(calc(var(--ax,0)*var(--lag) + var(--off)),calc(var(--ay,0)*var(--lag)*.7 + var(--off)*.8));}
+.hero-E .echo{color:#A9C4BC;mix-blend-mode:screen;}
+.hero-E .echo.e2{color:#C9B08E;}
+.hero-E .echo.e1{--lag:16px;--off:22px;filter:blur(5px);transition:transform 1.9s var(--ease);}
+.hero-E .echo.e2{--lag:30px;--off:48px;filter:blur(11px);transition:transform 3.6s var(--ease);}
+.hero-E .scroll-cue{left:auto;right:0;flex-direction:row-reverse;}
+@media(max-width:760px){
+  .hero-E .name{top:6.4rem;font-size:.74rem;letter-spacing:.3em;}
+  .hero-E .nrule{top:calc(6.4rem + 9.2em);font-size:.74rem;}
+  .hero-E .tempo{top:16%;left:3.6rem;}
+  .hero-E .l1{top:25%;left:3.6rem;font-size:.9rem;}
+  .hero-E .l2{top:34%;left:16vw;font-size:1.25rem;}
+  .hero-E .l3{top:44%;left:3.6rem;font-size:.95rem;}
+  .hero-E .pp{left:clamp(4rem,22vw,9rem);bottom:clamp(12rem,31vh,17rem);}
+  .hero-E .ffw{font-size:36vw;bottom:-.2em;left:-.04em;}
+  body.lang-zh .hero-E .ffw{font-size:40vw;}
+  .hero-E .echo{display:none;}
+  .hero-E .scroll-cue{display:none;}
+}
+@media(prefers-reduced-motion:reduce){
+  .hero-E .nrule{opacity:.55;}
+  .hero-E .w,.hero-E .w.in{animation:none;opacity:var(--o,1);filter:none;transform:none;}
+  .hero-E .ff,.hero-E .ff.in{animation:none;opacity:.92;filter:none;letter-spacing:inherit;}
+  .hero-E .echo{display:none;}
+}
+
+</style>
 </head>
 <body>
 <a class="skip" href="#statement" data-i18n="skip">Skip to content</a>
@@ -428,7 +494,7 @@
 </header>
 
 <main>
-  <section class="hero" aria-label="Introduction">
+  <section class="hero hero-E" aria-label="Introduction">
     <div class="field" aria-hidden="true">
       <div class="orb-wrap" style="--depth:16px"><span class="orb o1"></span></div>
       <div class="orb-wrap" style="--depth:-22px"><span class="orb o2"></span></div>
@@ -437,15 +503,15 @@
       <div class="orb-wrap" style="--depth:38px"><span class="orb o5"></span></div>
     </div>
     <div class="hero-portrait" aria-hidden="true"></div>
-    <div class="ink" aria-hidden="true"><span class="ink-c i1">海</span><span class="ink-c i2">山</span></div>
-    <div class="hero-rail" aria-hidden="true"><span data-i18n="hero_meta2">Piano · Sound · Time</span><span class="rail-dot"></span><span data-i18n="based_cities">Mexico City · New York</span></div>
     <div class="wrap hero-inner">
-      <p class="thesis lines" data-i18n="hero_thesis"><span class="ln l1">Impressionism in expression,</span><span class="ln l2">progressive in form&nbsp;—</span><span class="ln l3">music that</span><span class="ln l4"><span class="hl">dissolves edges.</span></span><span class="ln gap sub">From screen to stage, and the space between.</span></p>
+      <p class="w name" aria-hidden="true">Haishan Lai</p><span class="nrule" aria-hidden="true"></span>
+      <p class="w tempo" data-i18n="hero_meta2">Piano · Sound · Time</p>
+      <p class="w l1" data-i18n="hero_l1">Impressionism in expression,</p>
+      <p class="w l2" data-i18n="hero_l2">progressive in form&nbsp;—</p>
+      <p class="w l3" data-i18n="hero_l3">music that</p>
+      <p class="w pp" data-i18n="hero_pp">dissolves</p>
+      <p class="ffw"><span class="ff" data-i18n="hero_ff">edges.</span><span class="echo e1" aria-hidden="true">edges.</span><span class="echo e2" aria-hidden="true">edges.</span></p>
       <h1 class="vh">Haishan Lai</h1>
-      <div class="hero-meta">
-        <span data-i18n="hero_meta2">Piano · Sound · Time</span>
-        <span data-i18n="based_cities">Mexico City · New York</span>
-      </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
   </section>
@@ -711,6 +777,11 @@
       nav_contact:{en:"Contact",zh:"聯絡"},
       hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
       hero_thesis:{en:'<span class="ln l1">Impressionism in expression,</span><span class="ln l2">progressive in form&nbsp;—</span><span class="ln l3">music that</span><span class="ln l4"><span class="hl">dissolves edges.</span></span><span class="ln gap sub">From screen to stage, and the space between.</span>',zh:'<span class="ln l1">於印象派的表達，</span><span class="ln l2">形式上的前衛主義——</span><span class="ln l3">從自身</span><span class="ln l4"><span class="hl">邊界融入</span>在音樂，</span><span class="ln gap sub">從銀幕到舞台，以及兩者之間。</span>'},
+      hero_l1:{en:"Impressionism in expression,",zh:"於印象派的表達，"},
+      hero_l2:{en:"progressive in form&nbsp;—",zh:"形式上的前衛主義——"},
+      hero_l3:{en:"music that",zh:"從自身"},
+      hero_pp:{en:"dissolves",zh:"融入"},
+      hero_ff:{en:"edges.",zh:"邊界"},
       hero_sig:{en:"Haishan Lai",zh:"賴海山"},
       hero_meta2:{en:'Piano · Sound · Time',zh:'鋼琴・聲音・時間'},
       scroll:{en:"Scroll",zh:"向下捲動"},
@@ -891,6 +962,57 @@
     });
 
   })();
+</script>
+<script>
+(function(){
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches, hover=window.matchMedia('(hover: hover)').matches;
+  var hero=document.querySelector('.hero-E'); if(!hero) return;
+  var name=hero.querySelector('.name'), nrule=hero.querySelector('.nrule'), tempo=hero.querySelector('.tempo'), pp=hero.querySelector('.pp'),
+      l1=hero.querySelector('.l1'), l2=hero.querySelector('.l2'), l3=hero.querySelector('.l3'),
+      ffw=hero.querySelector('.ffw'), ff=hero.querySelector('.ff'), echoes=hero.querySelectorAll('.echo');
+  // echoes follow the language
+  new MutationObserver(function(){ echoes.forEach(function(e){ e.textContent=ff.textContent; }); }).observe(ff,{childList:true,characterData:true,subtree:true});
+  if(reduce){ return; }
+  // the phrase, in order: name · tempo · dissolves · edges.
+  setTimeout(function(){ name.classList.add('in'); nrule.classList.add('in'); }, 400);
+  setTimeout(function(){ tempo.classList.add('in'); }, 2000);
+  setTimeout(function(){ l1.classList.add('in'); }, 3400);
+  setTimeout(function(){ l2.classList.add('in'); }, 5000);
+  setTimeout(function(){ l3.classList.add('in'); }, 6700);
+  setTimeout(function(){ pp.classList.add('in'); }, 7700);
+  setTimeout(function(){ ff.classList.add('in'); echoes.forEach(function(e){ e.style.opacity=''; }); }, 8900);
+  // breathing: each cycle a little different — crescendo, hold, loosen and fade, return
+  var zh=function(){ return document.body.classList.contains('lang-zh'); };
+  function cycle(){
+    var dur=12000+Math.random()*5000, quiet=.3+Math.random()*.15, loose=zh()? .24+Math.random()*.08 : .08+Math.random()*.05;
+    var tight=zh()? '.02em' : '-.03em';
+    var kf=[{opacity:.92,letterSpacing:tight,filter:'blur(0px)',offset:0},
+            {opacity:1,letterSpacing:tight,filter:'blur(0px)',offset:.38},
+            {opacity:quiet,letterSpacing:loose+'em',filter:'blur(2.6px)',offset:.7},
+            {opacity:.92,letterSpacing:tight,filter:'blur(0px)',offset:1}];
+    var opts={duration:dur,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'};
+    var a=ff.animate(kf,opts);
+    // delay echoes: same breath, later and quieter
+    echoes.forEach(function(e,i){ var lag=(i+1)*650; var s=i?.055:.12;
+      e.animate(kf.map(function(k){ return {opacity:k.opacity*s,letterSpacing:k.letterSpacing,filter:k.filter,offset:k.offset}; }),Object.assign({},opts,{delay:lag})); });
+    // call and response: "dissolves" leans in while "edges." fades
+    pp.animate([{opacity:.72,letterSpacing:zh()?'.32em':'.04em',offset:0},{opacity:.72,offset:.5},{opacity:.95,letterSpacing:zh()?'.4em':'.09em',offset:.74},{opacity:.72,letterSpacing:zh()?'.32em':'.04em',offset:1}],opts);
+    a.onfinish=function(){ setTimeout(cycle, 400+Math.random()*900); };
+  }
+  setTimeout(cycle, 8900+4400+600);
+  if(hover){
+    var raf=null,ax=0,ay=0;
+    window.addEventListener('pointermove',function(e){
+      ax=(e.clientX/window.innerWidth-.5)*2; ay=(e.clientY/window.innerHeight-.5)*2;
+      if(!raf){raf=requestAnimationFrame(function(){hero.style.setProperty('--ax',ax.toFixed(3));hero.style.setProperty('--ay',ay.toFixed(3));raf=null;});}
+    },{passive:true});
+    var sraf=null;
+    window.addEventListener('scroll',function(){ if(sraf) return; sraf=requestAnimationFrame(function(){ sraf=null;
+      var y=window.scrollY, h=hero.offsetHeight; if(y>h) return;
+      ffw.style.setProperty('--sy',(y*.32).toFixed(1)+'px'); ffw.style.setProperty('--sx',(y*-.08).toFixed(1)+'px');
+      pp.style.marginTop=(y*.12).toFixed(1)+'px'; }); },{passive:true});
+  }
+})();
 </script>
 </body>
 </html>
