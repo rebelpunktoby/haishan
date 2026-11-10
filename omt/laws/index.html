@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta name="color-scheme" content="dark" />
+<title>The Laws — 山海 OceanMountain</title>
+<meta name="description" content="The governing laws of 山海 OceanMountain, and how the hour leans right now. By Haishan Lai." />
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#090B14">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Haishan Lai">
+<meta property="og:title" content="The Laws — 山海 OceanMountain">
+<meta property="og:description" content="Time initiates. It does not command. The listener completes the work.">
+<meta property="og:url" content="https://oceanmountainlai.art/omt/laws/">
+<meta property="og:image" content="https://oceanmountainlai.art/og-omt.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oceanmountainlai.art/og-omt.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;1,9..144,300&family=Space+Grotesk:wght@300;400;500&family=Space+Mono&family=Noto+Serif+TC:wght@300;400&family=Noto+Sans+TC:wght@300;400&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --ink:#090B14; --ink-2:#0C0F1C;
+    --mist:#ECEAF4; --haze:#9B98B6; --faint:#6A6885;
+    --line:#1F2236; --line-2:#2A2D44;
+    --lumen:#8FE3D2; --violet:#7C6BB3; --teal:#3FA89C; --amber:#E2AC6E;
+    --wrap:1180px; --ease:cubic-bezier(.2,.7,.2,1);
+    --serif:"Fraunces","Noto Serif TC",Georgia,serif;
+    --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
+    --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
+  }
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{margin:0;background:var(--ink);color:var(--mist);font-family:var(--sans);font-weight:300;
+    font-size:clamp(1rem,1.02rem + .1vw,1.08rem);line-height:1.65;-webkit-font-smoothing:antialiased;overflow-x:hidden;}
+  body.lang-zh{font-size:.9rem;letter-spacing:.06em;line-height:1.9;}
+  a{color:inherit;text-decoration:none;}
+  ::selection{background:rgba(143,227,210,.22);color:#fff;}
+  :focus-visible{outline:2px solid var(--lumen);outline-offset:4px;border-radius:2px;}
+  body::after{content:"";position:fixed;inset:0;z-index:200;pointer-events:none;opacity:.05;mix-blend-mode:overlay;
+    background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='220' height='220'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.82' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");}
+  .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1rem,5vw,4.5rem);}
+
+  /* BETA BAND — the emphasis */
+  .band{position:fixed;top:0;left:0;right:0;z-index:101;background:var(--amber);color:#1d1408;
+    font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;text-align:center;padding:.38rem 1rem;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  @media(max-width:520px){.band{font-size:.6rem;letter-spacing:.12em;}}
+  body.lang-zh .band{letter-spacing:.3em;}
+
+  /* NAV */
+  header.nav{position:fixed;top:1.65rem;left:0;right:0;z-index:100;border-bottom:1px solid transparent;
+    transition:background .5s var(--ease),border-color .5s var(--ease);}
+  header.nav.scrolled{background:rgba(9,11,20,.78);backdrop-filter:blur(14px);border-bottom-color:var(--line);}
+  .nav-row{display:flex;align-items:center;justify-content:space-between;padding-block:1rem;gap:1rem;}
+  .brand{font-family:var(--mono);font-size:.78rem;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;}
+  .brand b{color:var(--lumen);font-weight:400;}
+  .nav-right{display:flex;align-items:center;gap:1.6rem;}
+  .nav-links{display:flex;gap:1.8rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.18em;text-transform:uppercase;color:var(--haze);}
+  .nav-links a:hover{color:var(--mist);}
+  .nav-links a.nav-omt{color:var(--lumen);} .nav-links a.nav-omt span{font-family:var(--serif);}
+  .lang-toggle{font-family:var(--mono);font-size:.72rem;letter-spacing:.1em;color:var(--mist);background:transparent;
+    border:1px solid var(--line-2);border-radius:22px;padding:.36rem .82rem;cursor:pointer;line-height:1;}
+  .lang-toggle:hover{border-color:var(--lumen);color:var(--lumen);}
+
+  /* HERO + PLAYER */
+  .hero{position:relative;padding-top:8.5rem;padding-bottom:3rem;}
+  .eyebrow{font-family:var(--mono);font-size:.74rem;letter-spacing:.3em;text-transform:uppercase;color:var(--haze);margin:0 0 1.4rem;}
+  .pill{display:inline-flex;align-items:center;gap:.55rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;
+    border:1px solid currentColor;border-radius:22px;padding:.32rem .8rem;line-height:1;white-space:nowrap;}
+  .pill::before{content:"";width:.45rem;height:.45rem;border-radius:50%;background:currentColor;}
+  .pill.wip{color:var(--amber);} .pill.wip::before{animation:pulse 2.4s var(--ease) infinite;}
+  .pill.done{color:var(--lumen);} .pill.next{color:var(--violet);} .pill.off{color:var(--faint);}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.25}}
+  h1{font-family:var(--serif);font-weight:300;font-size:clamp(3rem,10vw,7.4rem);line-height:.95;letter-spacing:-.02em;margin:1.2rem 0 0;}
+  h1 em{font-style:italic;font-weight:300;color:var(--lumen);}
+  .thesis{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.15rem,1rem + 1.2vw,1.8rem);
+    line-height:1.36;color:#D7D4E6;max-width:32ch;margin:1.6rem 0 0;}
+  body.lang-zh .thesis{font-style:normal;letter-spacing:.06em;line-height:1.7;}
+
+  .player{position:relative;margin-top:3rem;border:1px solid var(--line-2);border-radius:18px;overflow:hidden;background:var(--ink-2);}
+  .stage{position:relative;}
+  #horizon{display:block;width:100%;height:clamp(220px,38vh,380px);}
+  .play-wrap{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1rem;pointer-events:none;}
+  .play{pointer-events:auto;width:5.4rem;height:5.4rem;border-radius:50%;border:1px solid var(--lumen);background:rgba(9,11,20,.45);
+    color:var(--lumen);cursor:pointer;display:grid;place-items:center;transition:transform .4s var(--ease),background .4s var(--ease);}
+  .play:hover{transform:scale(1.05);background:rgba(143,227,210,.1);}
+  .play svg{width:1.6rem;height:1.6rem;}
+  .play .i-pause{display:none;} .player.on .play .i-play{display:none;} .player.on .play .i-pause{display:block;}
+  .play-label{font-family:var(--mono);font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;color:var(--haze);}
+  .player.on .play-wrap{justify-content:flex-end;padding-bottom:1.2rem;}
+  .player.on .play{width:3.4rem;height:3.4rem;}
+  .player.on .play-label{display:none;}
+
+  .controls{display:grid;grid-template-columns:repeat(3,1fr);gap:1.4rem 2rem;padding:1.4rem clamp(1rem,3vw,2rem);border-top:1px solid var(--line);}
+  @media(max-width:640px){.controls{grid-template-columns:1fr;}}
+  .ctl label{display:flex;justify-content:space-between;font-family:var(--mono);font-size:.7rem;letter-spacing:.18em;text-transform:uppercase;color:var(--haze);margin-bottom:.55rem;}
+  .ctl output{color:var(--mist);letter-spacing:.06em;}
+  input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:2px;background:var(--line-2);border-radius:2px;outline-offset:8px;}
+  input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:15px;height:15px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;}
+  input[type=range]::-moz-range-thumb{width:15px;height:15px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;}
+  .player-foot{display:flex;flex-wrap:wrap;gap:.6rem 1.6rem;justify-content:space-between;align-items:baseline;
+    padding:1rem clamp(1rem,3vw,2rem) 1.2rem;border-top:1px solid var(--line);font-size:.86rem;color:var(--haze);}
+  .player-foot .clock{font-family:var(--mono);font-size:.74rem;letter-spacing:.12em;color:var(--mist);}
+  .notyet{color:var(--amber);}
+  .hint{margin:.9rem 0 0;font-family:var(--mono);font-size:.68rem;letter-spacing:.16em;text-transform:uppercase;color:var(--faint);}
+
+  /* SECTIONS */
+  section.block{padding-block:clamp(3.5rem,8vw,6.5rem);border-top:1px solid var(--line);}
+  .seclabel{display:flex;align-items:center;gap:1rem;margin-bottom:2.4rem;}
+  .seclabel .tag{font-family:var(--mono);font-size:.74rem;letter-spacing:.28em;text-transform:uppercase;color:var(--lumen);white-space:nowrap;}
+  .seclabel .rule{height:1px;background:var(--line-2);flex:1;}
+  .seclabel .idx{font-family:var(--mono);font-size:.74rem;color:var(--faint);}
+  .lead{font-family:var(--serif);font-weight:300;font-size:clamp(1.3rem,1.05rem + 1.3vw,2.1rem);line-height:1.4;color:#DEDBEC;max-width:34ch;margin:0;}
+  body.lang-zh .lead{letter-spacing:.05em;line-height:1.75;}
+  .body{color:var(--haze);max-width:62ch;margin:1.4rem 0 0;}
+  .body strong{color:var(--mist);font-weight:500;}
+  h3{font-family:var(--mono);font-weight:400;font-size:.74rem;letter-spacing:.24em;text-transform:uppercase;color:var(--haze);margin:3.4rem 0 1.2rem;}
+
+  .chain{list-style:none;margin:0;padding:0;display:grid;gap:0;counter-reset:c;}
+  .chain li{display:grid;grid-template-columns:2.4rem minmax(9rem,14rem) 1fr;gap:.2rem 1.2rem;align-items:baseline;padding:1rem 0;border-top:1px solid var(--line);}
+  .chain li::before{counter-increment:c;content:counter(c,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--faint);}
+  .chain .k{font-family:var(--serif);font-size:1.25rem;color:var(--mist);}
+  .chain .v{color:var(--haze);}
+  .chain li:last-child .k{color:var(--lumen);}
+  @media(max-width:640px){.chain li{grid-template-columns:2rem 1fr;}.chain .v{grid-column:2;}}
+
+  .formula{font-family:var(--mono);font-size:clamp(.8rem,.72rem + .4vw,1rem);line-height:2.1;color:var(--mist);
+    border:1px solid var(--line-2);border-radius:14px;padding:1.4rem clamp(1rem,3vw,1.8rem);background:var(--ink-2);overflow-wrap:anywhere;}
+  .formula .op{color:var(--lumen);padding-inline:.35em;}
+  .formula .res{color:var(--faint);}
+  .formula small{display:block;margin-top:.6rem;font-size:.74rem;line-height:1.7;color:var(--haze);}
+
+  .families{display:grid;grid-template-columns:repeat(4,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  @media(max-width:760px){.families{grid-template-columns:repeat(2,1fr);}}
+  .families div{background:var(--ink);padding:1.2rem 1.1rem;}
+  .families b{display:block;font-family:var(--serif);font-weight:300;font-size:2.4rem;line-height:1;color:var(--mist);}
+  .families span{display:block;margin-top:.5rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;color:var(--haze);}
+  .families em{display:block;margin-top:.5rem;font-style:normal;font-size:.9rem;color:var(--faint);letter-spacing:.08em;}
+
+  .laws{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:1.4rem 2.4rem;}
+  .laws li{border-top:1px solid var(--line-2);padding-top:1rem;}
+  .laws b{display:block;font-family:var(--serif);font-weight:400;font-size:1.2rem;line-height:1.3;color:var(--mist);}
+  .laws span{display:block;margin-top:.45rem;color:var(--haze);font-size:.95rem;}
+
+  .register{margin-top:3rem;border-left:2px solid var(--amber);padding:.4rem 0 .4rem 1.2rem;color:var(--haze);max-width:62ch;font-size:.95rem;}
+  .register strong{color:var(--mist);font-weight:500;}
+
+  .ledger{display:flex;flex-direction:column;}
+  .ledger .r{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4rem 1.6rem;align-items:center;padding:1.15rem 0;border-top:1px solid var(--line);}
+  .ledger .r:last-child{border-bottom:1px solid var(--line);}
+  .ledger .t{font-family:var(--serif);font-size:clamp(1.05rem,.95rem + .5vw,1.35rem);color:var(--mist);}
+  .ledger .t small{display:block;font-family:var(--sans);font-size:.85rem;color:var(--faint);margin-top:.15rem;}
+  @media(max-width:520px){.ledger .r{grid-template-columns:1fr;}}
+
+  footer{border-top:1px solid var(--line);padding-block:2.4rem 3rem;font-family:var(--mono);font-size:.72rem;letter-spacing:.12em;color:var(--faint);}
+  footer .wrap{display:flex;flex-wrap:wrap;gap:1rem 2rem;justify-content:space-between;}
+  footer a:hover{color:var(--lumen);}
+
+  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important;}html{scroll-behavior:auto;}}
+</style><style>
+  .now{margin-top:3rem;border:1px solid var(--line-2);border-radius:18px;background:var(--ink-2);overflow:hidden;}
+  .now-top{display:grid;grid-template-columns:auto 1fr auto;gap:1.2rem 2rem;align-items:center;padding:clamp(1.2rem,3vw,2.2rem);}
+  @media(max-width:640px){.now-top{grid-template-columns:auto 1fr;} .hex{grid-column:1 / -1;justify-self:start;}}
+  .glyph{font-family:var(--serif);font-weight:300;font-size:clamp(4.2rem,12vw,7rem);line-height:.9;color:var(--mist);}
+  .now-name{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.4rem,1.1rem + 1.4vw,2.2rem);color:#DEDBEC;line-height:1.2;}
+  .now-time{font-family:var(--mono);font-size:.72rem;letter-spacing:.16em;text-transform:uppercase;color:var(--haze);margin-top:.5rem;}
+  .hex{display:flex;flex-direction:column-reverse;gap:7px;width:68px;}
+  .hex i{display:block;height:7px;background:var(--lumen);border-radius:1px;}
+  .hex i.yin{background:linear-gradient(90deg,var(--faint) 0 42%,transparent 42% 58%,var(--faint) 58%);}
+  .hex-cap{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;color:var(--faint);text-align:center;margin-top:.5rem;}
+  .lens{padding:0 clamp(1.2rem,3vw,2.2rem) 1.4rem;color:var(--haze);max-width:64ch;}
+  .lens b{color:var(--mist);font-weight:400;font-family:var(--serif);font-size:1.15rem;}
+  .leans{display:grid;grid-template-columns:repeat(4,1fr);border-top:1px solid var(--line);}
+  @media(max-width:640px){.leans{grid-template-columns:repeat(2,1fr);}}
+  .leans div{padding:1rem clamp(1rem,2.4vw,1.6rem);border-right:1px solid var(--line);}
+  .leans div:last-child{border-right:0;}
+  .leans span{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;text-transform:uppercase;color:var(--faint);}
+  .leans b{display:block;font-family:var(--serif);font-weight:300;font-size:1.9rem;line-height:1.2;color:var(--mist);margin-top:.3rem;}
+  .leans em{font-style:normal;font-size:.85rem;color:var(--haze);}
+  .leans .p b{color:var(--lumen);}
+  .now-foot{display:flex;flex-wrap:wrap;gap:.6rem 1.4rem;justify-content:space-between;align-items:center;padding:.9rem clamp(1.2rem,3vw,2.2rem);border-top:1px solid var(--line);font-size:.82rem;color:var(--faint);}
+  .now-foot button{font-family:var(--mono);font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:var(--haze);background:transparent;border:1px solid var(--line-2);border-radius:22px;padding:.4rem .8rem;cursor:pointer;}
+  .now-foot button:hover{color:var(--lumen);border-color:var(--lumen);}
+  .day{display:grid;grid-template-columns:repeat(12,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:1.6rem;}
+  @media(max-width:760px){.day{grid-template-columns:repeat(6,1fr);}}
+  .day button{background:var(--ink);border:0;color:var(--haze);padding:.9rem .2rem;cursor:pointer;font-family:var(--serif);font-size:1.5rem;line-height:1;transition:background .3s var(--ease),color .3s var(--ease);}
+  .day button small{display:block;font-family:var(--mono);font-size:.58rem;letter-spacing:.08em;color:var(--faint);margin-top:.45rem;}
+  .day button:hover{color:var(--mist);background:var(--ink-2);}
+  .day button.cur{color:var(--lumen);}
+  .day button.sel{background:rgba(143,227,210,.08);color:var(--mist);}
+  .stances{display:grid;grid-template-columns:repeat(3,1fr);gap:1px;background:var(--line);border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+  @media(max-width:760px){.stances{grid-template-columns:repeat(2,1fr);}}
+  .stances div{background:var(--ink);padding:1.3rem 1.2rem;}
+  .stances b{display:block;font-family:var(--serif);font-weight:300;font-size:2.6rem;line-height:1;color:var(--mist);}
+  .stances span{display:block;margin-top:.6rem;font-family:var(--mono);font-size:.7rem;letter-spacing:.16em;text-transform:uppercase;color:var(--lumen);}
+  .stances em{display:block;margin-top:.4rem;font-style:normal;color:var(--haze);font-size:.95rem;}
+  .articles{list-style:none;margin:0;padding:0;counter-reset:a;}
+  .articles li{display:grid;grid-template-columns:3rem 1fr;gap:1rem;padding:1.1rem 0;border-top:1px solid var(--line);}
+  .articles li::before{counter-increment:a;content:counter(a,decimal-leading-zero);font-family:var(--mono);font-size:.72rem;color:var(--faint);padding-top:.35rem;}
+  .articles b{font-family:var(--serif);font-weight:300;font-size:clamp(1.1rem,1rem + .5vw,1.4rem);color:var(--mist);line-height:1.4;}
+  .regs{display:grid;grid-template-columns:repeat(4,1fr);gap:1.4rem 2rem;}
+  @media(max-width:760px){.regs{grid-template-columns:repeat(2,1fr);}}
+  .regs div{border-top:1px solid var(--line-2);padding-top:.9rem;}
+  .regs b{font-family:var(--mono);font-weight:400;font-size:.8rem;letter-spacing:.14em;color:var(--amber);}
+  .regs span{display:block;font-family:var(--serif);font-size:1.15rem;color:var(--mist);margin-top:.3rem;}
+  .regs em{display:block;font-style:normal;color:var(--haze);font-size:.9rem;margin-top:.3rem;}
+  .tag-r{font-family:var(--mono);font-size:.62rem;letter-spacing:.1em;color:var(--amber);border:1px solid rgba(226,172,110,.4);border-radius:10px;padding:.05rem .4rem;margin-left:.4rem;vertical-align:.15em;}
+  @media(max-width:600px){.nav-links a[href^="#"]{display:none;}.nav-links{gap:1rem;}}
+  .open{list-style:none;margin:0;padding:0;}
+  .open li{padding:1rem 0;border-top:1px solid var(--line);font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.1rem,1rem + .5vw,1.4rem);color:#DEDBEC;}
+</style>
+</head>
+<body>
+<div class="band">山海 OceanMountain · The Laws · Theory corpus 2026</div>
+<header class="nav" id="nav"><div class="wrap nav-row">
+  <a class="brand" href="/">Haishan Lai <b>/</b> 山海 OMT</a>
+  <nav class="nav-right"><div class="nav-links"><a href="/omt/">Sketch 4A</a><a href="#now">Now</a><a href="#laws">Laws</a></div></nav>
+</div></header>
+<main>
+  <section class="hero" id="now">
+    <div class="wrap">
+      <p class="eyebrow">山海 OceanMountain · 憲章</p>
+      <h1>The <em>Laws</em></h1>
+      <p class="thesis">Time initiates. It does not command. The listener completes the work.</p>
+
+      <div class="now" aria-live="polite">
+        <div class="now-top">
+          <div class="glyph" id="nGlyph">—</div>
+          <div>
+            <div class="now-name" id="nName">—</div>
+            <div class="now-time" id="nTime">—</div>
+          </div>
+          <div><div class="hex" id="nHex" aria-hidden="true"></div><div class="hex-cap" id="nHexCap"></div></div>
+        </div>
+        <p class="lens"><span class="tag-r">R2</span> <b id="nChan">—</b> — attend to <span id="nLens">—</span>.<br><small style="color:var(--faint)">A lens for the work’s attention, never a statement about your body.</small></p>
+        <div class="leans">
+          <div class="p"><span>Leans toward</span><b id="nP">—</b><em id="nPe"></em></div>
+          <div><span>Supported by</span><b id="nS">—</b><em id="nSe"></em></div>
+          <div><span>Rare, precious</span><b id="nR">—</b><em id="nRe"></em></div>
+          <div><span>Always present</span><b>安</b><em>embrace</em></div>
+        </div>
+        <div class="now-foot">
+          <span id="nNote">True solar time, estimated from your time zone. An hour leans; it never chooses.</span>
+          <button type="button" id="locBtn">Use my location</button>
+        </div>
+      </div>
+      <div class="day" id="day" role="tablist" aria-label="The twelve double-hours"></div>
+    </div>
+  </section>
+
+  <section class="block" id="stances">
+    <div class="wrap">
+      <div class="seclabel"><span class="tag">Six stances</span><span class="rule"></span><span class="idx">氣機</span></div>
+      <p class="lead">The music takes a stance toward the moment. A stance is a relationship, never a promised outcome.</p>
+      <div class="stances" style="margin-top:2.4rem">
+        <div><b>扶</b><span>Support</span><em>Hold steady from below.</em></div>
+        <div><b>定</b><span>Stabilize</span><em>Reduce variance, return to center.</em></div>
+        <div><b>疏</b><span>Release</span><em>Open outward and let go.</em></div>
+        <div><b>柔</b><span>Soften</span><em>Take the edge off, stay present.</em></div>
+        <div><b>動</b><span>Activate</span><em>Bring gentle energy. Awaken, never agitate.</em></div>
+        <div><b>安</b><span>Embrace</span><em>No vector. Keep the moment company.</em></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="block" id="laws">
+    <div class="wrap">
+      <div class="seclabel"><span class="tag">Constitution</span><span class="rule"></span><span class="idx">山海憲章 · ten articles</span></div>
+      <ol class="articles">
+        <li><b>Time initiates every sound and sets the question, never the answer.</b></li>
+        <li><b>The body-channel reading is a poetic lens for attention, never a claim about your body.</b></li>
+        <li><b>The music takes a stance — 扶 定 疏 柔 動 安 — and embrace, which changes nothing, is always available.</b></li>
+        <li><b>Silence is speech. Harmony is balanced relationship. Everything is relational material.</b></li>
+        <li><b>Reflection comes first. Any settling is its possible consequence, never the target.</b></li>
+        <li><b>No layer reaches past its neighbor. Every boundary is an interpretation with latitude.</b></li>
+        <li><b>OceanMountain makes no medical claim. It treats, balances and heals nothing. The listener completes the work.</b></li>
+        <li><b>No number — brainwave, tuning, “organ frequency” — is an emotional or medical truth.</b></li>
+        <li><b>Every mapping from cosmology to sound rests on a shared relational quality and stays open to revision.</b></li>
+        <li><b>Instruments, synthesis and exact sounds may change without limit. This constitution may not.</b></li>
+      </ol>
+    </div>
+  </section>
+
+  <section class="block" id="registers">
+    <div class="wrap">
+      <div class="seclabel"><span class="tag">Four registers</span><span class="rule"></span><span class="idx">how every claim is labelled</span></div>
+      <div class="regs">
+        <div><b>R1</b><span>Measurable</span><em>The sun, the clock, the room.</em></div>
+        <div><b>R2</b><span>Traditional</span><em>A lens held with humility, revised by better readings.</em></div>
+        <div><b>R3</b><span>Artistic choice</span><em>Justified by relationship, revisable at will.</em></div>
+        <div><b>R4</b><span>Hypothesis</span><em>Offered, never promised.</em></div>
+      </div>
+      <h3>Open questions</h3>
+      <ul class="open">
+        <li>Where does memory end and forgetting begin?</li>
+        <li>When does a return feel like returning?</li>
+        <li>How should the work change over years, not hours?</li>
+      </ul>
+    </div>
+  </section>
+</main>
+<footer><div class="wrap">
+  <a href="/omt/">← Sketch 4A</a>
+  <a href="/">Haishan Lai</a>
+  <span>Excerpted from the OceanMountain theory corpus, 2026. © <span id="yr"></span></span>
+</div></footer>
+<script>
+(function(){
+"use strict";
+var ST={"扶":"support","定":"stabilize","疏":"release","柔":"soften","動":"activate","安":"embrace"};
+var H=[
+ ["子","the Hinge",23,"膽 gallbladder",1,"安","定","動","the turning itself — the moment that cannot be forced, only kept company","復"],
+ ["丑","the Root Dark",1,"肝 liver",2,"扶","安","疏","what grows without being watched","臨"],
+ ["寅","the First Breath",3,"肺 lung",3,"動","扶","安","inhalation before light","泰"],
+ ["卯","the Clearing Light",5,"大腸 large intestine",4,"動","疏","定","clearing as a form of arrival","大壯"],
+ ["辰","the Intake",7,"胃 stomach",5,"扶","動","疏","receiving as work","夬"],
+ ["巳","the Steady Work",9,"脾 spleen",6,"定","柔","動","change so steady it does not look like change","乾"],
+ ["午","the Radiant Still Point",11,"心 heart",5,"安","動","疏","radiance that does not grasp","姤"],
+ ["未","the Softened Glare",13,"小腸 small intestine",4,"柔","定","動","discernment without force","遯"],
+ ["申","the Second Clarity",15,"膀胱 bladder",3,"定","柔","動","clarity that persists","否"],
+ ["酉","the Gathering Dusk",17,"腎 kidney",2,"疏","扶","動","the store beneath the letting-go","觀"],
+ ["戌","the Hearth",19,"心包 pericardium",1,"柔","安","疏","the tended interior","剝"],
+ ["亥","the Dissolving",21,"三焦 triple burner",0,"疏","安","定","boundaries thinning","坤"]];
+var lon=null, sel=null, cur=null;
+function $(i){return document.getElementById(i);}
+function eot(d){var s=Date.UTC(d.getUTCFullYear(),0,0);var n=(d-s)/864e5;var B=2*Math.PI*(n-81)/364;return 9.87*Math.sin(2*B)-7.53*Math.cos(B)-1.5*Math.sin(B);}
+function solarMin(d){var L=lon!==null?lon:-d.getTimezoneOffset()/4;var u=d.getUTCHours()*60+d.getUTCMinutes()+d.getUTCSeconds()/60;return ((u+L*4+eot(d))%1440+1440)%1440;}
+function idx(m){return Math.floor(((m+60)%1440)/120);}
+function hm(m){m=Math.floor(m);return String(Math.floor(m/60)).padStart(2,"0")+":"+String(m%60).padStart(2,"0");}
+function hex(i){var h=H[i],n=h[4],rising=i<6||i==0,html="";
+  // lines bottom to top: rising phase (子→巳) yang grows from bottom; falling (午→亥) yin grows from bottom
+  for(var k=0;k<6;k++){var yang=(i<=5)?(k<n):(k>=6-n);html+='<i class="'+(yang?"":"yin")+'"></i>';}
+  $("nHex").innerHTML=html;$("nHexCap").textContent=h[9];}
+function show(i,isNow,m){var h=H[i];$("nGlyph").textContent=h[0]+"時";$("nName").textContent=h[1];
+  var a=h[2],b=(h[2]+2)%24;$("nTime").textContent=(isNow?"Now · true solar "+hm(m)+" · ":"")+String(a).padStart(2,"0")+":00–"+String(b).padStart(2,"0")+":00";
+  $("nChan").textContent=h[3];$("nLens").textContent=h[8];
+  $("nP").textContent=h[5];$("nPe").textContent=ST[h[5]];$("nS").textContent=h[6];$("nSe").textContent=ST[h[6]];$("nR").textContent=h[7];$("nRe").textContent=ST[h[7]];
+  hex(i);[].forEach.call($("day").children,function(b,k){b.classList.toggle("sel",k===i);b.classList.toggle("cur",k===cur);b.setAttribute("aria-selected",k===i);});}
+function tick(){var d=new Date(),m=solarMin(d);cur=idx(m);if(sel===null)show(cur,true,m);else[].forEach.call($("day").children,function(b,k){b.classList.toggle("cur",k===cur);});}
+H.forEach(function(h,k){var b=document.createElement("button");b.type="button";b.setAttribute("role","tab");b.innerHTML=h[0]+"<small>"+String(h[2]).padStart(2,"0")+"</small>";
+  b.addEventListener("click",function(){if(k===cur){sel=null;tick();}else{sel=k;show(k,false);}});$("day").appendChild(b);});
+$("locBtn").addEventListener("click",function(){if(!navigator.geolocation){$("nNote").textContent="Location isn't available in this browser.";return;}
+  navigator.geolocation.getCurrentPosition(function(p){lon=p.coords.longitude;$("nNote").textContent="True solar time for your longitude ("+lon.toFixed(1)+"°). Your location stays in your browser.";$("locBtn").hidden=true;sel=null;tick();},
+  function(){$("nNote").textContent="Location not shared — using your time zone instead.";});});
+var nav=$("nav");function onS(){nav.classList.toggle("scrolled",scrollY>30);}onS();addEventListener("scroll",onS,{passive:true});
+$("yr").textContent=new Date().getFullYear();
+tick();setInterval(tick,30000);
+})();
+</script>
+</body>
+</html>
