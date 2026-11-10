@@ -109,12 +109,15 @@
   @keyframes driftC{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-5%,-5%) scale(1.15)}100%{transform:translate(0,0) scale(1)}}
   @keyframes driftD{0%{transform:translate(0,0) scale(1.08)}50%{transform:translate(7%,3%) scale(.92)}100%{transform:translate(0,0) scale(1.08)}}
 
+  .hero::after{content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+    background:radial-gradient(ellipse 85% 75% at 42% 48%,rgba(5,6,12,0) 52%,rgba(5,6,12,.62) 100%),
+               linear-gradient(90deg,rgba(5,6,12,.38) 0%,rgba(5,6,12,0) 14%,rgba(5,6,12,0) 86%,rgba(5,6,12,.42) 100%);}
   .hero-inner{position:relative;z-index:3;width:100%;}
   .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;color:var(--haze);}
   .hero .eyebrow{margin-bottom:1.6rem;}
   h1{font-family:var(--serif);font-weight:300;font-optical-sizing:auto;font-size:clamp(3.4rem,12vw,8.6rem);
     line-height:.92;letter-spacing:-.025em;margin:0;color:var(--mist);}
-  h1 .em{font-style:italic;font-weight:400;}
+  h1 .em{font-style:italic;font-weight:300;color:#D9D5EA;}
   .thesis{font-family:var(--serif);font-weight:300;font-style:italic;font-size:clamp(1.2rem,1.05rem + 1.4vw,2rem);
     line-height:1.32;letter-spacing:-.01em;color:#D7D4E6;max-width:30ch;margin:2.1rem 0 0;}
   .hero-meta{margin-top:2.8rem;display:flex;gap:1.6rem 2.6rem;flex-wrap:wrap;align-items:baseline;
