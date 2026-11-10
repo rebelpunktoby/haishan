@@ -115,6 +115,7 @@
   .hero-inner{position:relative;z-index:3;width:100%;}
   .eyebrow{font-family:var(--mono);font-size:.78rem;letter-spacing:.34em;text-transform:uppercase;color:var(--haze);}
   .hero .eyebrow{margin-bottom:1.6rem;}
+  .vh{position:absolute!important;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
   /* name as a signature, not a headline */
   h1.sig{font-family:var(--serif);font-weight:300;font-style:italic;font-optical-sizing:auto;font-size:clamp(1.05rem,.95rem + .4vw,1.3rem);
     letter-spacing:.02em;margin:2.6rem 0 0;color:var(--haze);display:flex;align-items:center;gap:1rem;}
@@ -148,7 +149,7 @@
   body.lang-zh .hero-rail{letter-spacing:.3em;}
   @keyframes railIn{to{opacity:1}}
   @media(min-width:900px){.hero .hero-inner{padding-left:clamp(4.6rem,8vw,7rem);}.hero .hero-meta{display:none;}}
-  @media(max-width:899px){.hero-rail{display:none;}.hero .hero-meta{margin-top:2.2rem;gap:.7rem 1.6rem;font-size:.68rem;letter-spacing:.2em;color:var(--faint);}}
+  @media(max-width:899px){.hero-rail{display:none;}.hero .hero-meta{margin-top:2.6rem;gap:.7rem 1.6rem;font-size:.68rem;letter-spacing:.2em;color:var(--faint);}}
   .hero-meta{margin-top:2.8rem;display:flex;gap:1.6rem 2.6rem;flex-wrap:wrap;align-items:baseline;
     font-family:var(--mono);font-size:.78rem;letter-spacing:.1em;color:var(--haze);}
   .hero-meta .dot{color:var(--lumen);}
@@ -341,7 +342,7 @@
   .hero .thesis .ln.l1{animation-delay:.3s}.hero .thesis .ln.l2{animation-delay:1.25s}
   .hero .thesis .ln.l3{animation-delay:2.2s}.hero .thesis .ln.l4{animation-delay:2.9s}
   .hero .thesis .ln.sub{animation-delay:4s}
-  .hero h1.sig,.hero .hero-meta{opacity:0;animation:lnIn 1.6s var(--ease) 4.6s forwards;}
+  .hero .hero-meta{opacity:0;animation:lnIn 1.6s var(--ease) 4.6s forwards;}
   @keyframes lnIn{to{opacity:1;transform:none;filter:blur(0)}}
   .hero .thesis .ln.gap,.hero .thesis .ln.gap + .ln{color:var(--haze);}
   .hero .thesis .ln.gap + .ln .hl{color:var(--lumen);}
@@ -440,7 +441,7 @@
     <div class="hero-rail" aria-hidden="true"><span data-i18n="hero_meta2">Piano · Sound · Time</span><span class="rail-dot"></span><span data-i18n="based_cities">Mexico City · New York</span></div>
     <div class="wrap hero-inner">
       <p class="thesis lines" data-i18n="hero_thesis"><span class="ln l1">Impressionism in expression,</span><span class="ln l2">progressive in form&nbsp;—</span><span class="ln l3">music that</span><span class="ln l4"><span class="hl">dissolves edges.</span></span><span class="ln gap sub">From screen to stage, and the space between.</span></p>
-      <h1 class="sig"><span class="sig-rule"></span><span data-i18n="hero_sig">Haishan Lai</span></h1>
+      <h1 class="vh">Haishan Lai</h1>
       <div class="hero-meta">
         <span data-i18n="hero_meta2">Piano · Sound · Time</span>
         <span data-i18n="based_cities">Mexico City · New York</span>
