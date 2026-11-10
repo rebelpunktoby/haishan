@@ -21,7 +21,7 @@
 <meta name="twitter:image" content="https://oceanmountainlai.art/og.jpg">
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&family=LXGW+WenKai+TC:wght@300;400;700&display=swap" rel="stylesheet" />
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,opsz,wght@0,9..144,300;0,9..144,400;0,9..144,500;1,9..144,300;1,9..144,400&family=Space+Grotesk:wght@300;400;500;600&family=Space+Mono:ital,wght@0,400;0,700;1,400&family=Noto+Serif+TC:wght@300;400;500;600&family=Noto+Sans+TC:wght@300;400;500&display=swap" rel="stylesheet" />
 <style>
   :root{
     --ink:#090B14; --ink-2:#0C0F1C;
@@ -33,7 +33,7 @@
     --serif:"Fraunces","Noto Serif TC",Georgia,serif;
     --sans:"Space Grotesk","Noto Sans TC",system-ui,sans-serif;
     --mono:"Space Mono","Noto Sans TC",ui-monospace,monospace;
-    --zh-font:"LXGW WenKai TC", sans-serif;
+    --zh-font:"Noto Serif TC","Noto Sans TC",serif;
   }
   *{box-sizing:border-box;}
   html{scroll-behavior:smooth;}
@@ -492,6 +492,44 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
 @media(max-width:760px){.hero-E .hero-tx{bottom:auto;top:44%;right:1.4rem;}}
 @media(prefers-reduced-motion:reduce){.hero-E .hero-tx{animation:none;opacity:.55;}}
 </style>
+<style>/* ===== v2 · below the hero: fewer words, more air, dynamics ===== */
+/* rhythm — sections phrase, they don't march */
+section.block#statement{padding-block:clamp(7rem,16vh,13rem) clamp(6rem,14vh,11rem);}
+section.block#omt{padding-block:clamp(3rem,6vw,5rem);}
+section.block.edu{padding-block:clamp(3.5rem,7vw,6rem);}
+section.block#contact{padding-block:clamp(7rem,15vh,12rem) clamp(5rem,9vw,8rem);}
+.block + .block{border-top-color:rgba(31,34,54,.55);}
+/* statement as the ff of the page */
+.statement.lines{font-size:clamp(1.9rem,1.1rem + 3vw,3.7rem);line-height:1.14;letter-spacing:-.015em;color:var(--haze);}
+.statement .hl{color:#F2EEE4;}
+.statement.lines .ln{padding-left:0;text-indent:0;}
+.statement.lines .ln.l2{margin-left:12%;}
+.statement.lines .ln.l3{margin-left:4%;margin-top:.35em;font-size:.72em;}
+.statement.lines .ln.l4{margin-left:18%;}
+body.lang-zh .statement.lines{font-family:var(--zh-font);font-size:clamp(1.6rem,1rem + 2.4vw,3rem);line-height:1.5;letter-spacing:.1em;}
+body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lines .ln.l3{font-size:.82em;}
+.statement-grid{display:block;}
+.aside-note{display:none;}
+@media(max-width:600px){.statement.lines{font-size:1.7rem;line-height:1.2;}.statement.lines .ln.l2{margin-left:6%;}.statement.lines .ln.l4{margin-left:10%;}}
+/* labels — the index lines that were cut leave no gap */
+.seclabel .idx:empty{display:none;}
+/* rows — quieter titles, fainter years */
+.row .title{font-weight:300;color:#E6E2E8;}
+.row .meta .yr{color:var(--faint);}
+.perf .p .v{font-weight:300;}
+.contact-head{font-size:clamp(2.2rem,1.4rem + 3.6vw,4.6rem);color:var(--haze);}
+.contact-head em{color:#F2EEE4;}
+/* reveals breathe like the hero: blur → focus, uneven */
+[data-reveal]{filter:blur(7px);transform:translateY(10px);transition:opacity 1.7s var(--ease),transform 1.7s var(--ease),filter 1.7s var(--ease);}
+[data-reveal].in{filter:blur(0);}
+.rows .row:nth-child(2),.perf .p:nth-child(2){transition-delay:.22s}
+.rows .row:nth-child(3),.perf .p:nth-child(3){transition-delay:.3s}
+.rows .row:nth-child(4),.perf .p:nth-child(4){transition-delay:.58s}
+.rows .row:nth-child(5),.perf .p:nth-child(5){transition-delay:.7s}
+.rows .row:nth-child(6),.perf .p:nth-child(6){transition-delay:1s}
+.statement.lines[data-reveal]{transition-duration:2.4s;}
+@media(prefers-reduced-motion:reduce){[data-reveal]{filter:none;transition:none;}}
+</style>
 </head>
 <body>
 <a class="skip" href="#statement" data-i18n="skip">Skip to content</a>
@@ -538,7 +576,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_practice">∞</span><span class="rule"></span><span class="idx" data-i18n="idx_practice">∞</span></div>
       <div class="statement-grid">
-        <p class="statement lines" data-reveal data-i18n="statement_main"><span class="ln">My creative work begins</span><span class="ln">where the bar line <span class="hl">loosens its grip</span>&nbsp;—</span><span class="ln">where harmony blends into color,</span><span class="ln">and a room becomes <span class="hl">part&nbsp;of&nbsp;the&nbsp;instrument.</span></span><span class="ln gap">Always exploring how sound shapes</span><span class="ln">the way we feel and perceive the world.</span></p>
+        <p class="statement lines" data-reveal data-i18n="statement_main"><span class="ln l1">where the bar line</span><span class="ln l2"><span class="hl">loosens its grip</span>&nbsp;—</span><span class="ln l3">harmony blends into color,</span><span class="ln l4">a room becomes <span class="hl">part&nbsp;of&nbsp;the&nbsp;instrument.</span></span></p>
         <p class="aside-note" data-reveal style="transition-delay:.12s" data-i18n="statement_aside">Practice across <strong>conservatory composition, jazz, and music technology.</strong><br>The result is music rooted in tradition but restless toward the future — flowing and unresolved.</p>
       </div>
     </div>
@@ -546,13 +584,13 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="tx" aria-hidden="true">作品</span><span class="rule"></span><span class="idx" data-i18n="idx_work">Play · Composition · Experience</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="tx" aria-hidden="true">作品</span><span class="rule"></span><span class="idx" data-i18n="idx_work"></span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title has-cover">
             <a class="cover" href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/flow.webp" alt="Cover for FLOW / 04032026" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work7_role">OceanMountain · SoundCloud</span>
+            <span class="role" data-i18n="work7_role">OceanMountain</span>
           </div>
           <div class="meta"><span class="yr">04.2026</span></div>
         </div>
@@ -560,14 +598,14 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
           <div class="title has-cover">
             <a class="cover" href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/waves.webp" alt="Cover for Waves" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://on.soundcloud.com/Z05smzTGNYO48vq8fA" target="_blank" rel="noopener" class="work-link">Waves <span class="arr">↗</span></a>
-            <span class="role" data-i18n="work8_role">OceanMountain · SoundCloud</span>
+            <span class="role" data-i18n="work8_role">OceanMountain</span>
           </div>
         </div>
         <div class="row album" data-reveal>
           <div class="title has-cover">
             <span class="cover stack" aria-hidden="true"><img src="covers/rain.webp" alt="" width="96" height="96" loading="lazy" decoding="async"><img src="covers/angel-dust.webp" alt="" width="96" height="96" loading="lazy" decoding="async"></span>
             <span class="album-name">Hoboken 07030</span>
-            <span class="role" data-i18n="album1_role">Eric Leo · Feature composition</span>
+            <span class="role" data-i18n="album1_role">with Eric Leo</span>
           </div>
           <div class="meta"><span class="yr">2022 — 23</span></div>
           <div class="tracks" id="tracks1"><div class="tracks-inner">
@@ -595,18 +633,18 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
           </div>
         </div>
       </div>
-      <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_listen">Full Catalog</span><b><a href="https://soundcloud.com/tobyhysan" target="_blank" rel="noopener" class="work-link">SoundCloud <span class="arr">↗</span></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://oceanmountain.bandcamp.com/music" target="_blank" rel="noopener" class="work-link">Bandcamp <span class="arr">↗</span></a></b></p>
+      <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_listen">Listen</span><b><a href="https://soundcloud.com/tobyhysan" target="_blank" rel="noopener" class="work-link">SoundCloud <span class="arr">↗</span></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://oceanmountain.bandcamp.com/music" target="_blank" rel="noopener" class="work-link">Bandcamp <span class="arr">↗</span></a></b></p>
     </div>
   </section>
 
   <section class="block" id="omt">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="tx" aria-hidden="true">山海</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">Works in progress</span></div>
+      <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="tx" aria-hidden="true">山海</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">In progress</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title">
             <a href="/circadian/" class="work-link"><span data-i18n="art2_title">山海 OceanMountain</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="art2_role">A generative sound work shaped by the hour and the season.</span>
+            <span class="role" data-i18n="art2_role">Sound shaped by the hour.</span>
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
@@ -691,7 +729,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
 
   <section class="block" id="stage">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="tx" aria-hidden="true">演出</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="tx" aria-hidden="true">演出</span><span class="rule"></span><span class="idx" data-i18n="idx_stage"></span></div>
       <div class="perf">
         <div class="p" data-reveal><span class="v" data-i18n="perf12">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.2026</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf11">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.2025</span></div>
@@ -718,7 +756,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
 
   <section class="block edu" id="education">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="tx" aria-hidden="true">學歷</span><span class="rule"></span><span class="idx" data-i18n="idx_edu">Training</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="tx" aria-hidden="true">學歷</span><span class="rule"></span><span class="idx" data-i18n="idx_edu"></span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title"><span data-i18n="edu1_title">New York University</span><span class="role" data-i18n="edu1_role">Graduate study, Music Technology</span></div>
@@ -729,7 +767,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
           <div class="meta"><span class="yr">2019 — 2025</span></div>
         </div>
         <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><span class="role" data-i18n="edu3_role">Specialized Music Program, Piano · Guangzhou</span></div>
+          <div class="title"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><span class="role" data-i18n="edu3_role">Piano · Guangzhou</span></div>
           <div class="meta"><span class="yr">2013 — 2019</span></div>
         </div>
       </div>
@@ -739,8 +777,8 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
 
   <section class="block" id="contact">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_contact">Contact</span><span class="tx" aria-hidden="true">聯絡</span><span class="rule"></span><span class="idx" data-i18n="idx_contact">Let’s build something</span></div>
-      <h2 class="contact-head" data-reveal data-i18n="contact_head">Open to <em>scoring, collaboration,</em> and creative experience.</h2>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_contact">Contact</span><span class="tx" aria-hidden="true">聯絡</span><span class="rule"></span><span class="idx" data-i18n="idx_contact"></span></div>
+      <h2 class="contact-head" data-reveal data-i18n="contact_head">Open to <em>scoring</em> and <em>collaboration.</em></h2>
       <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_based">Based</span><b data-i18n="based_cities">Mexico City · New York</b></p>
       <div class="links" data-reveal>
         <a href="mailto:Tobycantonese@gmail.com"><span><span class="k" data-i18n="link_email_k">Email</span><br>Tobycantonese@gmail.com</span><span class="arr">→</span></a>
@@ -785,7 +823,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
       skip:{en:"Skip to content",zh:"跳至內容"},
       nav_work:{en:"Work",zh:"作品"},
       nav_beta:{en:'OMT&nbsp;<span>β</span>',zh:'OMT&nbsp;<span>β</span>'},
-      idx_omt:{en:'Works in progress',zh:'製作中'},
+      idx_omt:{en:'In progress',zh:'進行中'},
       omt4_title:{en:"Sketch 4B",zh:"草圖 4B"},omt4_role:{en:"The drone listens to the hour — four voices, an auto mixer, render any moment as a sample.",zh:"持續音開始聆聽時辰——四個聲部、自動混音，任何一刻都可渲染成取樣。"},
       omt3_title:{en:"The Laws",zh:"山海憲章"},omt3_role:{en:"How the hour leans, right now — and the ten articles behind it.",zh:"此刻時辰的傾向，與背後的十條憲章。"},
       omt2_title:{en:'Sketch 4A',zh:'草圖 4A'},
@@ -805,7 +843,7 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
       scroll:{en:"Scroll",zh:"向下捲動"},
       lbl_practice:{en:"∞",zh:"∞"},
       idx_practice:{en:"∞",zh:"∞"},
-      statement_main:{en:'<span class="ln">My creative work begins</span><span class="ln">where the bar line <span class="hl">loosens its grip</span>&nbsp;—</span><span class="ln">where harmony blends into color,</span><span class="ln">and a room becomes <span class="hl">part&nbsp;of&nbsp;the&nbsp;instrument.</span></span><span class="ln gap">Always exploring how sound shapes</span><span class="ln">the way we feel and perceive the world.</span>',zh:'<span class="ln">我的創意始於</span><span class="ln"><span class="hl">鬆開小節線的束縛</span>——</span><span class="ln">把和聲渲染的色彩</span><span class="ln">與空間構成一體，</span><span class="ln">讓頻率穿梭在<span class="hl">意識、科技與自然</span>之間。</span><span class="ln gap">始終探討聲音如何形塑</span><span class="ln">我們感受與感知的世界。</span>'},
+      statement_main:{en:'<span class="ln l1">where the bar line</span><span class="ln l2"><span class="hl">loosens its grip</span>&nbsp;—</span><span class="ln l3">harmony blends into color,</span><span class="ln l4">a room becomes <span class="hl">part&nbsp;of&nbsp;the&nbsp;instrument.</span></span>',zh:'<span class="ln l1"><span class="hl">鬆開小節線的束縛</span>——</span><span class="ln l2">把和聲渲染的色彩</span><span class="ln l3">與空間構成一體，</span><span class="ln l4">讓頻率穿梭在<span class="hl">意識、科技與自然</span>之間。</span>'},
       statement_aside:{en:'Practice across <strong>conservatory composition, jazz, and music technology.</strong><br>The result is music rooted in tradition but restless toward the future — flowing and unresolved.',zh:'修行從<strong>學院派作曲、爵士到音樂科技</strong>，<br>扎根於古典，卻始終向現代與未來探問、流動。'},
       lbl_work:{en:"Selected Work",zh:"精選作品"},
       nav_next:{en:"Next",zh:"近期"},
@@ -826,21 +864,21 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
       art1_title:{en:"Prepared Piano × Dance",zh:"預置鋼琴 × 舞蹈"},
       art1_role:{en:"Free improvisation with a contemporary dancer — prepared piano, live sampling of room and body sounds, and movement that shapes the sound in a closed loop. Mexico City.",zh:"與當代舞者的自由即興——預置鋼琴、即時取樣空間與身體的聲響，讓動作在閉環中塑造聲音。墨西哥城。"},
       art2_title:{en:"山海 OceanMountain",zh:"山海 OceanMountain"},
-      art2_role:{en:"A generative sound work shaped by the hour and the season.",zh:"一件隨時辰與節氣而生的聲音作品。"},
-      idx_work:{en:"Play · Composition · Experience",zh:"演奏・作曲・體驗"},
+      art2_role:{en:'Sound shaped by the hour.',zh:'隨時辰而變的聲音。'},
+      idx_work:{en:'',zh:''},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work4_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work5_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
       work6_role:{en:"Feature composition with Zekiizo",zh:"Feature composition with Zekiizo"},
-      album1_role:{en:"Eric Leo · Feature composition",zh:"Eric Leo · 合作作曲"},
+      album1_role:{en:'with Eric Leo',zh:'與 Eric Leo'},
       track_more:{en:"Tracklist · 3",zh:"曲目 · 3"},
       track_less:{en:"Close",zh:"收起"},
-      work7_role:{en:"OceanMountain · SoundCloud",zh:"OceanMountain · SoundCloud"},
-      work8_role:{en:"OceanMountain · SoundCloud",zh:"OceanMountain · SoundCloud"},
-      lbl_listen:{en:"Full Catalog",zh:"完整作品"},
+      work7_role:{en:'OceanMountain',zh:'OceanMountain'},
+      work8_role:{en:'OceanMountain',zh:'OceanMountain'},
+      lbl_listen:{en:'Listen',zh:'聆聽'},
       lbl_stage:{en:"On Stage",zh:"現場演出"},
-      idx_stage:{en:"Selected Performances",zh:"精選場次"},
+      idx_stage:{en:'',zh:''},
       perf_more:{en:"Expand",zh:"展開"},
       perf_less:{en:"Collapse",zh:"收起"},
       perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
@@ -857,18 +895,18 @@ body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
       perf12:{en:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>",zh:"The Green Room, Hoboken<small>Contemporary Jazz Trio</small>"},
       perf13:{en:"Mannes Sound Festival<small>Art Along Save Me</small>",zh:"Mannes Sound Festival<small>Art Along Save Me</small>"},
       lbl_edu:{en:"Education",zh:"學歷"},
-      idx_edu:{en:"Training",zh:"訓練歷程"},
+      idx_edu:{en:'',zh:''},
       edu1_title:{en:"New York University",zh:"New York University"},
       edu1_role:{en:"Graduate study, Music Technology",zh:"音樂科技研究所進修"},
       edu1_yr:{en:"2025",zh:"2025"},
       edu2_title:{en:"The New School for Jazz and Contemporary Music",zh:"The New School for Jazz and Contemporary Music"},
       edu2_role:{en:"B.F.A., Jazz Piano",zh:"B.F.A., Jazz Piano"},
       edu3_title:{en:"Affiliated High School of Xinghai Conservatory",zh:"Affiliated High School of Xinghai Conservatory"},
-      edu3_role:{en:"Specialized Music Program, Piano · Guangzhou",zh:"Specialized Music Program, Piano · Guangzhou"},
+      edu3_role:{en:'Piano · Guangzhou',zh:'鋼琴 · 廣州'},
       lbl_mentor:{en:"Mentorship",zh:"師承"},
       lbl_contact:{en:"Contact",zh:"聯絡"},
-      idx_contact:{en:"Let’s build something",zh:"一起創作些什麼"},
-      contact_head:{en:'Open to <em>scoring, collaboration,</em> and creative experience.',zh:'開放<em>配樂、合作</em>與實驗創意。'},
+      idx_contact:{en:'',zh:''},
+      contact_head:{en:'Open to <em>scoring</em> and <em>collaboration.</em>',zh:'開放<em>配樂</em>與<em>合作</em>。'},
       link_email_k:{en:"Email",zh:"電子郵件"},
       link_sc_k:{en:"SoundCloud",zh:"SoundCloud"},
       link_bc_k:{en:"Bandcamp",zh:"Bandcamp"},
