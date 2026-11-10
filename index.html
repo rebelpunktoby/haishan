@@ -303,6 +303,8 @@
   .lines .ln.gap{margin-top:.75em;}
   .thesis.lines{max-width:none;}
   .thesis .hl{font-style:normal;color:#fff;}
+  .thesis .ln.sub{font-family:var(--sans);font-style:normal;font-weight:300;font-size:clamp(.92rem,.85rem + .35vw,1.12rem);letter-spacing:.1em;color:var(--haze);margin-top:1.3rem;}
+  body.lang-zh .thesis .ln.sub{letter-spacing:.16em;}
   .hero .thesis .ln{opacity:0;transform:translateY(14px);animation:lnIn 1.3s var(--ease) forwards;}
   .hero .thesis .ln:nth-child(1){animation-delay:.25s}.hero .thesis .ln:nth-child(2){animation-delay:.42s}
   .hero .thesis .ln:nth-child(3){animation-delay:.59s}.hero .thesis .ln:nth-child(4){animation-delay:.9s}
@@ -404,9 +406,9 @@
     <div class="wrap hero-inner">
       <p class="eyebrow" data-i18n="hero_eyebrow">Pianist · Composer · Producer</p>
       <h1>Haishan <span class="em">Lai</span></h1>
-      <p class="thesis lines" data-i18n="hero_thesis"><span class="ln">Impressionism in expression,</span><span class="ln">progressive in form&nbsp;—</span><span class="ln">music that <span class="hl">dissolves edges.</span></span><span class="ln gap">From the screen, to the stage,</span><span class="ln">and stretch <span class="hl">between dimensions.</span></span></p>
+      <p class="thesis lines" data-i18n="hero_thesis"><span class="ln">Impressionism in expression,</span><span class="ln">progressive in form&nbsp;—</span><span class="ln">music that <span class="hl">dissolves edges.</span></span><span class="ln gap sub">From screen to stage, and the space between.</span></p>
       <div class="hero-meta">
-        <span data-i18n="hero_meta2">Conservatory · Original · Contemporary Music</span>
+        <span data-i18n="hero_meta2">Piano · Sound · Time</span>
       </div>
     </div>
     <div class="scroll-cue" aria-hidden="true"><span class="bar"></span> <span data-i18n="scroll">Scroll</span></div>
@@ -672,8 +674,8 @@
       nav_stage:{en:"Stage",zh:"演出"},
       nav_contact:{en:"Contact",zh:"聯絡"},
       hero_eyebrow:{en:"Pianist · Composer · Producer",zh:"鋼琴 · 作曲 · 原創"},
-      hero_thesis:{en:'<span class="ln">Impressionism in expression,</span><span class="ln">progressive in form&nbsp;—</span><span class="ln">music that <span class="hl">dissolves edges.</span></span><span class="ln gap">From the screen, to the stage,</span><span class="ln">and stretch <span class="hl">between dimensions.</span></span>',zh:'<span class="ln">於印象派的表達，</span><span class="ln">形式上的前衛主義——</span><span class="ln">從自身<span class="hl">邊界融入</span>在音樂，</span><span class="ln gap">銀幕和舞台，</span><span class="ln">延伸至<span class="hl">維度之間</span>。</span>'},
-      hero_meta2:{en:'Conservatory · Original · Contemporary Music',zh:'學院派・原創・現代音樂'},
+      hero_thesis:{en:'<span class="ln">Impressionism in expression,</span><span class="ln">progressive in form&nbsp;—</span><span class="ln">music that <span class="hl">dissolves edges.</span></span><span class="ln gap sub">From screen to stage, and the space between.</span>',zh:'<span class="ln">於印象派的表達，</span><span class="ln">形式上的前衛主義——</span><span class="ln">從自身<span class="hl">邊界融入</span>在音樂，</span><span class="ln gap sub">從銀幕到舞台，以及兩者之間。</span>'},
+      hero_meta2:{en:'Piano · Sound · Time',zh:'鋼琴・聲音・時間'},
       scroll:{en:"Scroll",zh:"向下捲動"},
       lbl_practice:{en:"∞",zh:"∞"},
       idx_practice:{en:"∞",zh:"∞"},
