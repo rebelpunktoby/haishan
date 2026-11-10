@@ -485,6 +485,13 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 .hero-E .pp{left:clamp(6rem,14vw,13rem);bottom:clamp(12rem,33vh,22rem);}
 @media(max-width:760px){.hero-E .l3{top:71%;left:3.6rem;}.hero-E .pp{left:12vw;bottom:15.5vh;}}
 </style>
+<style>/* bilingual texture on the EN page */
+.seclabel .tx{font-family:var(--zh-font);font-size:.8rem;letter-spacing:.3em;color:var(--faint);margin-left:-.2rem;}
+.hero-E .hero-tx{position:absolute;z-index:3;right:clamp(1.4rem,5vw,4.5rem);bottom:clamp(5.2rem,11vh,7.5rem);font-family:var(--zh-font);font-weight:300;font-size:.9rem;letter-spacing:.5em;color:var(--faint);opacity:0;animation:wIn 3s var(--ease) 11s forwards;--o:.55;writing-mode:vertical-rl;}
+body.lang-zh .seclabel .tx,body.lang-zh .hero-E .hero-tx{display:none;}
+@media(max-width:760px){.hero-E .hero-tx{bottom:auto;top:44%;right:1.4rem;}}
+@media(prefers-reduced-motion:reduce){.hero-E .hero-tx{animation:none;opacity:.55;}}
+</style>
 </head>
 <body>
 <a class="skip" href="#statement" data-i18n="skip">Skip to content</a>
@@ -520,6 +527,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
       <p class="w l2" data-i18n="hero_l2">progressive in form&nbsp;—</p>
       <p class="w l3" data-i18n="hero_l3">music that</p>
       <p class="w pp" data-i18n="hero_pp">dissolves</p>
+      <span class="hero-tx" aria-hidden="true">邊界</span>
       <p class="ffw"><span class="ff" data-i18n="hero_ff">edges.</span><span class="echo e1" aria-hidden="true">edges.</span><span class="echo e2" aria-hidden="true">edges.</span></p>
       <h1 class="vh">Haishan Lai</h1>
     </div>
@@ -538,7 +546,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 
   <section class="block" id="work">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="rule"></span><span class="idx" data-i18n="idx_work">Play · Composition · Experience</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_work">Selected Work</span><span class="tx" aria-hidden="true">作品</span><span class="rule"></span><span class="idx" data-i18n="idx_work">Play · Composition · Experience</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title has-cover">
@@ -593,7 +601,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 
   <section class="block" id="omt">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">Works in progress</span></div>
+      <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="tx" aria-hidden="true">山海</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">Works in progress</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title">
@@ -602,7 +610,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
-        <div class="row" data-reveal>
+        <div class="row" data-reveal hidden>
           <div class="title">
             <a href="/omt/laws/" class="work-link"><span data-i18n="omt3_title">The Laws</span> <span class="arr">↗</span></a>
             <span class="role" data-i18n="omt3_role">How the hour leans, right now — and the ten articles behind it.</span>
@@ -616,7 +624,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
-        <div class="row" data-reveal>
+        <div class="row" data-reveal hidden>
           <div class="title">
             <a href="/omt/" class="work-link"><span data-i18n="omt2_title">Sketch 4A</span> <span class="arr">↗</span></a>
             <span class="role" data-i18n="omt2_role">A breathing drone study — breath, brightness, space.</span>
@@ -630,7 +638,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
   <!-- NOW & NEXT — hidden for now; remove these comment marks to bring it back
   <section class="block" id="next">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_next">Now &amp; Next</span><span class="rule"></span><span class="idx" data-i18n="idx_next">In progress</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_next">Now &amp; Next</span><span class="tx" aria-hidden="true">近期</span><span class="rule"></span><span class="idx" data-i18n="idx_next">In progress</span></div>
       <div class="next-card" data-reveal>
         <span class="when" data-i18n="next_when">Spring / Summer 2027</span>
         <h3 data-i18n="next_title">A work in sculpture, sound, dance and space</h3>
@@ -659,7 +667,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
   <!-- PRACTICE — hidden for now; delete the word "hidden" below to bring it back -->
   <section class="block" id="practice" hidden>
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_art">Practice</span><span class="rule"></span><span class="idx" data-i18n="idx_art">Improvisation · Systems · Art</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_art">Practice</span><span class="tx" aria-hidden="true">實踐</span><span class="rule"></span><span class="idx" data-i18n="idx_art">Improvisation · Systems · Art</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title">
@@ -683,7 +691,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 
   <section class="block" id="stage">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_stage">On Stage</span><span class="tx" aria-hidden="true">演出</span><span class="rule"></span><span class="idx" data-i18n="idx_stage">Selected Performances</span></div>
       <div class="perf">
         <div class="p" data-reveal><span class="v" data-i18n="perf12">The Green Room, Hoboken<small>Contemporary Jazz Trio</small></span><span class="y">04.2026</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf11">The Green Room, Hoboken<small>with Eric Leo</small></span><span class="y">11.2025</span></div>
@@ -710,7 +718,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 
   <section class="block edu" id="education">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="rule"></span><span class="idx" data-i18n="idx_edu">Training</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="tx" aria-hidden="true">學歷</span><span class="rule"></span><span class="idx" data-i18n="idx_edu">Training</span></div>
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title"><span data-i18n="edu1_title">New York University</span><span class="role" data-i18n="edu1_role">Graduate study, Music Technology</span></div>
@@ -731,7 +739,7 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 
   <section class="block" id="contact">
     <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_contact">Contact</span><span class="rule"></span><span class="idx" data-i18n="idx_contact">Let’s build something</span></div>
+      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_contact">Contact</span><span class="tx" aria-hidden="true">聯絡</span><span class="rule"></span><span class="idx" data-i18n="idx_contact">Let’s build something</span></div>
       <h2 class="contact-head" data-reveal data-i18n="contact_head">Open to <em>scoring, collaboration,</em> and creative experience.</h2>
       <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_based">Based</span><b data-i18n="based_cities">Mexico City · New York</b></p>
       <div class="links" data-reveal>
