@@ -1,0 +1,113 @@
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="dark">
+<title>山海 OceanMountain — β</title>
+<meta name="description" content="山海 OceanMountain — a generative sound work that follows the hour and the season. Work in progress by Haishan Lai.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#090B14">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Haishan Lai">
+<meta property="og:title" content="山海 OceanMountain — β">
+<meta property="og:description" content="A generative sound work shaped by the hour and the season.">
+<meta property="og:url" content="https://oceanmountainlai.art/circadian/">
+<meta property="og:image" content="https://oceanmountainlai.art/og-omt.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://oceanmountainlai.art/og-omt.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,300;9..144,500&family=Space+Grotesk:wght@300;400;500&family=Noto+Sans+TC:wght@300&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css?v=5">
+</head>
+<body>
+
+<header class="mast">
+  <a class="wordmark" href="https://oceanmountainlai.art/" aria-label="Back to OceanMountain home">
+    <span class="hanzi">山海</span>
+    <span class="mark-en">OceanMountain</span>
+  </a>
+<div class="session-tag">DMT <span class="beta">β</span></div>
+</header>
+
+<main class="stage">
+  <canvas id="horizon" aria-label="Live waveform of the drone"></canvas>
+
+  <div class="veil" id="veil">
+<p class="veil-line">FLOW with the CONSCIOUSNESS</p>
+<button id="initBtn" class="init-btn" type="button" aria-label="Begin listening">
+  <span class="init-ring" aria-hidden="true"></span>
+  ∞
+</button>
+<p class="veil-hint">Headphones recommended · Embrace the moment now</p>
+  </div>
+
+  <div class="readout-stack" id="readout">
+    <span id="clockReadout" class="ro-time">—</span>
+    <span id="seasonReadout" class="ro-pair"></span>
+    <span id="bodyReadout" class="ro-pair"></span>
+  </div>
+
+  <div class="console" id="console" hidden>
+
+    <div class="mode-switch" role="radiogroup" aria-label="Listening mode">
+      <span class="mode-label" id="labelPhones">Headphones</span>
+      <button id="modeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to speaker mode">
+        <span class="toggle-dot" aria-hidden="true"></span>
+      </button>
+      <span class="mode-label" id="labelSpeakers">Speakers</span>
+    </div>
+    
+<div class="mode-switch" role="radiogroup" aria-label="Time system">
+  <span class="mode-label active" id="labelStandard">Standard Time</span>
+<button id="timeToggle" class="toggle" type="button" role="switch" aria-checked="false" aria-label="Switch to I-CHING TIME">
+    <span class="toggle-dot" aria-hidden="true"></span>
+  </button>
+  <span class="mode-label" id="labelIChing">I-CHING TIME</span>
+</div>
+<div class="console-actions">
+<button id="powerBtn" class="power-btn" type="button" aria-label="Pause the sound">PAUSE</button>
+<button id="ideaBtn" class="idea-btn" type="button" aria-expanded="false" aria-controls="idea">About <span aria-hidden="true">↑</span></button>
+</div>
+</div>
+  <aside class="idea" id="idea" aria-hidden="true" aria-labelledby="ideaTitle">
+    <div class="idea-inner">
+      <p class="idea-kicker" id="ideaTitle">山海 · OceanMountain</p>
+      <p class="idea-en">A generative sound work,<br>shaped by the hour and the season.<br>The solar terms form its ground;<br>the double&#8209;hours, its tide.<br>Nothing is composed in advance.<br>It proceeds one step at a time,<br>retaining only what has truly sounded.</p>
+      <span class="idea-rule" aria-hidden="true"></span>
+      <p class="idea-zh">一件隨時辰與節氣而生的聲音作品。<br>以二十四節氣為地，<br>以十二時辰為潮。<br>無預先寫定之樂譜，<br>音樂一步一步而行，<br>唯留真正響起之聲。</p>
+      <button class="idea-close" id="ideaClose" type="button">Close</button>
+    </div>
+  </aside>
+
+
+  <p class="sysmsg" id="sysmsg" role="status" aria-live="polite"></p>
+</main>
+
+<footer class="colophon">
+  <span>breath · tide · hour · season</span>
+</footer>
+
+<script type="module" src="app.js?v=6"></script>
+<script>
+(function(){
+  var btn=document.getElementById('ideaBtn'), box=document.getElementById('idea'), close=document.getElementById('ideaClose');
+  if(!btn||!box) return;
+  function set(open){
+    box.classList.toggle('open',open); box.setAttribute('aria-hidden',String(!open));
+    btn.setAttribute('aria-expanded',String(open));
+    setTimeout(function(){ (open?close:btn).focus({preventScroll:true}); if(open) box.scrollTop=0; }, 30);
+  }
+  btn.addEventListener('click',function(){ set(!box.classList.contains('open')); });
+  close.addEventListener('click',function(){ set(false); });
+  box.addEventListener('click',function(e){ if(e.target===box) set(false); });
+  document.addEventListener('keydown',function(e){ if(e.key==='Escape'&&box.classList.contains('open')) set(false); });
+})();
+</script></body>
+</html>
