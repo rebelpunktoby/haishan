@@ -116,8 +116,21 @@
     padding-bottom:env(safe-area-inset-bottom,0px);
     opacity:0;filter:blur(7px);visibility:hidden;transition:opacity 1.8s var(--ease) .6s,filter 1.8s var(--ease) .6s,visibility 0s 2.4s}
   body.on .console{opacity:1;filter:blur(0);visibility:visible;transition:opacity 1.8s var(--ease) .6s,filter 1.8s var(--ease) .6s,visibility 0s}
-  .dials{display:grid;grid-template-columns:repeat(3,1fr);gap:.6rem 1.6rem;width:100%}
-  .dial label{display:flex;justify-content:space-between;align-items:baseline;font-family:var(--mono);font-size:.62rem;letter-spacing:.26em;text-transform:uppercase;color:var(--haze);margin-bottom:.5rem}
+  .dials{display:grid;grid-template-columns:repeat(3,auto);justify-content:center;gap:.6rem clamp(1.6rem,5vw,3.4rem);width:100%}
+  /* rotary knobs: the range input stays for keyboard + screen readers, visually hidden */
+  .dial{display:flex;flex-direction:column;align-items:center;gap:.55rem;position:relative}
+  .dial input[type=range].vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+  .knob{width:clamp(58px,9vmin,74px);height:clamp(58px,9vmin,74px);cursor:ns-resize;touch-action:none;outline:none;border-radius:50%;position:relative}
+  .knob svg{width:100%;height:100%;overflow:visible;display:block}
+  .knob .track{fill:none;stroke:var(--line-2);stroke-width:2;stroke-linecap:round}
+  .knob .val{fill:none;stroke:var(--lumen);stroke-width:2;stroke-linecap:round;filter:drop-shadow(0 0 4px rgba(143,227,210,.55));transition:stroke-dashoffset .12s linear}
+  .knob .ticks line{stroke:var(--faint);stroke-width:1;opacity:.55}
+  .knob .body{fill:url(#knobBody);stroke:rgba(255,255,255,.07);stroke-width:1}
+  .knob .ring{fill:none;stroke:rgba(0,0,0,.55);stroke-width:2}
+  .knob .ptr{stroke:#F2EEE4;stroke-width:2;stroke-linecap:round}
+  .knob:hover .val,.dial input:focus-visible + .knob .val{filter:drop-shadow(0 0 7px rgba(143,227,210,.85))}
+  .dial input:focus-visible + .knob{box-shadow:0 0 0 1px var(--lumen)}
+  .dial label{display:flex;flex-direction:column;align-items:center;gap:.2rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--haze);margin:0}
   .dial label output{color:var(--faint);letter-spacing:.08em;font-variant-numeric:tabular-nums}
   .dial input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:1px;background:var(--line-2);outline-offset:8px;border-radius:1px}
   .dial input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;box-shadow:0 0 10px rgba(143,227,210,.45)}
@@ -146,6 +159,22 @@
   .ab-rule{display:block;width:36px;height:1px;margin:1.6rem auto;background:var(--lumen);opacity:.6}
   .ab-zh{font-family:var(--zh);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2;letter-spacing:.08em;color:var(--haze)}
   .ab-close{margin-top:1.8rem}
+  .reading{margin-top:3.2rem;padding-top:2.6rem;border-top:1px solid var(--line-2)}
+  #wheel{width:min(300px,78vw);height:auto;display:block;margin:0 auto 1.8rem}
+  #wheel .seg{fill:none;stroke:var(--line-2);stroke-width:1}
+  #wheel .lbl{font-family:var(--zh);font-size:13px;fill:var(--faint);text-anchor:middle;dominant-baseline:central}
+  #wheel .lbl.now{fill:#F2EEE4}
+  #wheel .tide{fill:rgba(143,227,210,.07);stroke:var(--lumen);stroke-width:1.2;stroke-linejoin:round;opacity:.85}
+  #wheel .hand{stroke:#F2EEE4;stroke-width:1;opacity:.7}
+  #wheel .dot{fill:var(--lumen)}
+  #wheel .core{fill:none;stroke:var(--line-2);stroke-dasharray:1 3}
+  #wheel .mark{font-family:var(--mono);font-size:7px;letter-spacing:2px;fill:var(--faint);text-anchor:middle}
+  .laws{margin:0;display:grid;gap:1.1rem;text-align:left}
+  .laws dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--lumen);margin-bottom:.25rem}
+  .laws dd{margin:0;font-family:var(--serif);font-weight:300;font-size:.98rem;line-height:1.6;color:var(--haze)}
+  body.lang-zh .laws dd{font-family:var(--zh);letter-spacing:.06em}
+  .ab-more{display:inline-block;margin-top:1.8rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);border-bottom:1px solid var(--line-2);padding-bottom:.2rem;text-decoration:none}
+  .ab-more:hover{color:var(--lumen);border-color:var(--lumen)}
   body.lang-zh .ab-en{display:none}body.lang-zh .ab-rule{display:none}body.lang-zh .ab-zh{color:var(--mist);font-size:clamp(1rem,1.7vw,1.15rem)}
 
   .sysmsg{position:absolute;z-index:4;top:1.2rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;color:var(--haze);max-width:84vw;text-align:center}
@@ -206,9 +235,9 @@
 
   <div class="console" id="console">
     <div class="dials">
-      <div class="dial"><label for="breath"><span data-i18n="c_breath">Breath</span><output id="breathOut">10 s</output></label><input type="range" id="breath" min="5" max="16" step="0.5" value="10"></div>
-      <div class="dial"><label for="light"><span data-i18n="c_light">Light</span><output id="lightOut">50</output></label><input type="range" id="light" min="0" max="100" step="1" value="50"></div>
-      <div class="dial"><label for="room"><span data-i18n="c_room">Room</span><output id="roomOut">40</output></label><input type="range" id="room" min="0" max="100" step="1" value="40"></div>
+      <div class="dial"><input class="vh" type="range" id="breath" min="5" max="16" step="0.5" value="10" data-default="10"><div class="knob" data-for="breath" aria-hidden="true"></div><label for="breath"><span data-i18n="c_breath">Breath</span><output id="breathOut">10 s</output></label></div>
+      <div class="dial"><input class="vh" type="range" id="light" min="0" max="100" step="1" value="50" data-default="50"><div class="knob" data-for="light" aria-hidden="true"></div><label for="light"><span data-i18n="c_light">Light</span><output id="lightOut">50</output></label></div>
+      <div class="dial"><input class="vh" type="range" id="room" min="0" max="100" step="1" value="40" data-default="40"><div class="knob" data-for="room" aria-hidden="true"></div><label for="room"><span data-i18n="c_room">Room</span><output id="roomOut">40</output></label></div>
     </div>
     <div class="row2">
       <button class="quiet sw" id="modeBtn" type="button" aria-pressed="false"><span class="a" data-i18n="m_phones">Headphones</span> · <span class="b" data-i18n="m_speakers">Speakers</span></button>
@@ -216,18 +245,29 @@
     </div>
     <div class="row2">
       <button class="pill" id="powerBtn" type="button" aria-label="Pause the sound"><span data-i18n="pause">Pause</span></button>
-      <button class="quiet" id="renderBtn" type="button"><span data-i18n="render">Take this moment with you</span> <span aria-hidden="true">↓</span></button>
       <button class="quiet" id="aboutBtn" type="button" aria-expanded="false" aria-controls="about"><span data-i18n="about">About</span> <span aria-hidden="true">↑</span></button>
     </div>
     <p class="msg" id="msg"></p>
   </div>
 
+  <svg width="0" height="0" style="position:absolute" aria-hidden="true"><defs><radialGradient id="knobBody" cx="38%" cy="30%" r="80%"><stop offset="0" stop-color="#2A2D3E"/><stop offset=".55" stop-color="#151724"/><stop offset="1" stop-color="#0A0B12"/></radialGradient></defs></svg>
   <aside class="about" id="about" aria-hidden="true" aria-labelledby="aboutTitle">
     <div class="about-inner">
       <p class="ab-k" id="aboutTitle">山海 · OceanMountain</p>
       <p class="ab-en">A generative sound work,<br>shaped by the hour and the season.<br>The solar terms form its ground;<br>the double&#8209;hours, its tide.<br>Nothing is composed in advance.<br>It proceeds one step at a time,<br>retaining only what has truly sounded.</p>
       <span class="ab-rule" aria-hidden="true"></span>
       <p class="ab-zh">一件隨時辰與節氣而生的聲音作品。<br>以二十四節氣為地，<br>以十二時辰為潮。<br>無預先寫定之樂譜，<br>音樂一步一步而行，<br>唯留真正響起之聲。</p>
+      <div class="reading">
+        <p class="ab-k" data-i18n="r_k">How it listens</p>
+        <svg id="wheel" viewBox="-160 -160 320 320" role="img" aria-label="The twelve double-hours and the tide of pitch through the day"></svg>
+        <dl class="laws">
+          <div><dt data-i18n="r1t">Ground · 節氣</dt><dd data-i18n="r1">The solar term sets the register — low in winter, high in summer.</dd></div>
+          <div><dt data-i18n="r2t">Tide · 時辰</dt><dd data-i18n="r2">Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.</dd></div>
+          <div><dt data-i18n="r3t">Colour · 四時</dt><dd data-i18n="r3">The day turns through four chords — morning, noon, dusk, night.</dd></div>
+          <div><dt data-i18n="r4t">Breath · Light · Room</dt><dd data-i18n="r4">Yours. How slowly it breathes, how bright, how large the space.</dd></div>
+        </dl>
+        <a class="ab-more" href="/omt/laws/" data-i18n="r_more">Read the ten articles ↗</a>
+      </div>
       <button class="pill ab-close" id="aboutClose" type="button"><span data-i18n="close">Close</span></button>
     </div>
   </aside>
@@ -239,6 +279,6 @@
   <span data-i18n="colophon">breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app_v2.js?v=1"></script>
+<script type="module" src="app_v2.js?v=3"></script>
 </body>
 </html>

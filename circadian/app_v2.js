@@ -1,7 +1,7 @@
 // app_v2.js — OceanMountain · the merged OMT demo
 // The circadian engine stays the truth (engine.js). engine_v2.js wraps it in
 // breath / light / room and a hearing-safe master. This file is the page.
-import { OceanMountainV2, DEFAULTS, renderMoment } from "./engine_v2.js?v=1";
+import { OceanMountainV2, DEFAULTS } from "./engine_v2.js?v=1";
 
 const CAP_HEADPHONES = 1000;
 const CAP_SPEAKERS = 2;
@@ -9,7 +9,7 @@ const CAP_SPEAKERS = 2;
 const $ = (id) => document.getElementById(id);
 const initBtn = $("initBtn"), veil = $("veil"), consoleEl = $("console");
 const modeBtn = $("modeBtn"), timeBtn = $("timeBtn"), powerBtn = $("powerBtn");
-const renderBtn = $("renderBtn"), aboutBtn = $("aboutBtn"), aboutBox = $("about"), aboutClose = $("aboutClose");
+const aboutBtn = $("aboutBtn"), aboutBox = $("about"), aboutClose = $("aboutClose");
 const langBtn = $("langToggle"), msg = $("msg"), sysmsg = $("sysmsg");
 const moTime = $("moTime"), moHour = $("moHour"), moLine = $("moLine"), moTerm = $("moTerm");
 const canvas = $("horizon"), ctx2d = canvas.getContext("2d");
@@ -105,7 +105,12 @@ function pushClock() {
 const I18N = {
   veil1:{en:"Sound that follows the hour.",zh:"隨時辰而生的聲音。"},
   veil2:{en:"Nothing is composed in advance.",zh:"無預先寫定之樂譜。"},
-  begin:{en:"Begin",zh:"開始"}, hint:{en:"Headphones recommended · Starts softly",zh:"建議使用耳機 · 聲音輕輕淡入"},
+  begin:{en:"Begin",zh:"開始"},
+  r_k:{en:"How it listens",zh:"它如何聆聽"}, r_more:{en:"Read the ten articles ↗",zh:"閱讀十條憲章 ↗"},
+  r1t:{en:"Ground · 節氣",zh:"地 · 節氣"}, r1:{en:"The solar term sets the register — low in winter, high in summer.",zh:"節氣定音域——冬低，夏高。"},
+  r2t:{en:"Tide · 時辰",zh:"潮 · 時辰"}, r2:{en:"Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.",zh:"每個時辰推動音高與明暗：向午而升，向子而沉。輪上的形狀，就是這道潮。"},
+  r3t:{en:"Colour · 四時",zh:"色 · 四時"}, r3:{en:"The day turns through four chords — morning, noon, dusk, night.",zh:"一日流轉四個和弦——晨、午、暮、夜。"},
+  r4t:{en:"Breath · Light · Room",zh:"呼吸 · 光 · 空間"}, r4:{en:"Yours. How slowly it breathes, how bright, how large the space.",zh:"由你決定：呼吸多慢、多明亮、空間多大。"}, hint:{en:"Headphones recommended · Starts softly",zh:"建議使用耳機 · 聲音輕輕淡入"},
   c_breath:{en:"Breath",zh:"呼吸"}, c_light:{en:"Light",zh:"光"}, c_room:{en:"Room",zh:"空間"},
   m_phones:{en:"Headphones",zh:"耳機"}, m_speakers:{en:"Speakers",zh:"喇叭"},
   t_std:{en:"Clock",zh:"時鐘"}, t_iching:{en:"時辰",zh:"時辰"},
@@ -139,6 +144,7 @@ async function initialize() {
     const AC = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AC({ latencyHint: "playback" });
     await unlock(audioCtx);
+    audioCtx.addEventListener("statechange", () => { if (playing && audioCtx.state !== "running") setTimeout(keepAlive, 300); });
 
     engine = new OceanMountainV2(audioCtx);
     masterGain = audioCtx.createGain(); masterGain.gain.value = 0;
@@ -159,6 +165,7 @@ async function initialize() {
     consoleEl.removeAttribute("hidden");
     status("");
     if (!rafStarted) { rafStarted = true; requestAnimationFrame(drawWave); }
+    setupMediaSession();
   } catch (err) {
     console.error(err);
     status(lang === "zh" ? "聲音無法啟動，請再按一次。" : "The sound couldn’t start. Tap Begin to try again.");
@@ -177,6 +184,7 @@ async function onPowerToggle() {
     powerBtn.querySelector("[data-i18n]").textContent = I18N.play[lang];
     powerBtn.setAttribute("aria-label", "Resume the sound");
     fadeMaster(0, 1.0);
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "paused";
     clearTimeout(suspendTimer);
     suspendTimer = setTimeout(() => { if (!playing && audioCtx.state === "running") audioCtx.suspend(); }, 3400);
   } else {
@@ -187,6 +195,7 @@ async function onPowerToggle() {
     powerBtn.querySelector("[data-i18n]").textContent = I18N.pause[lang];
     powerBtn.setAttribute("aria-label", "Pause the sound");
     fadeMaster(1, 0.9);
+    if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
   }
 }
 function setMode(spk) {
@@ -211,34 +220,77 @@ function readDials(immediate = false) {
   engine.setRoom(+dials.room.value, immediate);
 }
 Object.values(dials).forEach(d => d.addEventListener("input", () => readDials(false)));
+
+// ---------- knobs: 270° sweep, drag up/down, wheel, double-click resets ----------
+const KNOB_A0 = -225, KNOB_A1 = 45;
+function arcPath(r, a0, a1) {
+  const p = a => [Math.cos(a * Math.PI / 180) * r, Math.sin(a * Math.PI / 180) * r];
+  const [x0, y0] = p(a0), [x1, y1] = p(a1);
+  return `M${x0.toFixed(2)} ${y0.toFixed(2)}A${r} ${r} 0 ${a1 - a0 > 180 ? 1 : 0} 1 ${x1.toFixed(2)} ${y1.toFixed(2)}`;
+}
+function buildKnob(box) {
+  const input = $(box.dataset.for), NS = "http://www.w3.org/2000/svg";
+  box.innerHTML = `<svg viewBox="-50 -50 100 100"><g class="ticks"></g><path class="track" d="${arcPath(44, KNOB_A0, KNOB_A1)}"/><path class="val" d="${arcPath(44, KNOB_A0, KNOB_A1)}"/><circle class="body" r="33"/><circle class="ring" r="34"/><line class="ptr" x1="0" y1="-14" x2="0" y2="-28"/></svg>`;
+  const ticks = box.querySelector(".ticks");
+  for (let i = 0; i <= 10; i++) { const a = (KNOB_A0 + (KNOB_A1 - KNOB_A0) * i / 10) * Math.PI / 180, l = document.createElementNS(NS, "line");
+    l.setAttribute("x1", (Math.cos(a) * 37.5).toFixed(2)); l.setAttribute("y1", (Math.sin(a) * 37.5).toFixed(2));
+    l.setAttribute("x2", (Math.cos(a) * 40).toFixed(2)); l.setAttribute("y2", (Math.sin(a) * 40).toFixed(2)); ticks.append(l); }
+  const val = box.querySelector(".val"), ptr = box.querySelector(".ptr"), len = val.getTotalLength();
+  val.style.strokeDasharray = len;
+  const min = +input.min, max = +input.max, step = +input.step || 1;
+  const paint = () => { const f = (+input.value - min) / (max - min);
+    val.style.strokeDashoffset = (len * (1 - f)).toFixed(2);
+    ptr.setAttribute("transform", `rotate(${(KNOB_A0 + 90 + (KNOB_A1 - KNOB_A0) * f).toFixed(1)})`); };
+  const set = v => { v = Math.round(Math.max(min, Math.min(max, v)) / step) * step;
+    if (+input.value !== v) { input.value = v; input.dispatchEvent(new Event("input", { bubbles: true })); } paint(); };
+  input.addEventListener("input", paint);
+  let y0 = 0, v0 = 0;
+  box.addEventListener("pointerdown", e => { box.setPointerCapture(e.pointerId); y0 = e.clientY; v0 = +input.value; e.preventDefault(); });
+  box.addEventListener("pointermove", e => { if (!box.hasPointerCapture(e.pointerId)) return;
+    const fine = e.shiftKey ? 0.25 : 1; set(v0 + (y0 - e.clientY) / 180 * (max - min) * fine); });
+  box.addEventListener("wheel", e => { e.preventDefault(); set(+input.value - Math.sign(e.deltaY) * step * (max - min > 20 ? 2 : 1)); }, { passive: false });
+  box.addEventListener("dblclick", () => set(+input.dataset.default));
+  paint();
+}
+document.querySelectorAll(".knob").forEach(buildKnob);
 function status(t) { sysmsg.textContent = t; }
 
-// ---------- take this moment with you ----------
-async function onRender() {
-  if (renderBtn.disabled) return;
-  renderBtn.disabled = true;
-  msg.textContent = lang === "zh" ? "正在記錄此刻…" : "Rendering this moment…";
-  try {
-    const { sendHour, sendMonth, rawHour } = currentSend();
-    const blob = await renderMoment({ seconds: 45, month: sendMonth, hour: sendHour,
-      state: { breath: +dials.breath.value, light: +dials.light.value, room: +dials.room.value }, speakers });
-    const sc = shichenFor(rawHour), d = new Date();
-    const name = `OceanMountain_${sc.zh}時_${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}_${String(d.getHours()).padStart(2,"0")}${String(d.getMinutes()).padStart(2,"0")}.wav`;
-    const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = name;
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 60_000);
-    msg.textContent = lang === "zh" ? "已儲存 45 秒。" : "Saved 45 seconds of this hour.";
-  } catch (e) {
-    console.error(e);
-    msg.textContent = lang === "zh" ? "此瀏覽器無法記錄。" : "This browser can’t render.";
-  } finally {
-    renderBtn.disabled = false;
-    setTimeout(() => { msg.textContent = ""; }, 6000);
+// ---------- about ----------
+// ---------- the wheel: twelve double-hours + the day's tide of pitch ----------
+const TIDE = [110,110,165,165,110,220,220,275,330,330,275,440,440,550,550,440,440,165,165,110,110,165,110,110]; // engine hour table, Hz
+const BRANCH = ["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+function drawWheel() {
+  const svg = $("wheel"); if (!svg) return;
+  const NS = "http://www.w3.org/2000/svg", el = (n, a) => { const e = document.createElementNS(NS, n); for (const k in a) e.setAttribute(k, a[k]); return e; };
+  svg.replaceChildren();
+  const ang = h => Math.PI / 2 + (h / 24) * 2 * Math.PI;           // 子 (midnight) at the bottom, 午 at the top
+  const R = 132, r0 = 34, rMax = 104;
+  const now = new Date(), hourF = now.getHours() + now.getMinutes() / 60;
+  const nowIdx = Math.floor(((now.getHours() + 1) % 24) / 2);
+  svg.append(el("circle", { cx: 0, cy: 0, r: R, class: "seg" }), el("circle", { cx: 0, cy: 0, r: r0, class: "core" }));
+  for (let i = 0; i < 12; i++) {
+    const a = ang(i * 2 - 1);
+    svg.append(el("line", { x1: Math.cos(a) * (R - 8), y1: Math.sin(a) * (R - 8), x2: Math.cos(a) * R, y2: Math.sin(a) * R, class: "seg" }));
+    const c = ang(i * 2), t = el("text", { x: Math.cos(c) * (R + 15), y: Math.sin(c) * (R + 15), class: "lbl" + (i === nowIdx ? " now" : "") });
+    t.textContent = BRANCH[i]; svg.append(t);
   }
+  const lo = Math.log(110), hi = Math.log(550);
+  let d = "";
+  for (let k = 0; k <= 96; k++) {
+    const hf = (k / 96) * 24, i0 = Math.floor(hf) % 24, i1 = (i0 + 1) % 24, f = hf - Math.floor(hf);
+    const p = Math.log(TIDE[i0]) * (1 - f) + Math.log(TIDE[i1]) * f;
+    const rr = r0 + 10 + (rMax - r0 - 10) * (p - lo) / (hi - lo), a = ang(hf);
+    d += (k ? "L" : "M") + (Math.cos(a) * rr).toFixed(1) + " " + (Math.sin(a) * rr).toFixed(1);
+  }
+  svg.append(el("path", { d: d + "Z", class: "tide" }));
+  const a = ang(hourF);
+  svg.append(el("line", { x1: 0, y1: 0, x2: Math.cos(a) * (R - 4), y2: Math.sin(a) * (R - 4), class: "hand" }),
+             el("circle", { cx: Math.cos(a) * (R - 4), cy: Math.sin(a) * (R - 4), r: 3, class: "dot" }));
+  const m = el("text", { x: 0, y: 3, class: "mark" }); m.textContent = "NOW"; svg.append(m);
 }
 
-// ---------- about ----------
 function setAbout(open) {
+  if (open) drawWheel();
   aboutBox.classList.toggle("open", open); aboutBox.setAttribute("aria-hidden", String(!open));
   aboutBtn.setAttribute("aria-expanded", String(open));
   setTimeout(() => { (open ? aboutClose : aboutBtn).focus({ preventScroll: true }); if (open) aboutBox.scrollTop = 0; }, 30);
@@ -249,12 +301,35 @@ initBtn.addEventListener("click", initialize, { once: true });
 powerBtn.addEventListener("click", onPowerToggle);
 modeBtn.addEventListener("click", () => setMode(!speakers));
 timeBtn.addEventListener("click", () => setTimeSystem(!ichingMode));
-renderBtn.addEventListener("click", onRender);
 aboutBtn.addEventListener("click", () => setAbout(!aboutBox.classList.contains("open")));
 aboutClose.addEventListener("click", () => setAbout(false));
 aboutBox.addEventListener("click", (e) => { if (e.target === aboutBox) setAbout(false); });
 document.addEventListener("keydown", (e) => { if (e.key === "Escape" && aboutBox.classList.contains("open")) setAbout(false); });
-document.addEventListener("visibilitychange", () => { if (!document.hidden && audioCtx && playing && audioCtx.state === "suspended") audioCtx.resume(); });
+// ---------- keep playing, like a station ----------
+function setupMediaSession() {
+  try { if (navigator.audioSession) navigator.audioSession.type = "playback"; } catch (_) {}
+  if (!("mediaSession" in navigator)) return;
+  try {
+    navigator.mediaSession.metadata = new MediaMetadata({
+      title: "山海 OceanMountain", artist: "Haishan Lai", album: "Live · follows the hour",
+      artwork: [{ src: "/og.jpg", sizes: "1200x630", type: "image/jpeg" }]
+    });
+    navigator.mediaSession.setActionHandler("play", () => { if (!playing) onPowerToggle(); });
+    navigator.mediaSession.setActionHandler("pause", () => { if (playing) onPowerToggle(); });
+    navigator.mediaSession.setActionHandler("stop", () => { if (playing) onPowerToggle(); });
+    navigator.mediaSession.playbackState = playing ? "playing" : "paused";
+  } catch (_) {}
+}
+// If the browser or OS pauses the audio (tab hidden, a call, lock screen), bring it back
+// as soon as it's allowed. Only an explicit Pause stops the station.
+async function keepAlive() {
+  if (!audioCtx || !playing) return;
+  if (audioCtx.state !== "running") { try { await audioCtx.resume(); pushClock(); } catch (_) {} }
+  if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+}
+["visibilitychange", "pageshow", "focus", "pointerdown", "keydown"].forEach(ev =>
+  (ev === "visibilitychange" ? document : window).addEventListener(ev, keepAlive, { passive: true }));
+setInterval(keepAlive, 4000);
 
 // ---------- canvas ----------
 function sizeCanvas() {
