@@ -74,6 +74,10 @@
   @keyframes driftB{0%{transform:translate(0,0) scale(1.05)}50%{transform:translate(-6%,4%) scale(.95)}100%{transform:translate(0,0) scale(1.05)}}
   @keyframes driftC{0%{transform:translate(0,0) scale(1)}50%{transform:translate(-5%,5%) scale(1.14)}100%{transform:translate(0,0) scale(1)}}
   #horizon{position:absolute;inset:0;width:100%;height:100%;filter:drop-shadow(0 0 24px rgba(143,227,210,.14))}
+  /* before Begin: the horizon waits quietly behind the words, never through them */
+  #horizon{transition:opacity 2.4s var(--ease)}
+  body:not(.on) #horizon{opacity:.18}
+  .veil-line{text-shadow:0 0 22px rgba(9,11,20,.95),0 0 6px rgba(9,11,20,.9)}
   .ink-c{position:absolute;right:-2vmin;bottom:-6vmin;font-family:var(--zh);font-weight:300;line-height:1;font-size:clamp(11rem,38vmin,24rem);
     color:rgba(214,210,232,.045);filter:blur(.9px);user-select:none;pointer-events:none;animation:inkBreathe 16s ease-in-out infinite}
   @keyframes inkBreathe{0%,100%{opacity:.75;transform:translateY(0)}50%{opacity:1;transform:translateY(-8px)}}
