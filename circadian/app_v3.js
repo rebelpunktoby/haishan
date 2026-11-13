@@ -1,4 +1,4 @@
-// app_v2.js — OceanMountain · the merged OMT demo
+// app_v3.js — OceanMountain · the merged OMT demo
 // The circadian engine stays the truth (engine.js). engine_v2.js wraps it in
 // breath / light / room and a hearing-safe master. This file is the page.
 import { OceanMountainV2, DEFAULTS } from "./engine_v2.js?v=1";

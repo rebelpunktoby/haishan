@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
-<title>山海 OceanMountain — β</title>
+<title>FLOW with the CONSCIOUSNESS — 山海 OceanMountain β</title>
 <meta name="description" content="山海 OceanMountain — a generative sound work that follows the hour and the season. Work in progress by Haishan Lai.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="icon" href="/favicon-32.png" sizes="32x32" type="image/png">
@@ -12,7 +12,7 @@
 <meta name="theme-color" content="#090B14">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Haishan Lai">
-<meta property="og:title" content="山海 OceanMountain — β">
+<meta property="og:title" content="FLOW with the CONSCIOUSNESS — 山海 OceanMountain β">
 <meta property="og:description" content="A generative sound work shaped by the hour and the season.">
 <meta property="og:url" content="https://oceanmountainlai.art/circadian/">
 <meta property="og:image" content="https://oceanmountainlai.art/og-omt.jpg">
@@ -87,7 +87,9 @@
     transition:opacity 1.8s var(--ease),visibility 1.8s,filter 1.8s var(--ease)}
   .veil.gone{opacity:0;visibility:hidden;filter:blur(8px);pointer-events:none}
   .veil-line{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.3rem,1rem + 1.8vw,2.2rem);line-height:1.3;color:var(--mist);max-width:22ch;letter-spacing:-.01em}
-  .veil-line .l2{display:block;color:var(--haze);margin-top:.15em}
+  .veil-line .flow{display:block;font-style:normal;font-family:var(--serif);font-weight:300;letter-spacing:.04em}
+  .veil-line .l2{display:block;color:var(--haze);margin-top:.5em;font-size:.62em;line-height:1.5;max-width:30ch;margin-left:auto;margin-right:auto}
+  body.lang-zh .veil-line .flow{font-family:var(--serif);font-style:normal;letter-spacing:.04em}
   body.lang-zh .veil-line{font-family:var(--zh);font-style:normal;letter-spacing:.1em;line-height:1.6}
   .init-btn{position:relative;font-family:var(--mono);font-size:.74rem;letter-spacing:.34em;text-indent:.34em;color:var(--lumen);
     border:1px solid var(--lumen);border-radius:999px;padding:1.05rem 2.4rem;transition:background .5s var(--ease),color .5s var(--ease),box-shadow .5s var(--ease)}
@@ -157,21 +159,49 @@
   .ab-k{font-family:var(--mono);font-size:.6rem;letter-spacing:.34em;text-transform:uppercase;color:var(--lumen);margin-bottom:1.8rem}
   .ab-en{font-family:var(--serif);font-weight:300;font-size:clamp(1.02rem,1.9vw,1.3rem);line-height:1.7;color:var(--mist);margin-bottom:1.1rem}
   .ab-rule{display:block;width:36px;height:1px;margin:1.6rem auto;background:var(--lumen);opacity:.6}
-  .ab-zh{font-family:var(--zh);font-weight:300;font-size:clamp(.9rem,1.5vw,1.02rem);line-height:2;letter-spacing:.08em;color:var(--haze)}
+  .ab-zh{font-family:var(--zh);font-weight:300;font-size:clamp(.98rem,1.5vw,1.06rem);line-height:2;letter-spacing:.08em;color:#B9B6D0}
   .ab-close{margin-top:1.8rem}
   .reading{margin-top:3.2rem;padding-top:2.6rem;border-top:1px solid var(--line-2)}
-  #wheel{width:min(300px,78vw);height:auto;display:block;margin:0 auto 1.8rem}
+  #wheel{width:min(340px,88vw);height:auto;display:block;margin:0 auto 1.6rem;overflow:visible}
   #wheel .seg{fill:none;stroke:var(--line-2);stroke-width:1}
-  #wheel .lbl{font-family:var(--zh);font-size:13px;fill:var(--faint);text-anchor:middle;dominant-baseline:central}
+  #wheel .seg.faint{opacity:.6}
+  #wheel .core{fill:none;stroke:var(--line-2);stroke-dasharray:1 3}
+  #wheel .lbl{font-family:var(--zh);font-size:12.5px;fill:var(--faint);text-anchor:middle;dominant-baseline:central}
   #wheel .lbl.now{fill:#F2EEE4}
+  #wheel .band .day{fill:rgba(226,172,110,.09)}
+  #wheel .band .night{fill:rgba(7,8,16,.55)}
+  #wheel .twi{stroke:var(--amber);stroke-width:1;opacity:.55}
+  #wheel .tick{stroke:var(--faint);stroke-width:1;opacity:.5}
+  #wheel .tick.major{stroke:var(--haze);opacity:.9;stroke-width:1.2}
+  #wheel .tick.cur{stroke:var(--lumen);opacity:1;stroke-width:1.6;filter:drop-shadow(0 0 3px rgba(143,227,210,.7))}
+  #wheel .hit{fill:transparent;cursor:pointer}
+  #wheel .tl{font-family:var(--zh);font-size:9.5px;fill:var(--faint);text-anchor:middle;dominant-baseline:central;letter-spacing:.5px}
+  #wheel .tl.cur{fill:var(--lumen)}
+  #wheel .sun{fill:var(--amber)}
+  #wheel .sunglow{fill:rgba(226,172,110,.22);filter:blur(1.5px)}
+  #wheel .moon-dark{fill:#1B1E2E;stroke:rgba(236,234,244,.35);stroke-width:.6}
+  #wheel .moon-lit{fill:#E6E3EE}
   #wheel .tide{fill:rgba(143,227,210,.07);stroke:var(--lumen);stroke-width:1.2;stroke-linejoin:round;opacity:.85}
   #wheel .hand{stroke:#F2EEE4;stroke-width:1;opacity:.7}
   #wheel .dot{fill:var(--lumen)}
-  #wheel .core{fill:none;stroke:var(--line-2);stroke-dasharray:1 3}
+  @media(prefers-reduced-motion:no-preference){#wheel .dot{animation:pulse 6s ease-in-out infinite}}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
   #wheel .mark{font-family:var(--mono);font-size:7px;letter-spacing:2px;fill:var(--faint);text-anchor:middle}
+  .sky{margin:0 0 1.2rem;display:grid;gap:.55rem;text-align:left;font-variant-numeric:tabular-nums}
+  .sky div{display:grid;grid-template-columns:5.6rem 1fr;gap:.6rem;align-items:baseline}
+  .sky dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
+  .sky dd{margin:0;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--haze);line-height:1.6}
+  .sky dd .zhn{font-family:var(--zh)}
+  .link{background:none;border:0;padding:0;margin-left:.4rem;font:inherit;color:var(--faint);cursor:pointer;border-bottom:1px solid var(--line-2);letter-spacing:.06em}
+  .link:hover,.link:focus-visible{color:var(--lumen);border-color:var(--lumen);outline:none}
+  .link.sw .a,.link.sw .b{color:var(--mist)}
+  .link.sw[aria-pressed="false"] .b,.link.sw[aria-pressed="true"] .a{color:var(--faint)}
+  .sky-note{margin:0 0 2.2rem;font-family:var(--serif);font-style:italic;font-weight:300;font-size:.86rem;line-height:1.6;color:var(--faint);text-align:left}
+  body.lang-zh .sky-note{font-family:var(--zh);font-style:normal;letter-spacing:.05em}
+  @media(max-width:380px){.sky div{grid-template-columns:4.4rem 1fr}.sky dd{font-size:.68rem}}
   .laws{margin:0;display:grid;gap:1.1rem;text-align:left}
-  .laws dt{font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;color:var(--lumen);margin-bottom:.25rem}
-  .laws dd{margin:0;font-family:var(--serif);font-weight:300;font-size:.98rem;line-height:1.6;color:var(--haze)}
+  .laws dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--lumen);margin-bottom:.3rem}
+  .laws dd{margin:0;font-family:var(--serif);font-weight:300;font-size:1.06rem;line-height:1.65;color:#B9B6D0}
   body.lang-zh .laws dd{font-family:var(--zh);letter-spacing:.06em}
   .ab-more{display:inline-block;margin-top:1.8rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);border-bottom:1px solid var(--line-2);padding-bottom:.2rem;text-decoration:none}
   .ab-more:hover{color:var(--lumen);border-color:var(--lumen)}
@@ -219,7 +249,7 @@
   <span class="ink-c" aria-hidden="true">海</span>
 
   <div class="veil" id="veil">
-    <p class="veil-line rv"><span data-i18n="veil1">Sound that follows the hour.</span><span class="l2" data-i18n="veil2">Nothing is composed in advance.</span></p>
+    <p class="veil-line rv"><span class="flow">FLOW with the CONSCIOUSNESS</span><span class="l2"><span data-i18n="veil1">Sound that follows the hour.</span> <span data-i18n="veil2">Nothing is composed in advance.</span></span></p>
     <button id="initBtn" class="init-btn rv" type="button" aria-label="Begin listening">
       <span class="init-ring" aria-hidden="true"></span><span data-i18n="begin">Begin</span>
     </button>
@@ -259,7 +289,14 @@
       <p class="ab-zh">一件隨時辰與節氣而生的聲音作品。<br>以二十四節氣為地，<br>以十二時辰為潮。<br>無預先寫定之樂譜，<br>音樂一步一步而行，<br>唯留真正響起之聲。</p>
       <div class="reading">
         <p class="ab-k" data-i18n="r_k">How it listens</p>
-        <svg id="wheel" viewBox="-160 -160 320 320" role="img" aria-label="The twelve double-hours and the tide of pitch through the day"></svg>
+        <svg id="wheel" viewBox="-172 -172 344 344" role="img" aria-label="The twelve double-hours, the solar terms, the sun and the moon, and the tide of pitch through the day"></svg>
+        <dl class="sky">
+          <div><dt data-i18n="s_sun">Sun</dt><dd id="skySun"></dd></div>
+          <div><dt data-i18n="s_moon">Moon</dt><dd id="skyMoon"></dd></div>
+          <div><dt data-i18n="s_day">Day</dt><dd><span id="skyDay"></span> <button class="link" id="locBtn" type="button" data-i18n="s_loc">use my location</button></dd></div>
+          <div><dt data-i18n="s_rt">Hour</dt><dd><span id="skyRead"></span> <button class="link sw" id="readBtn" type="button" aria-pressed="false"><span class="a" data-i18n="s_clock">clock</span> · <span class="b" data-i18n="s_solar">true sun</span></button></dd></div>
+        </dl>
+        <p class="sky-note" data-i18n="s_note">Positions only. The sound follows the clock and the solar term; the moon and the signs are a reading, not an input.</p>
         <dl class="laws">
           <div><dt data-i18n="r1t">Ground · 節氣</dt><dd data-i18n="r1">The solar term sets the register — low in winter, high in summer.</dd></div>
           <div><dt data-i18n="r2t">Tide · 時辰</dt><dd data-i18n="r2">Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.</dd></div>
@@ -279,6 +316,6 @@
   <span data-i18n="colophon">breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app_v2.js?v=3"></script>
+<script type="module" src="app_v3.js?v=1"></script>
 </body>
 </html>
