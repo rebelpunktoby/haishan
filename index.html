@@ -460,10 +460,10 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 @media(max-width:760px){
   .hero-E .name{top:6.4rem;font-size:.74rem;letter-spacing:.3em;}
   .hero-E .nrule{top:calc(6.4rem + 9.2em);font-size:.74rem;}
-  .hero-E .tempo{top:16%;left:3.6rem;}
-  .hero-E .l1{top:25%;left:3.6rem;font-size:.9rem;}
+  .hero-E .tempo{top:16%;left:1.4rem;}
+  .hero-E .l1{top:25%;left:1.4rem;font-size:.9rem;}
   .hero-E .l2{top:34%;left:16vw;font-size:1.25rem;}
-  .hero-E .l3{top:44%;left:3.6rem;font-size:.95rem;}
+  .hero-E .l3{top:44%;left:1.4rem;font-size:.95rem;}
   .hero-E .pp{left:clamp(4rem,22vw,9rem);bottom:clamp(12rem,31vh,17rem);}
   .hero-E .ffw{font-size:36vw;bottom:-.2em;left:-.04em;}
   body.lang-zh .hero-E .ffw{font-size:40vw;}
@@ -481,12 +481,12 @@ body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,2
 <style>/* G1 · horizontal overlap */
 .hero-E .l1{left:clamp(5rem,9vw,8.5rem);top:33%;--o:.5;}
 .hero-E .l2{left:clamp(9rem,22vw,20rem);top:35.5%;font-size:clamp(1.3rem,1rem + 1.1vw,1.95rem);--o:.72;}
-@media(max-width:760px){.hero-E .l1{top:24%;left:3.6rem;}.hero-E .l2{top:27%;left:26vw;font-size:1.3rem;}}
+@media(max-width:760px){.hero-E .l1{top:24%;left:1.4rem;}.hero-E .l2{top:27%;left:20vw;font-size:1.3rem;}}
 
 /* group 2 — music that / dissolves tuck toward edges. */
 .hero-E .l3{left:clamp(5rem,9vw,8.5rem);top:57%;}
 .hero-E .pp{left:clamp(6rem,14vw,13rem);bottom:clamp(12rem,33vh,22rem);}
-@media(max-width:760px){.hero-E .l3{top:71%;left:3.6rem;}.hero-E .pp{left:12vw;bottom:15.5vh;}}
+@media(max-width:760px){.hero-E .l3{top:71%;left:1.4rem;}.hero-E .pp{left:8vw;bottom:15.5vh;}}
 </style>
 <style>/* bilingual texture on the EN page */
 .seclabel .tx{font-family:var(--zh-font);font-size:.8rem;letter-spacing:.3em;color:var(--faint);margin-left:-.2rem;}
@@ -562,7 +562,6 @@ body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lin
     </div>
     <div class="hero-portrait" aria-hidden="true"></div>
     <div class="wrap hero-inner">
-      <p class="w name" aria-hidden="true">Haishan Lai</p><span class="nrule" aria-hidden="true"></span>
       <p class="w tempo" data-i18n="hero_meta2">Piano · Sound · Time</p>
       <p class="w l1" data-i18n="hero_l1">Impressionism in expression,</p>
       <p class="w l2" data-i18n="hero_l2">progressive in form&nbsp;—</p>
@@ -1042,14 +1041,13 @@ body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lin
 (function(){
   var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches, hover=window.matchMedia('(hover: hover)').matches;
   var hero=document.querySelector('.hero-E'); if(!hero) return;
-  var name=hero.querySelector('.name'), nrule=hero.querySelector('.nrule'), tempo=hero.querySelector('.tempo'), pp=hero.querySelector('.pp'),
+  var tempo=hero.querySelector('.tempo'), pp=hero.querySelector('.pp'),
       l1=hero.querySelector('.l1'), l2=hero.querySelector('.l2'), l3=hero.querySelector('.l3'),
       ffw=hero.querySelector('.ffw'), ff=hero.querySelector('.ff'), echoes=hero.querySelectorAll('.echo');
   // echoes follow the language
   new MutationObserver(function(){ echoes.forEach(function(e){ e.textContent=ff.textContent; }); }).observe(ff,{childList:true,characterData:true,subtree:true});
   if(reduce){ return; }
   // the phrase, in order: name · tempo · dissolves · edges.
-  setTimeout(function(){ name.classList.add('in'); nrule.classList.add('in'); }, 400);
   setTimeout(function(){ tempo.classList.add('in'); }, 2000);
   setTimeout(function(){ l1.classList.add('in'); }, 3400);
   setTimeout(function(){ l2.classList.add('in'); }, 5000);
@@ -1075,18 +1073,7 @@ body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lin
     a.onfinish=function(){ setTimeout(cycle, 400+Math.random()*900); };
   }
   setTimeout(cycle, 8900+4400+600);
-  if(hover){
-    var raf=null,ax=0,ay=0;
-    window.addEventListener('pointermove',function(e){
-      ax=(e.clientX/window.innerWidth-.5)*2; ay=(e.clientY/window.innerHeight-.5)*2;
-      if(!raf){raf=requestAnimationFrame(function(){hero.style.setProperty('--ax',ax.toFixed(3));hero.style.setProperty('--ay',ay.toFixed(3));raf=null;});}
-    },{passive:true});
-    var sraf=null;
-    window.addEventListener('scroll',function(){ if(sraf) return; sraf=requestAnimationFrame(function(){ sraf=null;
-      var y=window.scrollY, h=hero.offsetHeight; if(y>h) return;
-      ffw.style.setProperty('--sy',(y*.32).toFixed(1)+'px'); ffw.style.setProperty('--sx',(y*-.08).toFixed(1)+'px');
-      pp.style.marginTop=(y*.12).toFixed(1)+'px'; }); },{passive:true});
-  }
+  // no cursor or scroll pull on the hero words: they only breathe
 })();
 </script>
 </body>
