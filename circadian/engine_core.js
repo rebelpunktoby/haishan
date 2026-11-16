@@ -38,9 +38,10 @@ function makeTanhCurve(n = 2048) {
   return c;
 }
 
+// a soft ceiling instead of a hard clip (the stage's limiter and guard still stand behind it)
 function makeClipCurve(n = 2048) {
-  const c = new Float32Array(n);
-  for (let i = 0; i < n; i++) c[i] = Math.max(-1, Math.min(1, (i / (n - 1)) * 2 - 1));
+  const c = new Float32Array(n), k = 1.5, norm = Math.tanh(k);
+  for (let i = 0; i < n; i++) { const x = (i / (n - 1)) * 2 - 1; c[i] = Math.tanh(k * x) / norm; }
   return c;
 }
 
@@ -132,16 +133,13 @@ class FMVoice {
     this.subOsc.frequency.setTargetAtTime(fc * 0.5, t, GLIDE_TC);
 
     this.attack = envBit ? 0.45 : 3.2;
-    if (this.active) this.triggerEnv();
+    // an hour change never retriggers a sounding voice — the line glides, it does not restart
   }
 
   triggerEnv() {
     const t = this.ctx.currentTime;
-    const tc = Math.max(this.attack / 3, 0.01);   // never 0 / NaN
-    [this.env.gain, this.envR.gain].forEach(g => {
-      g.cancelScheduledValues(t);
-      g.setTargetAtTime(ENV_PEAK, t, tc);
-    });
+    const tc = Math.max(this.attack / 3, 0.4);    // continuous from the current value; never faster than 0.4 s
+    [this.env.gain, this.envR.gain].forEach(g => g.setTargetAtTime(ENV_PEAK, t, tc));
   }
 
   setActive(on) {

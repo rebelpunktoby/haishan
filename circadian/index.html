@@ -111,10 +111,11 @@
   body.paused .moment{opacity:.5}
   .mo-time{font-family:var(--mono);font-size:.64rem;letter-spacing:.32em;text-indent:.32em;color:var(--faint);font-variant-numeric:tabular-nums}
   .mo-hour{font-family:var(--zh);font-weight:300;font-size:clamp(1.5rem,1.1rem + 2vw,2.5rem);letter-spacing:.2em;text-indent:.2em;color:var(--mist);line-height:1.1}
-  .mo-line{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.98rem,.9rem + .5vw,1.2rem);color:var(--haze);line-height:1.45;max-width:34ch}
+  .mo-line{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(1.02rem,.92rem + .55vw,1.26rem);color:var(--mist);opacity:.86;line-height:1.45;max-width:34ch}
   body.lang-zh .mo-line{font-family:var(--zh);font-style:normal;letter-spacing:.08em}
-  .mo-term{font-family:var(--mono);font-size:.62rem;letter-spacing:.28em;text-transform:uppercase;color:var(--faint);margin-top:.2rem}
-  .mo-term b{font-family:var(--zh);font-weight:300;font-size:.95rem;letter-spacing:.2em;text-transform:none;color:var(--haze);margin-right:.5rem}
+  .mo-term{font-family:var(--serif);font-style:italic;font-weight:300;font-size:clamp(.82rem,.78rem + .3vw,.95rem);letter-spacing:.02em;color:var(--faint);margin-top:.35rem}
+  .mo-term b{font-family:var(--zh);font-weight:300;font-style:normal;font-size:1em;letter-spacing:.18em;color:var(--haze);margin-right:.35rem}
+  body.lang-zh .mo-term b{margin-right:0}
 
   /* ---------- console (after the sound) ---------- */
   .console{position:absolute;z-index:3;left:50%;bottom:clamp(1rem,4vh,2.2rem);transform:translateX(-50%);
@@ -331,6 +332,6 @@
   <span data-i18n="colophon">breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app_v4.js?v=1"></script>
+<script type="module" src="app_v4.js?v=2"></script>
 </body>
 </html>

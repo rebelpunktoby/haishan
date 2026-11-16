@@ -2,7 +2,7 @@
 // The core (engine_core.js) stays the truth. engine_v3.js surrounds it with one breath,
 // a room that follows the sun, texture and an environment. This file reads the clock and
 // the sky, feeds the stage, and draws the page.
-import { OceanMountainV3, DEFAULTS } from "./engine_v3.js?v=1";
+import { OceanMountainV3, DEFAULTS } from "./engine_v3.js?v=2";
 import { sunLongitude, moonLongitude, moonPhase, sunTimes, solarHours, jieqiIndexOf, zodiacOf, DEFAULT_PLACE } from "./sky.js?v=1";
 
 // ---------- where: a place for the sun (never stored). The device's time zone picks a city; a tap picks the real spot ----------
@@ -34,7 +34,8 @@ const moTime = $("moTime"), moHour = $("moHour"), moLine = $("moLine"), moTerm =
 const canvas = $("horizon"), ctx2d = canvas.getContext("2d");
 const dials = { breath: $("breath"), light: $("light"), room: $("room") };
 
-let audioCtx = null, engine = null, masterGain = null, analyser = null;
+let audioCtx = null, engine = null, masterGain = null, analyser = null, wetAnalyser = null, airAnalyser = null, wetData = null, wetCurve = null, airBins = null, airLevel = 0, roomLevel = 0;
+const GRAINS = Array.from({ length: 70 }, (_, i) => ({ x: (i * 0.618034) % 1, y: 0.12 + ((i * 0.381966) % 1) * 0.5, s: 0.6 + ((i * 7) % 5) / 5, ph: (i * 1.7) % 6.28 }));
 let waveData = null, smoothWave = null, frameCount = 0;
 const VIZ_POINTS = 128;
 const vizCurve = new Float32Array(VIZ_POINTS);
@@ -123,9 +124,9 @@ function pushClock() {
   if (engine) { engine.setMoment({ hourF: m.hourF, riseH: m.riseH, setH: m.setH, month: m.month, hour: m.hour, jieqi: m.jieqi }); readDials(); }
   const { now, sc, term } = m;
   moTime.textContent = `${String(now.getHours()).padStart(2,"0")}:${String(now.getMinutes()).padStart(2,"0")} · ${String(now.getMonth() + 1).padStart(2,"0")}.${String(now.getDate()).padStart(2,"0")}`;
-  moHour.textContent = lang === "zh" ? `${sc.zh}時` : `${sc.zh}時 · ${sc.en}`;
+  moHour.textContent = `${sc.zh}時`;
   moLine.textContent = lang === "zh" ? sc.line_zh : sc.line_en;
-  moTerm.replaceChildren(Object.assign(document.createElement("b"), { textContent: term.zh }), document.createTextNode(lang === "zh" ? "" : " " + term.en));
+  moTerm.replaceChildren(Object.assign(document.createElement("b"), { textContent: term.zh }), document.createTextNode(lang === "zh" ? "" : "· " + term.en));
 }
 
 // ---------- i18n ----------
@@ -187,6 +188,9 @@ async function initialize() {
     analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
     waveData = new Float32Array(analyser.fftSize); smoothWave = new Float32Array(analyser.fftSize);
     engine.output.connect(masterGain); masterGain.connect(analyser); analyser.connect(audioCtx.destination);
+    wetAnalyser = audioCtx.createAnalyser(); wetAnalyser.fftSize = 2048; wetAnalyser.smoothingTimeConstant = 0.85; engine.wet.connect(wetAnalyser);
+    airAnalyser = audioCtx.createAnalyser(); airAnalyser.fftSize = 512; airAnalyser.smoothingTimeConstant = 0.9; engine.air.connect(airAnalyser);
+    wetData = new Float32Array(wetAnalyser.fftSize); wetCurve = new Float32Array(VIZ_POINTS); airBins = new Float32Array(airAnalyser.frequencyBinCount);
 
     setMode(false);
     pushClock();
@@ -495,11 +499,6 @@ function drawIdleHorizon() {
   ctx2d.strokeStyle = g; ctx2d.lineWidth = 1;
   ctx2d.beginPath(); ctx2d.moveTo(0, h / 2); ctx2d.lineTo(w, h / 2); ctx2d.stroke();
 }
-const WAVE_LAYERS = [
-  { yOff: -6, ampMul: 1.25, alpha: 0.16, width: 0.8, tideAmp: 11, tideSpeed: 0.00005, drift: 14, phase: 4.4 },
-  { yOff: 0,  ampMul: 1.0,  alpha: 0.80, width: 1.4, tideAmp: 5,  tideSpeed: 0.00010, drift: 8,  phase: 0.0 },
-  { yOff: 7,  ampMul: 0.6,  alpha: 0.26, width: 1.0, tideAmp: 8,  tideSpeed: 0.00007, drift: 20, phase: 2.1 }
-];
 function drawWave(nowMs) {
   requestAnimationFrame(drawWave);
   if (!analyser) return;
@@ -513,32 +512,53 @@ function drawWave(nowMs) {
     for (let p = 0; p < VIZ_POINTS; p++) { let sum = 0; const base = p * block; for (let j = 0; j < block; j++) sum += smoothWave[base + j]; vizCurve[p] += (sum / block - vizCurve[p]) * 0.08; }
     let sq = 0; for (let i = 0; i < smoothWave.length; i += 16) sq += smoothWave[i] * smoothWave[i];
     rmsGlow += (Math.sqrt(sq / (smoothWave.length / 16)) - rmsGlow) * 0.05;
+    if (wetAnalyser) {                                   // the room: the wet signal, as a slow envelope band
+      wetAnalyser.getFloatTimeDomainData(wetData);
+      const wb = Math.floor(wetData.length / VIZ_POINTS); let wsq = 0;
+      for (let p = 0; p < VIZ_POINTS; p++) { let m = 0; const base = p * wb; for (let j = 0; j < wb; j++) m = Math.max(m, Math.abs(wetData[base + j])); wetCurve[p] += (m - wetCurve[p]) * 0.03; wsq += m * m; }
+      roomLevel += (Math.sqrt(wsq / VIZ_POINTS) - roomLevel) * 0.02;
+      airAnalyser.getFloatFrequencyData(airBins); let e = 0; for (let i = 2; i < airBins.length; i++) e += Math.max(0, airBins[i] + 95); airLevel += (Math.min(1, e / (airBins.length * 30)) - airLevel) * 0.03;
+    }
   }
   const w = canvas.clientWidth, h = canvas.clientHeight, mid = h / 2;
-  const amp = h * 0.34 * (0.15 + 0.85 * visualPower), t = reduceMotion ? 0 : (nowMs || 0);
-  ctx2d.clearRect(0, 0, w, h);
+  const amp = h * 0.30 * (0.15 + 0.85 * visualPower), t = reduceMotion ? 0 : (nowMs || 0);
+  // the trail: the canvas is not cleared but faded, so what was drawn decays like the room does
+  ctx2d.globalCompositeOperation = "destination-out";
+  const fade = reduceMotion ? 1 : 0.16 + 0.10 * (1 - Math.min(1, roomLevel * 6));      // slower fade when the room is fuller
+  ctx2d.fillStyle = `rgba(0,0,0,${fade})`; ctx2d.fillRect(0, 0, w, h);
+  ctx2d.globalCompositeOperation = "source-over";
   const glowTide = 0.5 + 0.5 * Math.sin(t * 0.00016);
-  const glowAlpha = (0.04 + 0.09 * visualPower) * (0.75 + 0.25 * glowTide) + rmsGlow * 0.10 * visualPower;
+  const glowAlpha = ((0.04 + 0.09 * visualPower) * (0.75 + 0.25 * glowTide) + rmsGlow * 0.10 * visualPower) * fade;   // steady state ≈ the old single-frame glow
   const glow = ctx2d.createRadialGradient(w / 2, mid, 0, w / 2, mid, Math.max(w, h) * (0.45 + 0.12 * glowTide));
-  glow.addColorStop(0, `rgba(159,216,196,${Math.min(glowAlpha, 0.2)})`); glow.addColorStop(1, "rgba(159,216,196,0)");
+  glow.addColorStop(0, `rgba(159,216,196,${Math.min(glowAlpha, 0.2 * fade)})`); glow.addColorStop(1, "rgba(159,216,196,0)");
   ctx2d.fillStyle = glow; ctx2d.fillRect(0, 0, w, h);
   const step = w / (VIZ_POINTS - 1);
-  ctx2d.lineJoin = "round"; ctx2d.lineCap = "round";
-  for (const L of WAVE_LAYERS) {
-    const tide = Math.sin(t * L.tideSpeed + L.phase) * L.tideAmp * (0.3 + 0.7 * visualPower);
-    const driftX = Math.sin(t * L.tideSpeed * 1.7 + L.phase) * L.drift * visualPower;
-    const layerAmp = amp * L.ampMul;
-    ctx2d.lineWidth = L.width;
-    ctx2d.strokeStyle = `rgba(159,216,196,${L.alpha * (0.35 + 0.65 * visualPower)})`;
-    ctx2d.shadowColor = `rgba(159,216,196,${0.45 * visualPower})`; ctx2d.shadowBlur = 10 * visualPower;
-    ctx2d.beginPath();
-    let px = driftX, py = mid + L.yOff + tide + vizCurve[0] * layerAmp;
-    ctx2d.moveTo(px, py);
-    for (let p = 1; p < VIZ_POINTS; p++) { const x = p * step + driftX, y = mid + L.yOff + tide + vizCurve[p] * layerAmp; ctx2d.quadraticCurveTo(px, py, (px + x) / 2, (py + y) / 2); px = x; py = y; }
-    ctx2d.lineTo(px, py); ctx2d.stroke();
+  ctx2d.lineJoin = "round"; ctx2d.lineCap = "round"; ctx2d.shadowBlur = 0;
+  // — the room: a wide, faint band behind the line, its height the wet envelope —
+  if (wetCurve) {
+    const settled = document.body.classList.contains("settled") ? 0.4 : 1;
+    const band = Math.min(h * 0.46, 170) * visualPower, sway = Math.sin(t * 0.00009) * 4, ba = (0.07 + 0.09 * Math.min(1, roomLevel * 5)) * fade * settled;
+    const bg = ctx2d.createLinearGradient(0, mid - band * 0.5, 0, mid + band * 0.5);   // soft edges: the room has no walls you can see
+    bg.addColorStop(0, "rgba(143,227,210,0)"); bg.addColorStop(0.5, `rgba(143,227,210,${ba})`); bg.addColorStop(1, "rgba(143,227,210,0)");
+    ctx2d.fillStyle = bg;
+    ctx2d.beginPath(); ctx2d.moveTo(0, mid + sway);
+    for (let p = 0; p < VIZ_POINTS; p++) ctx2d.lineTo(p * step, mid + sway - wetCurve[p] * band - 3);
+    for (let p = VIZ_POINTS - 1; p >= 0; p--) ctx2d.lineTo(p * step, mid + sway + wetCurve[p] * band + 3);
+    ctx2d.closePath(); ctx2d.fill();
   }
-  ctx2d.shadowBlur = 0;
-  ctx2d.strokeStyle = `rgba(232,227,213,${0.12 + 0.28 * visualPower})`; ctx2d.lineWidth = 0.6; ctx2d.stroke();
+  // — the air: faint grain above the line, denser when the air bed is open —
+  if (airLevel > 0.02 && visualPower > 0.2) {
+    ctx2d.fillStyle = `rgba(226,222,236,${(0.25 + 0.5 * airLevel) * fade * (document.body.classList.contains("settled") ? 0.4 : 1)})`;
+    for (const gr of GRAINS) { const y = mid - gr.y * h * 0.9 + Math.sin(t * 0.0002 * gr.s + gr.ph) * 6, x = (gr.x * w + t * 0.004 * gr.s) % w; const r = 0.6 + 0.9 * airLevel * gr.s; ctx2d.beginPath(); ctx2d.arc(x, y, r, 0, 6.283); ctx2d.fill(); }
+  }
+  // — the lead: one soft line —
+  const tide = Math.sin(t * 0.00012) * 5 * (0.3 + 0.7 * visualPower);
+  ctx2d.lineWidth = 1.5; ctx2d.strokeStyle = `rgba(173,226,210,${(0.5 + 0.4 * visualPower) * Math.min(1, fade * 2.2)})`;
+  ctx2d.shadowColor = `rgba(143,227,210,${0.4 * visualPower})`; ctx2d.shadowBlur = 9 * visualPower;
+  ctx2d.beginPath(); let px = 0, py = mid + tide + vizCurve[0] * amp; ctx2d.moveTo(px, py);
+  for (let p = 1; p < VIZ_POINTS; p++) { const x = p * step, y = mid + tide + vizCurve[p] * amp; ctx2d.quadraticCurveTo(px, py, (px + x) / 2, (py + y) / 2); px = x; py = y; }
+  ctx2d.lineTo(px, py); ctx2d.stroke(); ctx2d.shadowBlur = 0;
+  ctx2d.strokeStyle = `rgba(232,227,213,${(0.10 + 0.22 * visualPower) * Math.min(1, fade * 2.2)})`; ctx2d.lineWidth = 0.5; ctx2d.stroke();
 }
 window.addEventListener("resize", sizeCanvas);
 if (window.visualViewport) window.visualViewport.addEventListener("resize", sizeCanvas);

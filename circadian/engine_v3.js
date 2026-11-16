@@ -15,7 +15,7 @@
 //
 // Design choices here are Register 3. The hour, the sun and the season are measured inputs.
 
-import { CircadianEngine } from "./engine_core.js?v=1";
+import { CircadianEngine } from "./engine_core.js?v=2";
 import { Environment } from "./env.js?v=1";
 
 // the core's own tables, read-only, so the stage knows what the core is playing
@@ -138,7 +138,13 @@ export class OceanMountainV3 {
     this.reschedule();
   }
   setOffsetCap(cap) { this.core.setOffsetCap(cap); this.applyNeighbour(); }
-  setPresence(a) { this.core.setPresence(a); }
+  // presence exists so 55–110 Hz reads on small speakers; on mid and high carriers it is the edge itself, so it fades with the carrier
+  setPresence(a) { this.presenceBase = a; this.applyPresence(); }
+  applyPresence() {
+    const fc = this.carrier || this.carrierNow();
+    const factor = Math.max(0.06, Math.min(1, Math.pow(110 / fc, 1.6)));
+    this.core.setPresence((this.presenceBase ?? 0.35) * factor);
+  }
   setWeather(w) { this.weatherOverride = w; }               // the hook: {density, turbulence, brightness, grain} or null
   setEnvironment(on) { this.env.setEnabled(on); }
   get breathPeriod() { return this.lean.breathPeriod * this.state.breath / 10; }
@@ -154,6 +160,7 @@ export class OceanMountainV3 {
       this.core.update(this.moment.month, this.moment.hour, true);
       this.applyNeighbour();
       this.retuneTexture();
+      this.applyPresence();
     }
     this.refreshRoom();
   }
