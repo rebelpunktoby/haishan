@@ -1,0 +1,95 @@
+// om_core.genexpr — OceanMountain RNBO base · R1: seam, breath, voice, safety
+// GenExpr shared by Max gen~ today and RNBO codebox later: the web export is a paste, not a rewrite.
+// The hour table is the truth, copied verbatim. Register: mappings here marked R3 are design choices.
+
+Param hourF(12.5, min=0, max=24);     // true-solar decimal hour, from the shell (R1 measured input)
+Param month(1, min=1, max=12);        // season month (the shell sends the 節氣 quarter in 時辰 mode)
+Param lightk(50, min=0, max=100);     // Light knob
+Param breathk(10, min=4, max=20);     // Breath knob; 10 is neutral
+Param drive(1, min=0.5, max=2);       // lead warmth
+Param level(0.8, min=0, max=1);       // output trim
+Param seed(11, min=1, max=9999);
+
+Data tbl(24);                          // carriers, Hz
+Data ph(32);                           // phase accumulators: 3 copies × 6 partials, + 3 subs
+History inited(0);
+History bphase(0);                     // the breath, 0..1
+History bper(10);                      // this breath's seconds
+History rngst(11);
+History slowph(0);                     // slow drift clock (~73 s)
+History env(0);                        // limiter envelope
+History lp1(0), lp2(0), lp1b(0), lp2b(0);
+
+if (inited == 0) {
+  poke(tbl, 110, 0); poke(tbl, 110, 1); poke(tbl, 165, 2); poke(tbl, 165, 3);
+  poke(tbl, 110, 4); poke(tbl, 220, 5); poke(tbl, 220, 6); poke(tbl, 275, 7);
+  poke(tbl, 330, 8); poke(tbl, 330, 9); poke(tbl, 275, 10); poke(tbl, 440, 11);
+  poke(tbl, 440, 12); poke(tbl, 550, 13); poke(tbl, 550, 14); poke(tbl, 440, 15);
+  poke(tbl, 440, 16); poke(tbl, 165, 17); poke(tbl, 165, 18); poke(tbl, 110, 19);
+  poke(tbl, 110, 20); poke(tbl, 165, 21); poke(tbl, 110, 22); poke(tbl, 110, 23);
+  rngst = seed;
+  inited = 1;
+}
+
+// ---- season octave (R3 convention carried from the engine) ----
+oct = ((month < 3) || (month > 11)) ? 0.5 : (((month > 5) && (month < 9)) ? 2 : 1);
+
+// ---- the hour with bell shoulders: a boundary is a lean, never an event (VII.4) ----
+h0 = floor(hourF); frac = hourF - h0;
+h1 = h0 + 1; if (h1 > 23) h1 = 0;
+w = frac * frac * (3 - 2 * frac);
+fc = exp(mix(log(peek(tbl, h0)), log(peek(tbl, h1)), w)) * oct;
+
+// ---- one breath: uneven, never a metronome (R3) ----
+noonness = 0.5 + 0.5 * cos((hourF - 13) / 24 * twopi);
+baseper = (9 + 7 * (1 - noonness)) * (breathk / 10);
+bphase += 1 / (bper * samplerate);
+if (bphase >= 1) {
+  bphase -= 1;
+  rngst = wrap(rngst * 16807, 1, 2147483647);              // Park–Miller; stays inside double precision
+  bper = baseper * (0.92 + 0.16 * (rngst / 2147483647));
+}
+bp = bphase;
+t1 = min(bp / 0.38, 1); t1 = t1 * t1 * (3 - 2 * t1);        // inhale
+t2 = max((bp - 0.46) / 0.54, 0); t2 = t2 * t2 * (3 - 2 * t2); // exhale
+amp_b   = mix(mix(0.78, 1.0, t1), 0.80, t2);
+bright_b = mix(mix(0.85, 1.25, t1), 0.90, t2);
+
+// ---- the lead: six partials with slow drift under a soft top, a sub; three copies a few cents apart ----
+topf = min(900 + fc * (3.5 + 3.5 * lightk / 100) * bright_b, 6500);
+slowph += 1 / (73 * samplerate); if (slowph >= 1) slowph -= 1;
+sumL = 0; sumR = 0;
+for (u = 0; u < 3; u += 1) {
+  det = (u - 1) * 0.003 + 0.0008 * sin(twopi * slowph * (2 + u));   // ±5 cents apart, wandering ±1.4
+  f0 = fc * (1 + det);
+  panL = (u == 0) ? 0.85 : ((u == 1) ? 0.6 : 0.3);
+  panR = (u == 0) ? 0.3  : ((u == 1) ? 0.6 : 0.85);
+  v = 0;
+  for (k = 1; k < 7; k += 1) {
+    idx = u * 6 + (k - 1);
+    pf = f0 * k * (1 + 0.0015 * sin(twopi * (slowph * (3 + idx) + idx * 0.37)));
+    p = wrap(peek(ph, idx) + pf / samplerate, 0, 1); poke(ph, p, idx);
+    a = pow(k, -1.35) / (1 + pow(f0 * k / topf, 6));                 // soft spectral ceiling, not a cliff
+    v += a * sin(twopi * p);
+  }
+  si = 18 + u;
+  sp = wrap(peek(ph, si) + (f0 * 0.5) / samplerate, 0, 1); poke(ph, sp, si);
+  v += 0.34 * sin(twopi * sp);                                        // the body under the carrier
+  sumL += v * panL; sumR += v * panR;
+}
+g = 0.22 * amp_b * level;
+xl = sumL * g; xr = sumR * g;
+
+// ---- warmth: gentle, mostly even harmonics, level-compensated (R3) ----
+d = drive * 1.15; cmp = 0.82 * pow(1.15 / max(d, 0.8), 0.6); bias = 0.22;
+xl = (tanh(xl * d + bias) - tanh(bias)) * cmp;
+xr = (tanh(xr * d + bias) - tanh(bias)) * cmp;
+
+// ---- safety: ~9 kHz ceiling, a slow limiter, a soft guard. Never removed. ----
+cf = exp(-twopi * 9000 / samplerate);
+lp1 = cf * lp1 + (1 - cf) * xl;  lp2 = cf * lp2 + (1 - cf) * lp1;  xl = lp2;
+lp1b = cf * lp1b + (1 - cf) * xr; lp2b = cf * lp2b + (1 - cf) * lp1b; xr = lp2b;
+env = max(max(abs(xl), abs(xr)), env * 0.9997);
+gr = (env > 0.5) ? 0.5 / env : 1;
+out1 = tanh(xl * gr * 1.15) * 0.98;
+out2 = tanh(xr * gr * 1.15) * 0.98;
