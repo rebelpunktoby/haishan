@@ -191,23 +191,30 @@
   @media(prefers-reduced-motion:no-preference){#wheel .dot{animation:pulse 6s ease-in-out infinite}}
   @keyframes pulse{0%,100%{opacity:1}50%{opacity:.45}}
   #wheel .mark{font-family:var(--mono);font-size:7px;letter-spacing:2px;fill:var(--faint);text-anchor:middle}
-  .sky{margin:0 0 1.2rem;display:grid;gap:.55rem;text-align:left;font-variant-numeric:tabular-nums}
-  .sky div{display:grid;grid-template-columns:5.6rem 1fr;gap:.6rem;align-items:baseline}
+  .rings{display:grid;gap:1rem;text-align:left;margin:0 0 2rem}
+  .rings p{margin:0;font-family:var(--serif);font-weight:300;font-size:1.02rem;line-height:1.65;color:#B9B6D0}
+  body.lang-zh .rings p{font-family:var(--zh);letter-spacing:.06em;line-height:1.9}
+  .more{text-align:left;border-top:1px solid var(--line-2);padding-top:1.2rem}
+  .more summary{cursor:pointer;list-style:none;font-family:var(--mono);font-size:.6rem;letter-spacing:.26em;text-transform:uppercase;color:var(--faint);padding:.3rem 0}
+  .more summary::-webkit-details-marker{display:none}
+  .more summary::after{content:" +";color:var(--faint)} .more[open] summary::after{content:" –"}
+  .more summary:hover,.more summary:focus-visible{color:var(--lumen);outline:none}
+  .sky{margin:1.2rem 0 1rem;display:grid;gap:.55rem;font-variant-numeric:tabular-nums}
+  .sky div{display:grid;grid-template-columns:5.2rem 1fr;gap:.6rem;align-items:baseline}
   .sky dt{font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--faint)}
   .sky dd{margin:0;font-family:var(--mono);font-size:.74rem;letter-spacing:.06em;color:var(--haze);line-height:1.6}
-  .sky dd .zhn{font-family:var(--zh)}
-  .link{background:none;border:0;padding:0;margin-left:.4rem;font:inherit;color:var(--faint);cursor:pointer;border-bottom:1px solid var(--line-2);letter-spacing:.06em}
+  .sky-place{margin:0 0 .6rem;font-family:var(--mono);font-size:.68rem;letter-spacing:.06em;color:var(--faint)}
+  .link{background:none;border:0;padding:0;font:inherit;color:var(--faint);cursor:pointer;border-bottom:1px solid var(--line-2);letter-spacing:.06em}
   .link:hover,.link:focus-visible{color:var(--lumen);border-color:var(--lumen);outline:none}
-  .link.sw .a,.link.sw .b{color:var(--mist)}
-  .link.sw[aria-pressed="false"] .b,.link.sw[aria-pressed="true"] .a{color:var(--faint)}
-  .sky-note{margin:0 0 2.2rem;font-family:var(--serif);font-style:italic;font-weight:300;font-size:.86rem;line-height:1.6;color:var(--faint);text-align:left}
-  body.lang-zh .sky-note{font-family:var(--zh);font-style:normal;letter-spacing:.05em}
   @media(max-width:380px){.sky div{grid-template-columns:4.4rem 1fr}.sky dd{font-size:.68rem}}
-  .laws{margin:0;display:grid;gap:1.1rem;text-align:left}
-  .laws dt{font-family:var(--mono);font-size:.64rem;letter-spacing:.24em;text-transform:uppercase;color:var(--lumen);margin-bottom:.3rem}
-  .laws dd{margin:0;font-family:var(--serif);font-weight:300;font-size:1.06rem;line-height:1.65;color:#B9B6D0}
-  body.lang-zh .laws dd{font-family:var(--zh);letter-spacing:.06em}
-  .ab-more{display:inline-block;margin-top:1.8rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);border-bottom:1px solid var(--line-2);padding-bottom:.2rem;text-decoration:none}
+  #wheel .tick.tap{stroke:var(--lumen);opacity:1;stroke-width:1.6}
+  /* the page settles: after a while untouched, the readouts and controls step back */
+  .mo-time,.mo-term,.console,.colophon{transition:opacity 2.2s var(--ease)}
+  body.settled .mo-time,body.settled .mo-term,body.settled .console{opacity:.22}
+  body.settled .colophon{opacity:.5}
+  .dial label output{transition:opacity .6s}
+  body.settled .dial label output{opacity:0}
+  .ab-more{display:inline-block;margin:.4rem 0 1rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);border-bottom:1px solid var(--line-2);padding-bottom:.2rem;text-decoration:none}
   .ab-more:hover{color:var(--lumen);border-color:var(--lumen)}
   body.lang-zh .ab-en{display:none}body.lang-zh .ab-rule{display:none}body.lang-zh .ab-zh{color:var(--mist);font-size:clamp(1rem,1.7vw,1.15rem)}
 
@@ -294,20 +301,24 @@
       <div class="reading">
         <p class="ab-k" data-i18n="r_k">How it listens</p>
         <svg id="wheel" viewBox="-172 -172 344 344" role="img" aria-label="The twelve double-hours, the solar terms, the sun and the moon, and the tide of pitch through the day"></svg>
-        <dl class="sky">
-          <div><dt data-i18n="s_sun">Sun</dt><dd id="skySun"></dd></div>
-          <div><dt data-i18n="s_moon">Moon</dt><dd id="skyMoon"></dd></div>
-          <div><dt data-i18n="s_day">Day</dt><dd><span id="skyDay"></span> <button class="link" id="locBtn" type="button" data-i18n="s_loc">use my location</button></dd></div>
-          <div><dt data-i18n="s_rt">Hour</dt><dd><span id="skyRead"></span> <button class="link sw" id="readBtn" type="button" aria-pressed="false"><span class="a" data-i18n="s_clock">clock</span> · <span class="b" data-i18n="s_solar">true sun</span></button></dd></div>
-        </dl>
-        <p class="sky-note" data-i18n="s_note">Positions only. The sound follows the clock and the solar term; the moon and the signs are a reading, not an input.</p>
-        <dl class="laws">
-          <div><dt data-i18n="r1t">Ground · 節氣</dt><dd data-i18n="r1">The solar term sets the register — low in winter, high in summer.</dd></div>
-          <div><dt data-i18n="r2t">Tide · 時辰</dt><dd data-i18n="r2">Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.</dd></div>
-          <div><dt data-i18n="r3t">Colour · 四時</dt><dd data-i18n="r3">The day turns through four chords — morning, noon, dusk, night.</dd></div>
-          <div><dt data-i18n="r4t">Breath · Light · Room</dt><dd data-i18n="r4">Yours. How slowly it breathes, how bright, how large the space.</dd></div>
-        </dl>
-        <a class="ab-more" href="/omt/laws/" data-i18n="r_more">Read the ten articles ↗</a>
+        <div class="rings">
+          <p data-i18n="g1">The outer ring is the year: twenty-four solar terms, the sun walking them. The term sets the ground — low in winter, high in summer.</p>
+          <p data-i18n="g2">The inner ring is the day: twelve double-hours. Each one leans the pitch and the light — rising toward 午, sinking toward 子.</p>
+          <p data-i18n="g3">Between them, the band of daylight from real sunrise to sunset; the room opens with it and closes after dark.</p>
+          <p data-i18n="g4">At the centre, the tide: the day's shape of pitch, drawn from the piece's own hour table. The moon is shown, and does not enter the sound.</p>
+        </div>
+        <details class="more">
+          <summary><span data-i18n="s_more">Detail</span></summary>
+          <dl class="sky">
+            <div><dt data-i18n="s_now">Now</dt><dd id="skyNow"></dd></div>
+            <div><dt data-i18n="s_sun">Sun</dt><dd id="skySun"></dd></div>
+            <div><dt data-i18n="s_moon">Moon</dt><dd id="skyMoon"></dd></div>
+            <div><dt data-i18n="s_day">Day</dt><dd id="skyDay"></dd></div>
+            <div><dt data-i18n="s_sounding">Sounding</dt><dd id="skySounding"></dd></div>
+          </dl>
+          <p class="sky-place"><span id="skyPlace"></span><button class="link" id="locBtn" type="button" data-i18n="s_loc">use my location</button></p>
+          <a class="ab-more" href="/omt/laws/" data-i18n="r_more">Read the ten articles ↗</a>
+        </details>
       </div>
       <button class="pill ab-close" id="aboutClose" type="button"><span data-i18n="close">Close</span></button>
     </div>
@@ -320,6 +331,6 @@
   <span data-i18n="colophon">breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app_v3.js?v=1"></script>
+<script type="module" src="app_v4.js?v=1"></script>
 </body>
 </html>
