@@ -533,6 +533,124 @@ body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lin
 .statement.lines[data-reveal]{transition-duration:2.4s;}
 @media(prefers-reduced-motion:reduce){[data-reveal]{filter:none;transition:none;}}
 </style>
+<style>
+
+/* ================= ROOMS · shared ================= */
+:root{--room-pad:clamp(6rem,14vh,11rem);--label-col:minmax(11rem,1fr);}
+main{position:relative;}
+section.block{position:relative;min-height:100svh;display:flex;align-items:center;padding-block:var(--room-pad);isolation:isolate;overflow:clip;}
+section.block#omt,section.block.edu,section.block#contact{padding-block:var(--room-pad);}
+section.block>.wrap{position:relative;z-index:2;width:100%;}
+/* each room has its own light */
+section.block::before{content:"";position:absolute;inset:-20% -10%;z-index:0;pointer-events:none;opacity:0;transition:opacity 2.6s var(--ease);
+  background:radial-gradient(ellipse 60% 55% at var(--lx,30%) var(--ly,40%),var(--light,rgba(124,107,179,.18)) 0%,rgba(9,11,20,0) 70%);}
+section.block.lit::before{opacity:1;}
+section.block#work{--light:rgba(124,107,179,.16);--lx:18%;--ly:30%;}
+section.block#omt{--light:rgba(63,168,156,.17);--lx:78%;--ly:50%;}
+section.block#stage{--light:rgba(226,172,110,.13);--lx:70%;--ly:25%;}
+section.block.edu{--light:rgba(86,100,198,.15);--lx:22%;--ly:70%;}
+section.block.other{--light:rgba(206,126,142,.13);--lx:50%;--ly:80%;}
+section.block#contact{--light:rgba(143,227,210,.14);--lx:30%;--ly:35%;}
+/* label column: small mono tag + a large character, the room's mark */
+.seclabel{display:flex;flex-direction:column;align-items:flex-start;gap:.9rem;margin:0;}
+.seclabel .rule,.seclabel .idx{display:none;}
+.seclabel .tx{font-family:var(--zh-font);font-weight:300;font-size:clamp(3.4rem,6vw,6rem);line-height:1;letter-spacing:.04em;color:#F2EEE4;opacity:.16;margin:0;
+  transition:opacity 2.4s var(--ease),filter 2.4s var(--ease);filter:blur(6px);}
+section.block.lit .seclabel .tx{opacity:.26;filter:blur(0);}
+body.lang-zh .seclabel .tx{display:block;}
+body.lang-zh .seclabel .tag{display:none;}
+/* desktop compositions */
+@media(min-width:980px){
+  section.block>.wrap{display:grid;grid-template-columns:var(--label-col) 2fr;column-gap:clamp(3rem,6vw,7rem);row-gap:3rem;align-items:start;}
+  .seclabel{grid-column:1;grid-row:1;position:sticky;top:8rem;}
+  .rows,.perf,.perf-more,.links,.contact-head{grid-column:2;}
+  .mentor{grid-column:1;align-self:end;margin-top:0;}
+  .perf-toggle{grid-column:2;justify-self:start;margin-top:0;}
+  /* work: list in the wide column, Listen under the label */
+  section.block#work .rows{grid-row:1 / span 2;}
+  section.block#work .mentor{grid-row:2;}
+  /* omt: one large line */
+  section.block#omt>.wrap{grid-template-columns:var(--label-col) 2fr;align-items:center;}
+  section.block#omt .row{border-top:0;padding-block:0;}
+  section.block#omt .row .title{font-size:clamp(2.6rem,1.6rem + 3.6vw,5rem);line-height:1.05;letter-spacing:-.015em;}
+  section.block#omt .row .title .role{font-family:var(--serif);font-style:italic;font-size:clamp(1rem,.9rem + .5vw,1.3rem);margin-top:1rem;color:var(--haze);}
+  section.block#omt .row .meta{display:none;}
+  /* stage: three columns, label + two lists */
+  section.block#stage>.wrap{grid-template-columns:var(--label-col) 1fr 1fr;}
+  section.block#stage .perf{grid-column:2 / span 2;}
+  section.block#stage .perf-more{grid-column:2 / span 2;}
+  /* education: mentors under the label */
+  section.block.edu .rows{grid-row:1 / span 2;}
+  section.block.edu .mentor{grid-row:2;}
+  /* other work: three doors across */
+  section.block.other>.wrap{grid-template-columns:1fr;row-gap:2.6rem;}
+  section.block.other .seclabel{position:static;flex-direction:row;align-items:baseline;gap:1.4rem;}
+  section.block.other .seclabel .tx{font-size:clamp(2rem,3vw,3rem);}
+  section.block.other .rows{grid-column:1;display:grid;grid-template-columns:repeat(3,1fr);column-gap:clamp(1.6rem,3vw,3rem);}
+  section.block.other .row{display:flex;flex-direction:column;justify-content:space-between;gap:1.6rem;min-height:11rem;padding:1.4rem 0 0;border-top:1px solid var(--line-2);}
+  section.block.other .row .meta{text-align:left;}
+  section.block.other .row .title>span:first-child{font-size:clamp(1.4rem,1.1rem + 1vw,2rem);}
+  /* contact: the open line, links as a quiet 2×2 */
+  section.block#contact>.wrap{grid-template-columns:var(--label-col) 2fr;}
+  section.block#contact .contact-head{grid-row:1;margin:0;}
+  section.block#contact .mentor{grid-row:2;align-self:start;}
+  section.block#contact .links{grid-row:2;display:grid;grid-template-columns:1fr 1fr;column-gap:3rem;}
+  section.block#contact .links a:last-child{border-bottom:0;}
+  section.block#contact .links a:nth-last-child(-n+2){border-bottom:1px solid var(--line);}
+}
+@media(max-width:979px){
+  section.block{min-height:0;padding-block:clamp(5rem,16vh,8rem);}
+  .seclabel{margin-bottom:2.2rem;}
+  .seclabel .tx{font-size:2.6rem;}
+  section.block.other .rows{display:grid;gap:0;}
+}
+/* room index — marks along the right edge */
+.room-index{position:fixed;right:clamp(.9rem,1.6vw,1.6rem);top:50%;transform:translateY(-50%);z-index:90;display:flex;flex-direction:column;gap:1.1rem;
+  opacity:0;pointer-events:none;transition:opacity 1.2s var(--ease);}
+.room-index.show{opacity:1;pointer-events:auto;}
+.room-index a{display:flex;align-items:center;justify-content:flex-end;gap:.7rem;color:var(--faint);text-decoration:none;font-family:var(--mono);font-size:.58rem;letter-spacing:.24em;text-transform:uppercase;}
+.room-index a .lbl{opacity:0;transform:translateX(6px);transition:opacity .6s var(--ease),transform .6s var(--ease);white-space:nowrap;}
+.room-index a .mk{width:14px;height:1px;background:var(--line-2);transition:width .6s var(--ease),background .6s var(--ease);}
+.room-index a.cur{color:var(--mist);}
+.room-index a.cur .mk{width:26px;background:var(--lumen);}
+.room-index:hover a .lbl,.room-index a.cur .lbl{opacity:1;transform:none;}
+@media(max-width:979px){.room-index{display:none;}}
+@media(prefers-reduced-motion:reduce){section.block::before,.seclabel .tx,.room-index,.room-index a .lbl,.room-index a .mk{transition:none;}section.block::before{opacity:1;}.seclabel .tx{opacity:.26;filter:none;}}
+
+/* ================= Merge · fluid rooms with an architectural spine ================= */
+html{scroll-snap-type:y proximity;}
+section.block{scroll-snap-align:start;border-top:0;align-items:flex-start;}
+section.block#omt,section.block.edu,section.block.other,section.block#contact{align-items:center;}
+.block + .block{border-top:0;}
+/* B: wide blurred light that bleeds across rooms */
+section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradient(ellipse 55% 50% at var(--lx,30%) var(--ly,40%),var(--light) 0%,rgba(9,11,20,0) 72%);}
+@media(min-width:980px){
+  main{counter-reset:room;}
+  /* A: room number above the tag */
+  .seclabel::before{content:counter(room,decimal-leading-zero);counter-increment:room;font-family:var(--mono);font-size:.58rem;letter-spacing:.3em;color:var(--faint);}
+  /* B: the room's character large and faint behind */
+  .seclabel{position:relative;top:auto;}
+  .seclabel .tx{position:absolute;left:-.1em;top:-.9em;font-size:clamp(9rem,16vw,16rem);opacity:.045;z-index:-1;pointer-events:none;letter-spacing:0;}
+  section.block.lit .seclabel .tx{opacity:.07;}
+  section.block.other .seclabel .tx{position:absolute;font-size:clamp(9rem,16vw,16rem);top:-.8em;}
+  section.block#omt .row .title{font-size:clamp(2.2rem,1.4rem + 2.6vw,3.8rem);}
+  /* B: seam of light between rooms, no hard lines */
+  section.block::after{content:"";position:absolute;left:10%;right:10%;top:0;height:1px;pointer-events:none;
+    background:linear-gradient(90deg,rgba(242,238,228,0),rgba(242,238,228,.08) 50%,rgba(242,238,228,0));}
+  section.block:first-of-type::after{display:none;}
+}
+@supports (animation-timeline: view()){
+  @media(prefers-reduced-motion:no-preference){
+    section.block::before{animation:lightDrift linear both;animation-timeline:view();}
+    @keyframes lightDrift{from{transform:translateY(9%)}to{transform:translateY(-9%)}}
+  }
+}
+/* A: numbered index, with B's soft dot */
+.room-index a .num{font-size:.56rem;color:var(--faint);}
+.room-index a .mk{width:5px;height:5px;border-radius:50%;background:var(--line-2);}
+.room-index a.cur .mk{width:7px;height:7px;background:var(--lumen);box-shadow:0 0 10px rgba(143,227,210,.5);}
+
+</style>
 </head>
 <body>
 <a class="skip" href="#work" data-i18n="skip">Skip to content</a>
@@ -1075,6 +1193,42 @@ body.lang-zh .statement.lines .ln.l4{margin-left:6%;}body.lang-zh .statement.lin
   setTimeout(cycle, 8900+4400+600);
   // no cursor or scroll pull on the hero words: they only breathe
 })();
+</script>
+<script>
+
+(function(){
+  var reduce=window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var rooms=[].slice.call(document.querySelectorAll('main section.block')).filter(function(s){return !s.hidden;});
+  if(!rooms.length) return;
+  // index
+  var nav=document.createElement('nav'); nav.className='room-index'; nav.setAttribute('aria-label','Rooms');
+  rooms.forEach(function(s,i){
+    var tag=s.querySelector('.seclabel .tag'), tx=s.querySelector('.seclabel .tx');
+    var a=document.createElement('a'); a.href='#'+s.id;
+    a.innerHTML='<span class="lbl" data-room-lbl></span><span class="num">'+String(i+1).padStart(2,'0')+'</span><span class="mk" aria-hidden="true"></span>';
+    a.querySelector('.lbl').textContent=(document.body.classList.contains('lang-zh')&&tx)?tx.textContent:(tag?tag.textContent.replace(/\s+/g,' ').trim():s.id);
+    a.addEventListener('click',function(e){ e.preventDefault(); s.scrollIntoView({behavior:reduce?'auto':'smooth',block:'start'}); history.replaceState(null,'','#'+s.id); });
+    nav.appendChild(a);
+  });
+  document.body.appendChild(nav);
+  var links=nav.querySelectorAll('a');
+  function relabel(){ rooms.forEach(function(s,i){ var tag=s.querySelector('.seclabel .tag'), tx=s.querySelector('.seclabel .tx');
+    links[i].querySelector('.lbl').textContent=(document.body.classList.contains('lang-zh')&&tx)?tx.textContent:(tag?tag.textContent.replace(/\s+/g,' ').trim():s.id); }); }
+  var lt=document.getElementById('langToggle'); if(lt) lt.addEventListener('click',function(){ setTimeout(relabel,50); });
+  // which room is lit
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){ es.forEach(function(en){
+      var i=rooms.indexOf(en.target);
+      if(en.isIntersecting){ en.target.classList.add('lit'); links.forEach(function(l){l.classList.remove('cur');}); links[i].classList.add('cur'); }
+    }); },{threshold:[0.35],rootMargin:'-10% 0px -30% 0px'});
+    rooms.forEach(function(s){ io.observe(s); });
+  } else { rooms.forEach(function(s){ s.classList.add('lit'); }); }
+  // the index appears once the hero is behind you
+  var hero=document.querySelector('.hero');
+  function showIdx(){ var y=window.scrollY||0; nav.classList.toggle('show', y>(hero?hero.offsetHeight*0.6:400)); }
+  window.addEventListener('scroll',showIdx,{passive:true}); showIdx();
+})();
+
 </script>
 </body>
 </html>
