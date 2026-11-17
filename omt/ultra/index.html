@@ -155,6 +155,20 @@ button.play[aria-pressed="true"]{animation:breathe 9s ease-in-out infinite}
 .arcm i{position:absolute;left:0;height:2px;border-radius:2px;transition:width 1.2s linear}
 #arcw{top:3px;background:var(--celadon);box-shadow:0 0 10px rgba(142,199,184,.7)}
 #arcr{top:10px;background:var(--brass);box-shadow:0 0 10px rgba(219,168,74,.6)}
+.steps{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;position:relative;max-width:820px}
+.steps::before{content:"";position:absolute;left:6px;right:6px;top:6px;height:1px;background:linear-gradient(90deg,var(--celadon),rgba(219,168,74,.5),transparent)}
+.steps li{position:relative;padding:22px 16px 0 0;display:grid;gap:2px}
+.steps li::before{content:"";position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:var(--stone);border:1px solid var(--ink-2)}
+.steps li.now::before{background:var(--celadon);border-color:var(--celadon);box-shadow:0 0 0 0 rgba(142,199,184,.6);animation:pulse 3.5s ease-out infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 rgba(142,199,184,.55)}100%{box-shadow:0 0 0 14px rgba(142,199,184,0)}}
+.steps b{font-family:var(--f-display);font-weight:600;font-size:16px}
+.steps span{font-size:13.5px;color:var(--ink-2)}
+@media (max-width:560px){.steps{grid-template-columns:1fr;gap:14px}.steps::before{left:6px;right:auto;top:6px;bottom:6px;width:1px;height:auto;background:linear-gradient(180deg,var(--celadon),transparent)}.steps li{padding:0 0 0 26px}}
+@media (prefers-reduced-motion:reduce){.steps li.now::before{animation:none}}
+#status .lead{max-width:62ch}
+footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
+footer a:hover{color:var(--ink)}
+@media (max-width:560px){#system th:nth-child(3),#system td:nth-child(3){display:none}#system table{min-width:0}}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
 html[lang="zh-Hant"] body{line-height:1.8}
 html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
@@ -170,11 +184,11 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 </style>
 </head>
 <body>
-<div class="band"><div class="wrap" data-i="band">Concept stage · Nothing is built yet · Every sound here is a computer model</div></div>
+<div class="band"><div class="wrap" data-i="band">Concept · nothing built yet · every sound here is a model</div></div>
 <header><div class="wrap">
   <a class="brand" href="#listen">風雨光殿 <span>Ultra OMT</span></a>
   <nav aria-label="Sections">
-    <a href="#sounds" data-i="n1">Listen</a><a href="#idea" data-i="n2">Idea</a><a href="#system" data-i="n3">System</a><a href="#method" data-i="n4">Method</a><a href="#status" data-i="n5">Status</a>
+    <a href="#sounds" data-i="n1">Listen</a><a href="#idea" data-i="n2">Idea</a><a href="#system" data-i="n3">System</a><a href="#method" data-i="n4">Method</a><a href="#status" data-i="n5">Next</a>
   </nav>
   <button class="lang" id="lang" type="button" aria-label="Switch language">繁體中文</button>
 </div></header>
@@ -182,10 +196,10 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 <main>
 <section class="hero" id="listen"><div class="wrap">
   <div>
-    <p class="eyebrow" data-i="eyebrow">Ultra OMT · the physical OceanMountain</p>
+    <p class="eyebrow" data-i="eyebrow">Ultra OMT · OceanMountain, given a body</p>
     <div class="han" aria-hidden="true">風雨光殿</div>
     <h1 data-i="h1">Wind-Rain-Light Temple</h1>
-    <p class="thesis" data-i="thesis">A building played by the weather. Wind gives the breath, rain the touch, sunlight the slow turn of pitch. <b>Nature plays. The building tunes and listens.</b></p>
+    <p class="thesis" data-i="thesis">A building the weather plays. Wind breathes through it, rain touches it, sunlight slowly bends its pitch. <b>Nature plays; the building listens.</b></p>
     <div class="controls">
       <button class="play" id="play" type="button" aria-pressed="false" data-i="play">Play the sketch</button>
     </div>
@@ -200,7 +214,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
       <label for="sun"><input type="checkbox" id="sun" checked> <span data-i="t2">Sun warms the pedal</span></label>
       <label for="rain"><input type="checkbox" id="rain" checked> <span data-i="t3">Rain</span></label>
     </div>
-    <p class="hint" data-i="hint">Headphones help: the low A sits at 55 and 110 Hz. A browser sketch of the idea, not a recording.</p>
+    <p class="hint" data-i="hint">Best with headphones. A sketch in the browser, not a recording.</p>
   </div>
   <div class="plan">
     <canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced building. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas>
@@ -212,23 +226,23 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 <section class="block" id="sounds"><div class="wrap sec">
   <div data-i="k1">01 · Listen</div>
   <div>
-    <h2 data-i="l_h">Three ways to hear it before it exists</h2>
+    <h2 data-i="l_h">Before it stands, listen</h2>
     <div class="grid">
       <div class="card">
         <span class="tag" data-i="l1t">Live sketch</span>
         <h3 data-i="l1h">One note, four seasons</h3>
-        <p data-i="l1p">The plan at the top of the page. One low A holds through the year; each season's wind opens another face, and the same A is heard in a new light. Weather moves in long arcs: it gathers, swells, eases and falls still, and the rain follows the wind.</p>
+        <p data-i="l1p">One low A holds all year. Each season's wind opens another face, and the A changes colour. The weather swells and settles in long arcs; rain follows the wind.</p>
       </div>
       <div class="card">
         <span class="tag" data-i="l2t">Model · 44 s</span>
         <h3 data-i="l2h">The door</h3>
-        <p data-i="l2p">Where it began: winter wind finding the gap of a northwest door. First at the door, then from across the room, where it turned toward music.</p>
+        <p data-i="l2p">Where it began: winter wind through the gap of a northwest door, heard close, then from across the room.</p>
         <div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:44</span><audio preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio></div>
       </div>
       <div class="card">
         <span class="tag" data-i="l3t">Model · 3 × 32 s</span>
         <h3 data-i="l3h">Same weather, three tunings</h3>
-        <p data-i="l3p">The same gusts, the same drops. Only the pitches change.</p>
+        <p data-i="l3p">Same gusts, same drops. Only the tuning changes.</p>
         <div class="tracks">
           <div><span data-i="l3a">A · Harmonic series on A</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div></div>
           <div><span data-i="l3b">B · Pentatonic</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div></div>
@@ -240,13 +254,13 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 </div></section>
 
 <section class="block" id="idea"><div class="wrap sec">
-  <div data-i="k2">02 · Idea</div>
+  <div data-i="k2">02 · Origin</div>
   <div>
-    <h2 data-i="i_h">It began with a door that sang in winter</h2>
+    <h2 data-i="i_h">A door that sang in winter</h2>
     <div class="prose">
-      <p class="lead" data-i="i1">In a New York winter, wind pushed through the gap of a floor-to-ceiling door that faced northwest. It made tones, in layers, and from across the room they sounded close to music.</p>
-      <details><summary data-i="more">Read the full idea</summary><div class="in"><p data-i="i2">A door gap is the mouth of a flute; the room behind it is the body. Instruments are shaped so their sound fits the way we hear. Wind and rain have always made sound. This work shapes a whole building the same way, so that what the weather plays arrives as harmony.</p>
-      <p data-i="i3">OceanMountain 山海 is the digital work: sound drawn from the hour and the season. This is its body. Nothing here is generated. The weather is the performer, and silence is part of the weather.</p></div></details>
+      <p class="lead" data-i="i1">New York, winter. Wind pressed through the gap of a northwest door and came out as tones, layered, almost music from across the room.</p>
+      <details><summary data-i="more">Read on</summary><div class="in"><p data-i="i2">The gap was a mouth, the room a body. Instruments are shaped so that sound meets the ear. This work shapes a building the same way, so that what the weather plays arrives as harmony.</p>
+      <p data-i="i3">OceanMountain 山海 draws its sound from the hour and the season. This is its body. Nothing here is generated: the weather performs, and silence is part of the weather.</p></div></details>
     </div>
   </div>
 </div></section>
@@ -254,9 +268,9 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 <section class="block" id="system"><div class="wrap sec">
   <div data-i="k3">03 · System</div>
   <div>
-    <h2 data-i="y_h">One held note, eight faces, three elements</h2>
+    <h2 data-i="y_h">One held note, eight faces</h2>
     <div class="prose">
-      <p class="lead" data-i="y1">A sounds low on every wind face, at 55 and 110 Hz. Each face adds three notes above 290 Hz. As the wind turns with the seasons, the same A becomes a fifth, a root, a third. The year modulates around one held note.</p>
+      <p class="lead" data-i="y1">A low A sounds on every wind face. Above it, each face holds three notes. As the wind turns through the year, the same A becomes a fifth, a root, a third.</p>
     </div>
     <div class="tablewrap"><table>
       <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
@@ -267,12 +281,12 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
         <tr><td><span class="h">乾</span><span data-i="f4">Northwest</span></td><td data-i="w4">Winter</td><td class="n">8 · 12 · 14 · 440 660 770 Hz</td><td data-i="r4">The root, with a harmonic seventh</td></tr>
       </tbody>
     </table></div>
-    <details><summary data-i="faces8">The other four faces</summary><div class="in"><p class="hint" style="margin:0" data-i="y2">These voicings are placeholders. The other four faces do other work: 離 south takes the sunlight, 坤 southwest is the entrance, 坎 north is the shaded wall where water leaves, 艮 northeast is the silent wall. The trigrams are an organising grammar from tradition, not a claim about nature.</p></div></details>
+    <details><summary data-i="faces8">The other four faces</summary><div class="in"><p class="hint" style="margin:0" data-i="y2">Placeholder voicings. 離 south gathers light, 坤 southwest receives you, 坎 north lets water go, 艮 northeast keeps the silence. The trigrams give the building its order; they make no claim about nature.</p></div></details>
 
     <div class="grid">
       <div class="card">
         <span class="tag" data-i="c1t">Wind</span>
-        <h3 data-i="c1h">The slot lets it speak. The chamber sets the note.</h3>
+        <h3 data-i="c1h">The slot speaks; the chamber sings</h3>
         <details><summary data-i="how1">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
           <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
           <path d="M104 20H290V60M290 86V130H104" fill="none" stroke="#a3adb5" stroke-width="1.2"/>
@@ -288,7 +302,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
       </div>
       <div class="card">
         <span class="tag" data-i="c2t">Rain</span>
-        <h3 data-i="c2h">Rain, gathered to a single drop, falls on glass</h3>
+        <h3 data-i="c2h">Rain gathered to a drop, falling on glass</h3>
         <details><summary data-i="how2">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
           <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
           <line x1="110" y1="40" x2="110" y2="96" stroke="#8ec7b8" stroke-width="2" stroke-dasharray="2 7"/>
@@ -303,7 +317,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
       </div>
       <div class="card">
         <span class="tag" data-i="c3t">Light</span>
-        <h3 data-i="c3h">Sunlight is seen, and also heard</h3>
+        <h3 data-i="c3h">Light, seen and heard</h3>
         <details><summary data-i="how3">How it works</summary><div class="in"><p data-i="c3p">The south face is cut with sealed slits. A 5 mm slit throws a blade of light that crosses a wall five metres away at about 1.3 m an hour. At 35° north, noon light reaches 0.6 m into the room in midsummer and 4.9 m in midwinter.</p>
         <p data-i="c3q">Sun also warms the air in a chamber and raises its pitch about 3 cents per °C. Two matched pedal chambers, one in sun and one in shade, drift apart and beat slowly by day, then still at dusk.</p></div></details>
       </div>
@@ -325,11 +339,11 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 </div></section>
 
 <section class="block" id="method"><div class="wrap sec">
-  <div data-i="k4">04 · Theory and method</div>
+  <div data-i="k4">04 · Method</div>
   <div>
-    <h2 data-i="m_h">What is measured, what is inherited, what is chosen, what is hoped</h2>
+    <h2 data-i="m_h">Measured, inherited, chosen, hoped</h2>
     <div class="prose">
-      <p class="lead" data-i="m1">Every claim carries one label. The label decides what may be said about it, and what would count as it failing.</p>
+      <p class="lead" data-i="m1">Each claim wears one label, so the work stays honest about what it knows.</p>
     </div>
     <div class="regs">
       <div class="reg"><b data-i="g1">Measured</b><span data-i="g1p">Computed from standard acoustics. Nothing yet measured on a built object.</span></div>
@@ -358,18 +372,16 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 </div></section>
 
 <section class="block" id="status"><div class="wrap sec">
-  <div data-i="k5">05 · Status</div>
+  <div data-i="k5">05 · Next</div>
   <div>
-    <h2 data-i="st_h">Where it stands</h2>
-    <div class="ledger">
-      <div><span><span data-i="e1">Feasibility audit</span><small data-i="e1s">Wind, rain, glass, precedents, the door physics</small></span><span class="pill done" data-i="p_done">Done</span></div>
-      <div><span><span data-i="e2">Base audit</span><small data-i="e2s">Spacing law, direction tuning, light</small></span><span class="pill done" data-i="p_done2">Done</span></div>
-      <div><span><span data-i="e3">Concept brief v0.1</span><small data-i="e3s">Laws, plan, harmony, voices, sequence</small></span><span class="pill done" data-i="p_done3">Done</span></div>
-      <div><span><span data-i="e4">Sound sketches</span><small data-i="e4s">Computer models on this page</small></span><span class="pill wip" data-i="p_wip">In progress</span></div>
-      <div><span><span data-i="e5">Door-sized test panel</span><small data-i="e5s">One wind voice, five glass bars, first real recordings</small></span><span class="pill" data-i="p_next">Next</span></div>
-      <div><span><span data-i="e6">Architect collaboration</span><small data-i="e6s">Form, structure, a real site</small></span><span class="pill" data-i="p_not">Not yet</span></div>
-    </div>
-    <div class="prose" style="margin-top:16px">
+    <h2 data-i="st_h">More is coming</h2>
+    <p class="lead" data-i="nx1">This page grows with the work. Next comes a door-sized test wall, the first real recordings of wind and rain, then an architect and a piece of ground. Return in another season.</p>
+    <ol class="steps">
+      <li class="now"><b data-i="x1">Test wall</b><span data-i="x1s">one wind voice, five glass bars</span></li>
+      <li><b data-i="x2">First recordings</b><span data-i="x2s">wind and rain, heard for real</span></li>
+      <li><b data-i="x3">Architect and site</b><span data-i="x3s">form, ground, a real wind</span></li>
+    </ol>
+    <div class="prose" style="margin-top:34px">
       <h3 data-i="ab_h" style="font-size:16.5px">About</h3>
       <p data-i="ab1">Haishan Lai (Toby Hysan) is a pianist, composer and producer working across jazz, film scoring and generative sound. Ultra OMT gives a body to OceanMountain 山海, his generative sound ecology shaped by the twelve 時辰 and the twenty-four 節氣.</p>
     </div>
@@ -377,48 +389,48 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
 </div></section>
 </main>
 
-<footer><div class="wrap"><a href="/">← OceanMountain / Toby Hysan</a> · <a href="/omt/">山海 OMT</a> · <span data-i="foot">Beta. This page changes as the work does.</span> © 2026 Toby Hysan</div></footer>
+<footer><div class="wrap"><a href="/">← OceanMountain / Toby Hysan</a> · <a href="/omt/">山海 OMT</a> · © 2026 Toby Hysan</div></footer>
 
 <script>
 (function(){
 "use strict";
 /* ---------- language ---------- */
 var ZH={
-band:"概念階段 · 尚未建造 · 本頁所有聲音皆為電腦模擬",
-n1:"聆聽",n2:"緣起",n3:"系統",n4:"方法",n5:"進度",
-eyebrow:"Ultra OMT · 山海的實體版",h1:"風、雨、光之殿",
-thesis:"一座由天氣演奏的建築。風是氣息，雨是觸鍵，日光緩緩轉動音高。<b>自然演奏；建築調音，並且聆聽。</b>",
+band:"概念階段 · 尚未建造 · 此處聲音皆為模擬",
+n1:"聆聽",n2:"緣起",n3:"系統",n4:"方法",n5:"下一步",
+eyebrow:"Ultra OMT · 山海的身體",h1:"風、雨、光之殿",
+thesis:"一座由天氣演奏的建築。風穿過它呼吸，雨輕觸它，日光緩緩彎轉它的音高。<b>自然演奏；建築聆聽。</b>",
 play:"播放聲音草圖",stop:"停止",
 s0:"春",s1:"夏",s2:"秋",s3:"冬",
 t1:"四季輪轉",t2:"日照暖持續音",t3:"雨",
-hint:"建議使用耳機：低音 A 位於 55 與 110 Hz。這是概念的瀏覽器草圖，並非錄音。",
-k1:"01 · 聆聽",l_h:"在它存在之前，先聽三次",
-l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"即頁首的平面圖。一個低音 A 貫穿全年；每季的風打開另一面，同一個 A 便換了一種光。天氣以長弧移動：聚起、漲滿、消散、歸靜，雨隨風後而至。",
-l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"一切的起點：冬風找到一扇西北向的門縫。先在門邊聽，再到房間另一頭，在那裡它漸漸成了音樂。",
-l3t:"模擬 · 3 × 32 秒",l3h:"同一場天氣，三種調律",l3p:"同樣的陣風，同樣的雨滴，只有音高不同。",
+hint:"建議戴耳機。這是瀏覽器裡的草圖，並非錄音。",
+k1:"01 · 聆聽",l_h:"未建之前，先聽",
+l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"一個低音 A 終年不散。每季的風打開另一面，A 便換了顏色。天氣以長弧起落，雨隨風後。",
+l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"起點：冬風穿過西北向的門縫。先在近處聽，再從房間另一頭聽。",
+l3t:"模擬 · 3 × 32 秒",l3h:"同一場天氣，三種調律",l3p:"同樣的風，同樣的雨滴，只有調律不同。",
 l3a:"A · 以 A 為基音的泛音列",l3b:"B · 五聲音階",l3c:"C · 鋼琴平均律 A13(♯11)",
-k2:"02 · 緣起",i_h:"一切始於一扇在冬天唱歌的門",
-i1:"紐約的冬天，風擠過一扇朝西北的落地門縫，發出一層一層的音。從房間另一頭聽，幾乎像音樂。",
-i2:"門縫是笛子的吹口，門後的房間是琴身。樂器之所以成形，是為了讓聲音合乎我們的聽覺。風和雨向來會發聲。這件作品以同樣的方式為整座建築塑形，讓天氣所奏化為和聲。",
-i3:"山海 OceanMountain 是數位的作品：聲音取自時辰與節氣。這裡是它的身體。此處沒有任何聲音是生成的。天氣是演奏者，而靜默也是天氣的一部分。",
-k3:"03 · 系統",y_h:"一個持續音、八個面、三種元素",
-y1:"每一個風面都有低音 A，位於 55 與 110 Hz。每面再加三個高於 290 Hz 的音。風隨季節轉向，同一個 A 便成為五度、根音、三度。一年，圍繞一個持續的音轉調。",
+k2:"02 · 緣起",i_h:"冬天會唱歌的門",
+i1:"紐約，冬天。風擠過西北向的門縫，化成一層層的音；從房間另一頭聽，幾乎就是音樂。",
+i2:"門縫是吹口，房間是琴身。樂器為了讓聲音遇見耳朵而成形；這件作品以同樣的方式塑造一座建築，讓天氣所奏化為和聲。",
+i3:"山海 OceanMountain 從時辰與節氣取聲。這裡是它的身體。此處沒有任何聲音被生成：天氣演奏，靜默也是天氣。",
+k3:"03 · 系統",y_h:"一個持續音，八個面",
+y1:"每個風面都有一個低音 A。其上，每面各有三個音。風隨四季轉向，同一個 A 便成為五度、根音、三度。",
 th1:"面",th2:"季風",th3:"色彩音",th4:"A 成為",
 f1:"東",f2:"東南",f3:"西",f4:"西北",w1:"春",w2:"夏",w3:"秋",w4:"冬",
 r1:"D 的五度",r2:"根音，開放",r3:"F 的三度",r4:"根音，帶自然七度",
-y2:"以上配置為暫定。其餘四面各有職責：離（南）承接日光，坤（西南）為入口，坎（北）是背陰的牆、水由此排出，艮（東北）是靜默之牆。八卦在此是來自傳統的組織語法，並非對自然的斷言。",
-c1t:"風",c1h:"縫讓它發聲，腔體決定音高",d1a:"風",d1b:"縫與刃",d1c:"調音腔體",d1d:"長度決定音高",
+y2:"以上配置為暫定。離（南）納光，坤（西南）迎人，坎（北）送水，艮（東北）守靜。八卦為建築排序，不對自然作斷言。",
+c1t:"風",c1h:"縫發聲，腔體成音",d1a:"風",d1b:"縫與刃",d1c:"調音腔體",d1d:"長度決定音高",
 c1p:"時速 15 至 40 公里的風只提供 10 至 74 帕的壓力，遠低於管風琴所用。所以風的聲部要大、要低、以共鳴體為主，並以擋板在風暴時收束。",
-c2t:"雨",c2h:"雨，聚成一滴，落在玻璃上",d2a:"集水面：速度",d2b:"落差 1 至 3 米：力度",d2c:"調音玻璃：音高",d2d:"排水：音高不變",
+c2t:"雨",c2h:"雨聚成一滴，落在玻璃上",d2a:"集水面：速度",d2b:"落差 1 至 3 米：力度",d2c:"調音玻璃：音高",d2d:"排水：音高不變",
 c2p:"雨直接打在玻璃上多半只是沙沙聲。一滴匯集的水珠約有十五顆雨滴的能量，並落在選定的一點。每個集水面的大小決定該聲部的速度。",
-c3t:"光",c3h:"日光看得見，也聽得見",
+c3t:"光",c3h:"光，看得見也聽得見",
 c3p:"南面開有密封的光縫。一道 5 毫米的縫投出一片光刃，在五米外的牆上每小時移動約 1.3 米。在北緯 35 度，正午的光在夏至伸入室內 0.6 米，冬至則達 4.9 米。",
 c3q:"日照也會加熱腔體內的空氣，每升高 1°C 音高約升 3 音分。兩個相同的持續音腔體，一個向陽、一個背陰，白天逐漸錯開並緩慢拍動，黃昏時歸於平靜。",
 c4t:"和聲",c4h:"先講間距，再講音階",
 c4p:"聽起來粗糙的音距，在每個音區幾乎都是相同的赫茲數。密集的音程應放在高處或短促發聲；低音要拉開。滿足這點，持續音之上任何音階都可行，包括微分音。",
 b1:"超過八度",b2:"大六度",b3:"四度",b4:"大三度",b5:"全音",b5b:"全音",
-k4:"04 · 理論與方法",m_h:"量得到的、傳下來的、選擇的、盼望的",
-m1:"每一項主張都帶一個標籤。標籤決定能怎樣談論它，以及怎樣才算它失敗。",
+k4:"04 · 方法",m_h:"量得的、承襲的、選擇的、盼望的",
+m1:"每項主張只帶一個標籤，讓作品誠實面對自己知道什麼。",
 g1:"可量測",g1p:"由標準聲學計算，尚未在實物上量測。",
 g2:"傳統",g2p:"八卦、陰陽、時辰、節氣：組織的語法，絕非物理。",
 g3:"設計選擇",g3p:"以 A 為持續音、各面配置、雙層牆。可隨時修訂。",
@@ -433,13 +445,14 @@ a1:"<b>靜默是共享的天氣。</b>無風無雨的日子，按設計就是安
 a2:"<b>不作任何健康或療效宣稱。</b>不感測、不側寫聽者。",
 a3:"<b>自然演奏。</b>建築只負責調音與聆聽。",
 a4:"<b>一個持續音，多種色彩。</b>",a5:"<b>先講間距，再講音階。</b>",a6:"<b>一個開口盡量兼顧兩件事：</b>聲音與光。",
-k5:"05 · 進度",st_h:"目前進展",
+k5:"05 · 下一步",st_h:"陸續而來",
 e1:"可行性審核",e1s:"風、雨、玻璃、先例、門的物理",e2:"基礎審核",e2s:"間距法則、方位調律、光",
 e3:"概念說明書 v0.1",e3s:"法則、平面、和聲、聲部、動線",e4:"聲音草圖",e4s:"本頁的電腦模擬",
 e5:"門板大小的測試牆",e5s:"一個風聲部、五根玻璃條、第一批實地錄音",e6:"與建築師合作",e6s:"形體、結構、真實基地",
 p_done:"完成",p_done2:"完成",p_done3:"完成",p_wip:"進行中",p_next:"下一步",p_not:"尚未",
 ab_h:"關於",ab1:"賴海山（Toby Hysan）是鋼琴家、作曲家與製作人，創作橫跨爵士、電影配樂與生成聲音。Ultra OMT 是「山海 OceanMountain」的身體；山海是他以十二時辰與二十四節氣塑形的生成聲音生態。",
-more:"閱讀完整緣起",faces8:"其餘四個面",how1:"運作方式",how2:"運作方式",how3:"運作方式",how4:"運作方式",
+more:"繼續閱讀",faces8:"其餘四個面",how1:"運作方式",how2:"運作方式",how3:"運作方式",how4:"運作方式",
+nx1:"此頁隨作品生長。下一步是一面門板大小的測試牆，第一批真實的風與雨的錄音，然後是建築師與一片基地。換季時，再回來聽。",x1:"測試牆",x1s:"一個風聲部，五根玻璃",x2:"第一批錄音",x2s:"真實的風與雨",x3:"建築師與基地",x3s:"形體、土地、真實的風",
 foot:"測試版。本頁隨作品進展而更新。"
 };
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
