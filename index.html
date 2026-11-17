@@ -650,6 +650,11 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
 .room-index a .mk{width:5px;height:5px;border-radius:50%;background:var(--line-2);}
 .room-index a.cur .mk{width:7px;height:7px;background:var(--lumen);box-shadow:0 0 10px rgba(143,227,210,.5);}
 
+.study{margin-top:3rem;}
+.study-h{font-family:var(--mono);font-size:.72rem;letter-spacing:.2em;text-transform:uppercase;color:var(--lumen);margin:0 0 .4rem;}
+.study .mentor{margin-top:1.6rem;grid-column:auto;align-self:auto;}
+body.lang-zh .study-h{letter-spacing:.24em;}
+@media(min-width:980px){section.block#omt .row:not([hidden])+.row:not([hidden]){margin-top:3.2rem;}}
 </style>
 </head>
 <body>
@@ -760,6 +765,13 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
           </div>
           <div class="meta"><span class="yr">2026</span></div>
         </div>
+        <div class="row" data-reveal>
+          <div class="title">
+            <a href="/omt/ultra/" class="work-link"><span data-i18n="omtU_title">風雨光殿 Ultra OMT</span> <span class="arr">↗</span></a>
+            <span class="role" data-i18n="omtU_role">A building that wind, rain and light play. Beta.</span>
+          </div>
+          <div class="meta"><span class="yr">2026</span></div>
+        </div>
         <div class="row" data-reveal hidden>
           <div class="title">
             <a href="/omt/laws/" class="work-link"><span data-i18n="omt3_title">The Laws</span> <span class="arr">↗</span></a>
@@ -860,30 +872,18 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
         <div class="p" data-reveal><span class="v" data-i18n="perf13">Mannes Sound Festival<small>Art Along Save Me</small></span><span class="y">12.2020</span></div>
         <div class="p" data-reveal><span class="v" data-i18n="perf1">Carnegie Hall<small>Elite International Competition</small></span><span class="y">02.2020</span></div>
       </div>
+      <div class="study">
+        <p class="study-h" data-i18n="lbl_edu">Education</p>
+        <div class="perf">
+          <div class="p"><span class="v"><span data-i18n="edu2_title">The New School for Jazz and Contemporary Music</span><small data-i18n="edu2_role">B.F.A., Jazz Piano</small></span><span class="y">2019 — 2025</span></div>
+          <div class="p"><span class="v"><span data-i18n="edu1_title">New York University</span><small data-i18n="edu1_role">Graduate study, Music Technology</small></span><span class="y" data-i18n="edu1_yr">2025</span></div>
+          <div class="p"><span class="v"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><small data-i18n="edu3_role">Piano · Guangzhou</small></span><span class="y">2013 — 2019</span></div>
+        </div>
+        <p class="mentor"><span class="lbl" data-i18n="lbl_mentor">Mentorship</span><b>Yuri Kim · Brian Marsella · Elsa Nilsson</b></p>
+      </div>
       </div></div>
       <button class="perf-toggle" id="perfToggle" type="button" aria-expanded="false" aria-controls="perfMore"><span data-i18n="perf_more">Expand</span></button>
       </div>
-    </div>
-  </section>
-
-  <section class="block edu" id="education">
-    <div class="wrap">
-      <div class="seclabel" data-reveal><span class="tag" data-i18n="lbl_edu">Education</span><span class="tx" aria-hidden="true">學歷</span><span class="rule"></span><span class="idx" data-i18n="idx_edu"></span></div>
-      <div class="rows">
-        <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu1_title">New York University</span><span class="role" data-i18n="edu1_role">Graduate study, Music Technology</span></div>
-          <div class="meta"><span class="yr" data-i18n="edu1_yr">2025</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu2_title">The New School for Jazz and Contemporary Music</span><span class="role" data-i18n="edu2_role">B.F.A., Jazz Piano</span></div>
-          <div class="meta"><span class="yr">2019 — 2025</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title"><span data-i18n="edu3_title">Affiliated High School of Xinghai Conservatory</span><span class="role" data-i18n="edu3_role">Piano · Guangzhou</span></div>
-          <div class="meta"><span class="yr">2013 — 2019</span></div>
-        </div>
-      </div>
-      <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_mentor">Mentorship</span><b>Yuri Kim · Brian Marsella · Elsa Nilsson</b></p>
     </div>
   </section>
 
@@ -997,6 +997,7 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
       art1_role:{en:"Free improvisation with a contemporary dancer — prepared piano, live sampling of room and body sounds, and movement that shapes the sound in a closed loop. Mexico City.",zh:"與當代舞者的自由即興——預置鋼琴、即時取樣空間與身體的聲響，讓動作在閉環中塑造聲音。墨西哥城。"},
       art2_title:{en:"山海 OceanMountain",zh:"山海 OceanMountain"},
       art2_role:{en:'Sound shaped by the hour.',zh:'隨時辰而變的聲音。'},
+      omtU_title:{en:'風雨光殿 Ultra OMT',zh:'風雨光殿 Ultra OMT'},omtU_role:{en:'A building that wind, rain and light play. Beta.',zh:'一座由風、雨與光演奏的建築。Beta。'},
       idx_work:{en:'',zh:''},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
@@ -1011,7 +1012,7 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
       lbl_listen:{en:'Listen',zh:'聆聽'},
       lbl_stage:{en:"On Stage",zh:"現場演出"},
       idx_stage:{en:'',zh:''},
-      perf_more:{en:"Expand",zh:"展開"},
+      perf_more:{en:"Earlier · Education",zh:"往昔 · 學歷"},
       perf_less:{en:"Collapse",zh:"收起"},
       perf1:{en:"Carnegie Hall<small>Elite International Competition</small>",zh:"Carnegie Hall<small>Elite International Competition</small>"},
       perf2:{en:"Merkin Hall<small>Elite International Competition</small>",zh:"Merkin Hall<small>Elite International Competition</small>"},
