@@ -151,6 +151,10 @@ button.play[aria-pressed="true"]{animation:breathe 9s ease-in-out infinite}
 .tt{font:500 11.5px var(--f-mono);color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
 .tracks{gap:10px}
 .tracks .tt{font:500 11.5px var(--f-mono);color:var(--ink-2)}
+.arcm{position:relative;height:16px;margin:10px 4px 0}
+.arcm i{position:absolute;left:0;height:2px;border-radius:2px;transition:width 1.2s linear}
+#arcw{top:3px;background:var(--celadon);box-shadow:0 0 10px rgba(142,199,184,.7)}
+#arcr{top:10px;background:var(--brass);box-shadow:0 0 10px rgba(219,168,74,.6)}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
 html[lang="zh-Hant"] body{line-height:1.8}
 html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
@@ -200,6 +204,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
   </div>
   <div class="plan">
     <canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced building. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas>
+    <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
     <p class="readout" id="readout" aria-live="polite"></p>
   </div>
 </div></section>
@@ -212,7 +217,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
       <div class="card">
         <span class="tag" data-i="l1t">Live sketch</span>
         <h3 data-i="l1h">One note, four seasons</h3>
-        <p data-i="l1p">The plan at the top of the page. One low A holds through the year. Each season's wind opens another face of the building, and the same A is heard in a new light.</p>
+        <p data-i="l1p">The plan at the top of the page. One low A holds through the year; each season's wind opens another face, and the same A is heard in a new light. Weather moves in long arcs: it gathers, swells, eases and falls still, and the rain follows the wind.</p>
       </div>
       <div class="card">
         <span class="tag" data-i="l2t">Model · 44 s</span>
@@ -388,7 +393,7 @@ s0:"春",s1:"夏",s2:"秋",s3:"冬",
 t1:"四季輪轉",t2:"日照暖持續音",t3:"雨",
 hint:"建議使用耳機：低音 A 位於 55 與 110 Hz。這是概念的瀏覽器草圖，並非錄音。",
 k1:"01 · 聆聽",l_h:"在它存在之前，先聽三次",
-l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"即頁首的平面圖。一個低音 A 貫穿全年。每季的風打開建築的另一面，同一個 A 便換了一種光。",
+l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"即頁首的平面圖。一個低音 A 貫穿全年；每季的風打開另一面，同一個 A 便換了一種光。天氣以長弧移動：聚起、漲滿、消散、歸靜，雨隨風後而至。",
 l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"一切的起點：冬風找到一扇西北向的門縫。先在門邊聽，再到房間另一頭，在那裡它漸漸成了音樂。",
 l3t:"模擬 · 3 × 32 秒",l3h:"同一場天氣，三種調律",l3p:"同樣的陣風，同樣的雨滴，只有音高不同。",
 l3a:"A · 以 A 為基音的泛音列",l3b:"B · 五聲音階",l3c:"C · 鋼琴平均律 A13(♯11)",
@@ -458,10 +463,10 @@ var S=[
 ];
 var cur=0,chips=document.querySelectorAll(".chip"),turn=document.getElementById("turn"),sunBox=document.getElementById("sun"),rainBox=document.getElementById("rain");
 function setReadout(){
-  var s=S[cur],r=document.getElementById("readout");
+  var s=S[cur],r=document.getElementById("readout"),ph=phase();
   r.innerHTML=lang==="zh"
-   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h<br>A 成為<b>"+s.zh[1]+"</b> · "+s.n+" · 持續音 A 55 / 110 Hz"
-   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h<br>A becomes <b>"+s.en[1]+"</b> · "+s.n+" over A 55 / 110 Hz";
+   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h<br>A 成為<b>"+s.zh[1]+"</b> · "+s.n+" · 持續音 A 55 / 110 Hz<br>天氣：<b>"+PH.zh[ph]+"</b> · 風青、雨金"
+   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h<br>A becomes <b>"+s.en[1]+"</b> · "+s.n+" over A 55 / 110 Hz<br>Weather: <b>"+PH.en[ph]+"</b> · wind green, rain gold";
 }
 function setSeason(i,byUser){
   cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
@@ -469,7 +474,16 @@ function setSeason(i,byUser){
   if(byUser){turn.checked=false;}
 }
 chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dataset.s,true);});});
-setInterval(function(){if(turn.checked&&!document.hidden)setSeason((cur+1)%4,false);},14000);
+setInterval(function(){if(turn.checked&&!document.hidden)setSeason((cur+1)%4,false);},40000);
+
+/* ---------- weather arc: long swells, about 80 s, wind leads and rain follows ---------- */
+function arc(sec,lag){var x=sec-(lag||0);
+  var w=.5-.5*Math.cos(2*Math.PI*x/80)+.12*Math.sin(2*Math.PI*x/31+1.3);
+  return Math.max(0,Math.min(1,w));}
+var T0=performance.now()/1000-14;function now(){return performance.now()/1000-T0;}
+function windArc(){return arc(now(),0);} function rainArc(){return arc(now(),16);}
+var PH={en:["still","gathering","full","easing"],zh:["靜","聚","盛","散"]};
+function phase(){var a=windArc(),b=arc(now()+2,0);return a<.18?0:a>.78?2:(b>a?1:3);}
 
 /* ---------- audio ---------- */
 var audio=null,GLASS=[385,440,495,550,660,770,880];
@@ -501,7 +515,8 @@ function Engine(){
   });
   var timer=setInterval(function(){
     var now=ctx.currentTime;
-    gusts.forEach(function(q){q.v+= (Math.random()-.5)*.5;q.v=Math.max(.08,Math.min(1,q.v));q.g.gain.setTargetAtTime(q.level*q.v*q.v,now,1.1);});
+    var wa=windArc();gusts.forEach(function(q){q.v+= (Math.random()-.5)*.4;q.v=Math.max(.08,Math.min(1,q.v));q.g.gain.setTargetAtTime(q.level*q.v*q.v*(.25+.95*wa),now,2.2);});
+    if(rainBox.checked)bed.gain.setTargetAtTime((.004+.022*rainArc())*(.6+.6*S[cur].rain),now,2.5);
   },700);
   this.season=function(i){var now=ctx.currentTime;groups.forEach(function(g,k){g.gain.setTargetAtTime(k===i?1:0,now,k===i?2.2:1.4);});};
   this.sun=function(on){sunG.gain.setTargetAtTime(on?1:0,ctx.currentTime,.8);};
@@ -516,7 +531,7 @@ function Engine(){
   var bedHP=ctx.createBiquadFilter();bedHP.type="highpass";bedHP.frequency.value=260;
   var bedLP=ctx.createBiquadFilter();bedLP.type="lowpass";bedLP.frequency.value=1100;
   var bed=ctx.createGain();bed.gain.value=0;noise.connect(bedHP);bedHP.connect(bedLP);bedLP.connect(bed);bed.connect(master);
-  this.rain=function(on,amt){bed.gain.setTargetAtTime(on?.010+.014*amt:0,ctx.currentTime,1.5);};
+  this.rain=function(on,amt){bed.gain.setTargetAtTime(on?(.004+.022*rainArc())*(.6+.6*amt):0,ctx.currentTime,1.5);};
   this.drip=function(vel){
     var now=ctx.currentTime,f=GLASS[Math.floor(Math.random()*GLASS.length)],long=Math.random()<.2;
     var pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.13*vel;
@@ -576,16 +591,16 @@ function frame(ms){
   var t=ms/1000,target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
   g.clearRect(0,0,W,W);g.fillStyle="#131920";g.fillRect(0,0,W,W);
   /* wind */
-  var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20;
+  var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20,wa=reduce?.6:windArc(),spd=sp*(.35+1.1*wa);
   g.lineCap="round";g.lineWidth=2;
   streaks.forEach(function(s){
-    if(!reduce){s.v+=.0045*s.s*sp;if(s.v>1.1){s.v=-1.1;s.u=Math.random()*2-1;}}
+    if(!reduce){s.v+=.0045*s.s*spd;if(s.v>1.1){s.v=-1.1;s.u=Math.random()*2-1;}}
     var x=C+px*s.u*W*.55+dx*s.v*W*.55,y=C+py*s.u*W*.55+dy*s.v*W*.55;
-    g.strokeStyle="rgba(142,199,184,"+(.16+.3*(1-Math.abs(s.v)))+")";
+    g.strokeStyle="rgba(142,199,184,"+((.05+.42*wa)*(1-Math.abs(s.v))+.04)+")";
     g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*s.l*W,y+dy*s.l*W);g.stroke();
   });
   /* building */
-  oct(R);g.fillStyle="#161c23";g.fill();g.strokeStyle="rgba(232,229,220,.35)";g.lineWidth=2;g.stroke();
+  oct(R);g.fillStyle="#0f141a";g.fill();g.strokeStyle="rgba(232,229,220,.35)";g.lineWidth=2;g.stroke();
   /* sun blade from the south face */
   var day=reduce?.35:(t%50)/50,sa=(-58+116*day)*Math.PI/180,sx=C+R*.12*Math.sin(sa)*-1,sy=C+R*.92;
   var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.sin(day*Math.PI);
@@ -595,7 +610,7 @@ function frame(ms){
   /* faces */
   for(var k=0;k<8;k++){
     var p1=pt(45*k-22.5,R),p2=pt(45*k+22.5,R),active=k===S[cur].face;
-    if(WINDF[k]){if(active){g.shadowColor="rgba(142,199,184,.95)";g.shadowBlur=22+8*Math.sin(t*1.3);}g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.28)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.shadowBlur=0;}
+    if(WINDF[k]){if(active){g.shadowColor="rgba(142,199,184,.95)";g.shadowBlur=8+30*wa;}g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.28)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.shadowBlur=0;}
     if(k===4){g.strokeStyle="rgba(219,168,74,.8)";g.lineWidth=5;g.setLineDash([10,12]);g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.setLineDash([]);}
     var lp=pt(45*k,R+62);
     g.font=(active?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
@@ -604,9 +619,9 @@ function frame(ms){
   /* skywell and rain */
   var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+(.10+.05*Math.sin(t*.7))+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
   if(rainBox.checked&&!reduce&&t>nextDrip){
-    nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*3.2);
-    var ra=Math.random()*7,rr=Math.random()*R*.22,vel=.4+Math.random()*.6;
-    ripples.push({x:C+Math.cos(ra)*rr,y:C+Math.sin(ra)*rr,t:t,v:vel});
+    var ra=rainArc();nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*(.12+3.6*ra*ra));
+    var an=Math.random()*7,rr=Math.random()*R*.22,vel=(.35+Math.random()*.45)*(.55+.6*ra);
+    ripples.push({x:C+Math.cos(an)*rr,y:C+Math.sin(an)*rr,t:t,v:Math.min(1,vel*1.3)});
     if(audio)audio.drip(vel);
   }
   if(reduce&&!ripples.length){ripples.push({x:C-20,y:C+14,t:t-.5,v:.8},{x:C+34,y:C-22,t:t-.2,v:.6});}
@@ -616,6 +631,11 @@ function frame(ms){
   g.shadowBlur=0;g.restore();
   if(!reduce)requestAnimationFrame(frame);
 }
+var lastPh=-1;setInterval(function(){
+  document.getElementById("arcw").style.width=(windArc()*100).toFixed(1)+"%";
+  document.getElementById("arcr").style.width=(rainArc()*100).toFixed(1)+"%";
+  var ph=phase();if(ph!==lastPh){lastPh=ph;setReadout();}
+},1000);
 setReadout();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(reduce)frame(0);});
 requestAnimationFrame(frame);
