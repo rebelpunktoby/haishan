@@ -677,6 +677,9 @@ body.lang-zh .study-h{letter-spacing:.24em;}
   .omt-item.eng{grid-column:1 / span 2;grid-row:1;padding-right:30%;}
   .omt-seam{grid-column:1 / span 2;grid-row:2;margin-block:clamp(2.6rem,6vh,4.5rem);}
   .omt-item.site{grid-column:1 / span 2;grid-row:3;padding-left:24%;}
+  .omt-seam.s2{grid-row:4;}
+  .omt-item.body{grid-column:1 / span 2;grid-row:5;padding-left:8%;padding-right:18%;}
+  .omt-item.body .go{right:18%;}
   .omt-item.site .k{right:auto;left:8%;}
   .omt-item.eng .go{right:30%;}
 }
@@ -685,6 +688,7 @@ body.lang-zh .study-h{letter-spacing:.24em;}
     .omt-item.eng .k{animation:omtK1 linear both;animation-timeline:view();animation-range:entry 0% exit 100%;}
     .omt-item.site .k{animation:omtK2 linear both;animation-timeline:view();animation-range:entry 0% exit 100%;}
     .omt-seam{animation:omtSeam linear both;animation-timeline:view();animation-range:entry 10% cover 45%;}
+    .omt-item.body{animation:omtSlide linear both;animation-timeline:view();animation-range:entry 0% cover 40%;}
     .omt-item.site{animation:omtSlide linear both;animation-timeline:view();animation-range:entry 0% cover 40%;}
   }
 }
@@ -814,6 +818,13 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
           <span class="k" aria-hidden="true">殿</span>
           <span class="t">Site<i>殿境</i><sup>β</sup></span>
           <span class="r" data-i18n="omtS_role">風雨光殿 — the weather, as architecture.</span>
+          <span class="go" aria-hidden="true">↗</span>
+        </a>
+        <span class="omt-seam s2" aria-hidden="true"></span>
+        <a class="omt-item body" href="/omt/motion/" data-reveal>
+          <span class="k" aria-hidden="true">身</span>
+          <span class="t">Motion<i>身境</i><sup>β</sup></span>
+          <span class="r" data-i18n="omtM_role">The body, as instrument.</span>
           <span class="go" aria-hidden="true">↗</span>
         </a>
       </div>
@@ -1043,7 +1054,7 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
       art1_role:{en:"Free improvisation with a contemporary dancer — prepared piano, live sampling of room and body sounds, and movement that shapes the sound in a closed loop. Mexico City.",zh:"與當代舞者的自由即興——預置鋼琴、即時取樣空間與身體的聲響，讓動作在閉環中塑造聲音。墨西哥城。"},
       art2_title:{en:"山海 OceanMountain",zh:"山海 OceanMountain"},
       art2_role:{en:'Sound shaped by the hour.',zh:'隨時辰而變的聲音。'},
-      omtE_role:{en:'The hour, as sound.',zh:'時辰，化為聲音。'},omtS_role:{en:'風雨光殿 — the weather, as architecture.',zh:'風雨光殿——天氣，化為建築。'},
+      omtE_role:{en:'The hour, as sound.',zh:'時辰，化為聲音。'},omtS_role:{en:'風雨光殿 — the weather, as architecture.',zh:'風雨光殿——天氣，化為建築。'},omtM_role:{en:'The body, as instrument.',zh:'身體，即樂器。'},
       idx_work:{en:'',zh:''},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},

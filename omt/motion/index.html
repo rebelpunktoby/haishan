@@ -1,0 +1,1353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>OMT Motion 身境 — the body, as instrument</title>
+<meta name="description" content="OMT Motion 山海 · 身境 — a motion synth from OceanMountain. A dancer's body, or your hand, shapes four pure-tone worlds. Beta, by Haishan Lai.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta property="og:title" content="OMT Motion 山海 · 身境">
+<meta property="og:description" content="The body, as instrument. A motion synth for piano and dance. Beta.">
+<meta property="og:image" content="https://oceanmountainlai.art/og-omt.jpg">
+<meta name="theme-color" content="#17161a">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Serif+TC:wght@300;500&family=Noto+Sans+TC:wght@400;500&display=swap">
+<style>
+/* Layout: camera on the left; world, mode and piano memory on the right; mixer and rules below. Dark by choice, for a dim room. */
+:root{
+  --bg:#17161a;--panel:#1f1e23;--panel-2:#26252b;--line:#322f37;--fg:#ebe7df;--mute:#9d988f;
+  --ground:#b78d5b;--water:#739bb2;--fire:#d05b3f;--air:#ddd7c9;
+  --f-glyph:"Noto Serif TC","Songti TC","PMingLiU",serif;
+  --f-body:"Instrument Sans",system-ui,-apple-system,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--bg)}
+body{color:var(--fg);font-family:var(--f-body);font-size:15px;line-height:1.5}
+.wrap{max-width:1160px;margin:0 auto;padding:22px 16px 56px;display:grid;gap:14px}
+h1{margin:0;font-size:22px;font-weight:600}
+.sub{margin:4px 0 0;color:var(--mute);font-size:14px;max-width:74ch}
+.label{font-family:var(--f-mono);font-size:11px;text-transform:uppercase;letter-spacing:.09em;color:var(--mute)}
+button,select{font:inherit;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:6px;padding:8px 12px;cursor:pointer;font-family:var(--f-mono);font-size:12px;letter-spacing:.05em}
+button{text-transform:uppercase}
+button:hover{border-color:#4a4651}
+button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid var(--air);outline-offset:2px}
+button[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.primary{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.rail{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px;background:var(--panel);border:1px solid var(--line);border-radius:10px}
+.status{margin-left:auto;font-family:var(--f-mono);font-size:12px;color:var(--mute)}
+.status b{color:var(--fg);font-weight:500}
+.stage{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:12px}
+@media (max-width:860px){.stage{grid-template-columns:minmax(0,1fr)}}
+.left{display:grid;gap:12px;align-content:start}
+.cam{position:relative;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:#0e0d10;aspect-ratio:4/3}
+.cam video,.cam canvas{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transform:scaleX(-1)}
+.cam video{opacity:.35;filter:grayscale(1)}
+.cam canvas{image-rendering:pixelated}
+.cam .empty{position:absolute;inset:0;display:grid;place-items:center;color:var(--mute);font-size:14px;text-align:center;padding:20px}
+.cam .flag{position:absolute;left:10px;top:10px;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;background:color-mix(in srgb,var(--bg) 70%,transparent);padding:3px 8px;border-radius:4px;color:var(--fg)}
+.side{display:grid;gap:12px;align-content:start}
+.card{border:1px solid var(--line);border-radius:10px;padding:14px 16px;background:var(--panel)}
+.world{display:flex;align-items:center;gap:14px}
+.glyph{font-family:var(--f-glyph);font-size:60px;line-height:1;color:var(--c,var(--fg));transition:color 2s}
+.wname{font-size:18px;font-weight:600}
+.wdesc,.mdesc{font-size:13px;color:var(--mute)}
+.btns{display:flex;gap:6px;flex-wrap:wrap;margin-top:10px}
+.mdesc{margin-top:8px;min-height:2.6em}
+.meters{display:grid;grid-template-columns:repeat(6,minmax(0,1fr));gap:10px 8px}
+@media (max-width:520px){.meters{grid-template-columns:repeat(3,minmax(0,1fr))}}
+.m{display:grid;gap:4px}
+.m .num{font-family:var(--f-mono);font-size:12px;font-variant-numeric:tabular-nums}
+.bar{height:6px;background:var(--panel-2);border-radius:3px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--c,var(--fg))}
+.mem{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px;min-height:28px}
+.chip{font-family:var(--f-mono);font-size:12px;border:1px solid var(--line);border-radius:999px;padding:3px 10px;background:var(--panel-2)}
+.chip.new{border-color:var(--c,var(--air))}
+.chip.none{color:var(--mute);border-style:dashed;background:none}
+.mix{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px 16px}
+.knob{display:grid;gap:4px}
+.knob input{width:100%;accent-color:var(--c,var(--air))}
+.knob .row{display:flex;justify-content:space-between;gap:8px}
+.knob .num{font-family:var(--f-mono);font-size:12px;color:var(--mute);font-variant-numeric:tabular-nums}
+.cols{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px}
+.card h2{margin:0 0 8px;font-size:14px;font-weight:600}
+.card ul{margin:0;padding-left:18px;display:grid;gap:5px;font-size:14px;color:#d3cec5}
+.keys{display:grid;grid-template-columns:auto 1fr;gap:5px 12px;font-size:13px;color:#d3cec5;align-items:center}
+kbd{font-family:var(--f-mono);font-size:11px;border:1px solid var(--line);border-radius:4px;padding:0 5px;color:var(--mute);background:var(--bg)}
+.err{color:var(--fire);font-size:13px;margin:0}
+.toast{position:fixed;left:50%;bottom:28px;transform:translateX(-50%);background:var(--fg);color:var(--bg);font-family:var(--f-mono);font-size:16px;letter-spacing:.06em;text-transform:uppercase;padding:10px 18px;border-radius:8px;z-index:20;pointer-events:none}
+.hand{display:grid;gap:4px;font-family:var(--f-mono);font-size:11px}
+.hand .r{display:flex;gap:4px}
+.hand .r:nth-child(2){padding-left:14px}.hand .r:nth-child(3){padding-left:22px}.hand .r:nth-child(4){padding-left:34px}
+.hand span{flex:0 0 auto;min-width:56px;border:1px solid var(--line);border-radius:5px;padding:4px 6px;background:var(--panel-2);display:grid;line-height:1.25}
+.hand span b{font-weight:500;color:var(--fg)}.hand span i{font-style:normal;color:var(--mute);font-size:10px}
+.hand span.h{border-color:var(--fire)}
+.handwrap{overflow-x:auto}
+.cam canvas.skel{image-rendering:auto}
+.mixcard{display:grid;gap:14px}
+details.adv summary{cursor:pointer;padding:4px 0}
+details.adv[open] summary{margin-bottom:12px}
+.archead{display:flex;justify-content:space-between;gap:8px;align-items:baseline}
+.archl{font-family:var(--f-mono);font-size:12px;color:var(--fg)}
+.rungs{display:grid;gap:4px;margin-top:8px}
+.rung{display:grid;grid-template-columns:52px 1fr 58px;gap:8px;align-items:center;font-family:var(--f-mono);font-size:11px}
+.rung .nm{color:var(--fg)}.rung .hz{color:var(--mute);text-align:right;font-variant-numeric:tabular-nums}
+.rung.off{opacity:.3}
+.cam .roi{position:absolute;border:1.5px dashed var(--fg);border-radius:4px;pointer-events:none}
+.cam .ring{position:absolute;border:2px solid var(--c,var(--fg));border-radius:50%;transform:translate(-50%,-50%);pointer-events:none;transition:left .12s linear,top .12s linear}
+.cam .ring.lost{border-style:dashed;opacity:.5}
+.cam.drawing{cursor:crosshair;outline:2px solid var(--air);outline-offset:-2px}
+button.stop{background:#a8321f;border-color:#a8321f;color:#fff;font-weight:500}
+button.stop[aria-pressed="true"]{background:var(--fg);color:var(--bg);border-color:var(--fg)}
+.cam .flag.red{background:#a8321f;color:#fff;font-size:14px;padding:6px 12px}
+#roomInfo b{color:var(--fg);font-weight:500;font-family:var(--f-mono)}
+.midi{display:grid;gap:10px}
+.midihead{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:baseline}
+.mstat{font-size:13px;color:var(--mute)}
+.midirow{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.midirow select{max-width:220px}
+.mlast{font-family:var(--f-mono);font-size:12px;color:var(--mute);margin-left:auto}
+.learn button{padding:5px 8px;font-size:11px;text-transform:none}
+/* ---- site shell ---- */
+body{font-family:var(--f-body),"Noto Sans TC",sans-serif}
+.site{position:sticky;top:0;z-index:15;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+.site .in{max-width:1160px;margin:0 auto;padding:0 16px;min-height:52px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:baseline;gap:10px;color:var(--fg);text-decoration:none;font-family:var(--f-glyph);font-size:17px;font-weight:500;letter-spacing:.06em}
+.brand span{font-family:var(--f-mono);font-size:11px;letter-spacing:.06em;color:var(--mute)}
+.site nav{margin-left:auto;display:flex;gap:16px;align-items:center}
+.site nav a{color:var(--mute);text-decoration:none;font-size:14px}
+.site nav a:hover{color:var(--fg)}
+.lang{padding:4px 11px;border-radius:999px;text-transform:none}
+.band{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;color:var(--bg);background:var(--ground);padding:6px 0}
+.band .in{max-width:1160px;margin:0 auto;padding:0 16px}
+.intro{display:grid;grid-template-columns:auto 1fr;gap:6px 22px;align-items:end;padding-top:14px}
+.intro .han{grid-row:1 / span 2;font-family:var(--f-glyph);font-weight:300;font-size:clamp(64px,9vw,112px);line-height:.9;color:var(--fg)}
+.intro h1{font-size:clamp(22px,2.4vw,28px);font-weight:500;letter-spacing:-.01em}
+.intro h1 i{font-style:normal;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--mute);vertical-align:super;margin-left:6px}
+.intro .sub{font-size:15.5px;color:#cfcac1}
+@media (max-width:560px){.intro{grid-template-columns:1fr}.intro .han{grid-row:auto}}
+.gate{position:absolute;inset:0;z-index:4;display:grid;place-items:center;align-content:center;gap:14px;padding:22px;text-align:center;background:radial-gradient(ellipse at 50% 45%,#1d1b21 0,#0e0d10 75%)}
+.gate .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
+.gate button{padding:12px 18px;font-size:12.5px}
+.gate p{margin:0;max-width:40ch;color:var(--mute);font-size:13.5px}
+.gate .g{font-family:var(--f-glyph);font-size:44px;line-height:1;letter-spacing:.3em;color:var(--fg);opacity:.85;padding-left:.3em}
+.cam.touch{touch-action:none;cursor:crosshair}
+.gate[hidden],.hint[hidden]{display:none}
+#play,#about,#rig{scroll-margin-top:64px}
+@media (max-width:560px){.site nav a[href="#play"]{display:none}.brand span{display:none}}
+.cam .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);pointer-events:none;transition:opacity 1.5s}
+details.rig{border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--panel) 55%,transparent)}
+details.rig>summary{cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:baseline;list-style:none}
+details.rig>summary::-webkit-details-marker{display:none}
+details.rig>summary::before{content:"+";font-family:var(--f-mono);color:var(--mute);width:1em}
+details.rig[open]>summary::before{content:"−"}
+details.rig>summary b{font-weight:600;font-size:14px}
+details.rig>summary span{color:var(--mute);font-size:13px}
+.rigbody{display:grid;gap:12px;padding:0 12px 12px}
+.about{margin-top:40px;display:grid;gap:34px;max-width:920px}
+.about h2{font-size:12px;font-family:var(--f-mono);font-weight:500;letter-spacing:.12em;text-transform:uppercase;color:var(--mute);margin:0 0 12px;display:flex;gap:12px;align-items:center}
+.about h2::after{content:"";flex:1;height:1px;background:var(--line)}
+.about p{margin:0 0 12px;font-size:16px;line-height:1.65;color:#d8d3ca;max-width:68ch}
+.about p.lead{font-size:clamp(18px,1.9vw,21px);line-height:1.5;color:var(--fg)}
+.about ul{margin:0;padding-left:18px;display:grid;gap:7px;font-size:15px;color:#d3cec5;max-width:68ch}
+.about b{color:var(--fg);font-weight:600}
+.reg{width:100%;border-collapse:collapse;font-size:14.5px}
+.reg th,.reg td{text-align:left;vertical-align:top;padding:11px 12px 11px 0;border-top:1px solid var(--line)}
+.reg th{font-weight:500;white-space:nowrap;padding-right:20px;color:var(--fg)}
+.reg th small{display:block;font-family:var(--f-mono);font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);font-weight:400;margin-top:2px}
+.reg td{color:#d3cec5}
+@media (max-width:620px){.reg th,.reg td{display:block;padding-right:0}.reg td{border-top:0;padding-top:0}}
+.worlds4{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:10px}
+.worlds4 div{border:1px solid var(--line);border-radius:10px;padding:14px;background:var(--panel)}
+.worlds4 .gl{font-family:var(--f-glyph);font-size:34px;line-height:1;color:var(--c)}
+.worlds4 b{display:block;margin-top:8px}
+.worlds4 span{font-size:13.5px;color:var(--mute)}
+.foot{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;color:var(--mute)}
+.foot a{color:var(--mute)}
+body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
+</style>
+</head>
+<body>
+<header class="site"><div class="in">
+  <a class="brand" href="/#omt">山海 · 身境 <span>OMT Motion β</span></a>
+  <nav><a href="#play" data-t="nav_play">Play</a><a href="#about" data-t="nav_about">About</a><a href="/#omt" data-t="nav_omt">OMT ↗</a><button class="lang" id="langBtn" type="button">中文</button></nav>
+</div></header>
+<div class="band"><div class="in" data-t="band">Beta 0.20 · work in progress · best in Chrome on a laptop, with speakers or headphones</div></div>
+<div class="wrap">
+  <section class="intro">
+    <div class="han" aria-hidden="true">身</div>
+    <h1>OMT Motion<i>β 0.20</i></h1>
+    <p class="sub" data-t="intro">The body, as instrument. A dancer moves, or you move your hand, and four pure-tone worlds answer: opening, striking, storming, resting. Built for live piano and dance improvisation.</p>
+  </section>
+
+  <div class="rail" id="play">
+    <button id="relBtn" title="A long musical let-go">Release <kbd>Space</kbd></button>
+    <label class="label" for="pset" data-t="notes">Notes</label><select id="pset"><option value="ladder">Harmonic</option><option value="black">Black keys (pentatonic)</option><option value="white">White keys</option><option value="room">Room modes only</option></select>
+    <button id="stopBtn" class="stop">Stop <kbd>Esc</kbd></button>
+    <span class="status" id="status">Not running</span>
+  </div>
+  <p class="sub" id="roomInfo" hidden></p>
+  <p class="err" id="err" hidden></p>
+  <div class="toast" id="toast" role="status" hidden></div>
+
+  <div class="stage">
+    <div class="left">
+      <div class="cam" id="cam">
+        <video id="vid" playsinline muted></video>
+        <canvas id="ov"></canvas>
+        <div class="empty" id="camEmpty"></div>
+        <div class="gate" id="gate">
+          <div class="g" aria-hidden="true">土水火空</div>
+          <div class="row"><button id="startTouch" class="primary" data-t="g_touch">Play with touch</button><button id="start" data-t="g_cam">Camera + mic</button></div>
+          <p data-t="g_note">Touch: move your mouse or finger here, no permissions. Camera: a dancer, or you, in front of the lens; the mic listens for a piano. Nothing is recorded or uploaded.</p>
+        </div>
+        <span class="hint" id="hint" hidden></span>
+        <span class="flag" id="flag" hidden></span>
+        <div class="roi" id="roiBox" hidden></div><div class="ring" id="ring" hidden></div>
+      </div>
+      <div class="card meters">
+        <div class="m"><span class="label">Motion</span><span class="bar"><i id="mMot"></i></span><span class="num" id="nMot">0</span></div>
+        <div class="m"><span class="label">Height</span><span class="bar"><i id="mHi"></i></span><span class="num" id="nHi">0</span></div>
+        <div class="m"><span class="label">Position</span><span class="bar"><i id="mPan"></i></span><span class="num" id="nPan">C</span></div>
+        <div class="m"><span class="label">Still</span><span class="bar"><i id="mSt"></i></span><span class="num" id="nSt">0.0 s</span></div>
+        <div class="m"><span class="label">Piano</span><span class="bar"><i id="mPno"></i></span><span class="num" id="nPno">0</span></div>
+        <div class="m"><span class="label">Arc</span><span class="bar"><i id="mArc" style="background:var(--air)"></i></span><span class="num" id="nArc">0</span></div>
+        <div class="m"><span class="label">Flow</span><span class="bar"><i id="mFlo"></i></span><span class="num" id="nFlo">free</span></div>
+        <div class="m"><span class="label">Time</span><span class="bar"><i id="mSud"></i></span><span class="num" id="nSud">sustained</span></div>
+        <div class="m"><span class="label">Space</span><span class="bar"><i id="mDir"></i></span><span class="num" id="nDir">indirect</span></div>
+        <div class="m"><span class="label">Weight</span><span class="bar"><i id="mWgt"></i></span><span class="num" id="nWgt">light</span></div>
+        <div class="m"><span class="label">Storm</span><span class="bar"><i id="mStm" style="background:var(--fire)"></i></span><span class="num" id="nStm">0</span></div>
+      </div>
+    </div>
+    <div class="side">
+      <div class="card">
+        <div class="world"><span class="glyph" id="wGlyph">土</span><div><div class="wname" id="wName">Ground</div><div class="wdesc" id="wDesc"></div></div></div>
+        <div class="btns" id="wBtns"></div>
+      </div>
+      <div class="card">
+        <div class="archead"><span class="label">Harmony</span><span class="archl" id="archl">Arc 0 · up to 5th</span></div>
+        <div class="rungs" id="rungs"></div>
+      </div>
+      <div class="card">
+        <span class="label">Rule mode</span>
+        <div class="btns" id="mBtns"></div>
+        <div class="mdesc" id="mDesc"></div>
+      </div>
+      <div class="card">
+        <span class="label">Piano memory</span>
+        <div class="mem" id="mem"><span class="chip none">Play a few notes</span></div>
+        <div class="btns">
+          <button id="freeze" aria-pressed="false">Freeze <kbd>Q</kbd></button>
+          <button id="strikeBtn">Strike <kbd>W</kbd></button>
+          <button id="clear">Clear <kbd>E</kbd></button>
+          <button id="lock" aria-pressed="false">Lock phrase <kbd>F</kbd></button>
+          <button id="follow" aria-pressed="false">Follow: notes <kbd>H</kbd></button>
+          <button id="snap" aria-pressed="false">Snap to A <kbd>T</kbd></button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="card mixcard">
+    <div class="mix" id="mix"></div>
+    <details class="adv"><summary class="label">More controls</summary><div class="mix" id="mixAdv"></div></details>
+  </div>
+
+  <details class="rig" id="rig">
+    <summary><b>Rig</b><span data-t="rig">Performance setup: camera, pose, stage area, tuning, MIDI, pedals, hand map</span></summary>
+    <div class="rigbody">
+      <div class="rail">
+        <button id="camBtn">Use camera + mic</button>
+        <button id="auto" aria-pressed="false">Stillness advances world <kbd>A</kbd></button>
+        <button id="cal">Calibrate room</button>
+        <button id="poseBtn" aria-pressed="false">Pose tracking</button>
+        <button id="roiBtn" aria-pressed="false">Stage area</button>
+        <button id="roiClr">Clear area</button>
+        <button id="trackBtn" aria-pressed="false">Lock dancer <kbd>L</kbd></button>
+        <label class="label" for="trR">Lock size</label><input id="trR" type="range" min="8" max="30" step="1" value="16" style="width:80px">
+        <button id="autoR" aria-pressed="true" title="Scale motion to her own range, at any distance">Auto range</button>
+        <label class="label" for="camSel">Camera</label><select id="camSel"><option value="">Default</option></select>
+        <label class="label" for="tune">Tuning</label>
+        <select id="tune"><option value="440">A 440 Hz</option><option value="432">A 432 Hz</option><option value="442">A 442 Hz</option><option value="room" id="tuneRoom" disabled>Room (measured)</option></select>
+        <button id="roomBtn">Tune to room</button>
+      </div>
+  <div class="card midi">
+        <div class="midihead">
+          <span class="label">MIDI bridge</span><button id="midiBtn">Connect MIDI</button>
+          <span class="mstat" id="midiStat">Off. Press Connect to use a controller, the phone remote, or Ableton.</span>
+        </div>
+        <div class="midirow">
+          <label class="label" for="midiIn">In</label><select id="midiIn"><option value="">No input</option></select>
+          <label class="label" for="midiOut">Out</label><select id="midiOut"><option value="">No output</option></select>
+          <button id="mBody" aria-pressed="false">Body plays notes <kbd>G</kbd></button>
+          <button id="mEcho" aria-pressed="true">Echo piano notes</button>
+          <button id="mCC" aria-pressed="true">Send motion CCs</button>
+          <span class="mlast" id="mLast"></span>
+        </div>
+        <div class="midirow learn" id="learn"><span class="label">Map in Ableton: press one at a time</span></div>
+      </div>
+
+  <div class="cols">
+        <div class="card">
+          <h2>Her body</h2>
+          <ul>
+            <li><b>Moving</b> opens the upper partials of the world and makes your remembered notes ring.</li>
+            <li><b>Reaching up or going to the floor</b> tilts the bed and lifts or drops the remembered notes an octave.</li>
+            <li><b>Left or right</b> moves the image across the speaker.</li>
+            <li><b>A sudden change</b> strikes one pure tone from the world or from your notes. It is a single bell, never a burst.</li>
+            <li><b>Wild motion</b> past the Storm threshold brings in the Storm: noise tuned to the active worlds, FM grit and stutter. It leaves about a second after she calms.</li>
+            <li><b>Holding still</b> lets the room tail swell. With advance on, 8 seconds moves to the next world. If several worlds are layered, it drops the oldest one instead; Air stays.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Your piano</h2>
+          <ul>
+            <li>Each clear attack is heard and added to the memory, up to six notes. The oldest drops out.</li>
+            <li>The memory layer only holds piano sound. When you stop, it keeps your last phrase, not the room.</li>
+            <li><b>Answer</b> mode steps back while you play and comes forward when you rest.</li>
+            <li><b>Snap to A series</b> pulls remembered notes to the nearest harmonic of A, so they sit inside the bed instead of against it.</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h2>Left hand map</h2>
+          <div class="handwrap"><div class="hand">
+            <div class="r"><span class="h" style="border-color:#a8321f;background:#a8321f"><b style="color:#fff">Esc</b><i style="color:#fff">STOP</i></span><span><b>`</b><i>Reset</i></span><span><b>1</b><i>Ground</i></span><span><b>2</b><i>Water</i></span><span><b>3</b><i>Fire</i></span><span><b>4</b><i>Air</i></span><span><b>5</b><i>Edge −</i></span><span><b>6</b><i>Edge +</i></span></div>
+            <div class="r"><span><b>Tab</b><i>Next world</i></span><span><b>Q</b><i>Freeze</i></span><span><b>W</b><i>Strike</i></span><span><b>E</b><i>Clear notes</i></span><span class="h"><b>R</b><i>Storm hold</i></span><span><b>T</b><i>Snap A</i></span></div>
+            <div class="r"><span><b>A</b><i>Advance</i></span><span class="h"><b>S</b><i>Swell hold</i></span><span class="h"><b>D</b><i>Hush hold</i></span><span><b>F</b><i>Lock phrase</i></span><span><b>G</b><i>Body notes</i></span><span><b>H</b><i>Notes/partials</i></span></div>
+            <div class="r"><span><b>P</b><i>Pose on/off</i></span><span><b>L</b><i>Lock person</i></span></div>
+            <div class="r"><span class="h"><b>B</b><i>Build arc</i></span><span><b>Z</b><i>Mirror</i></span><span><b>X</b><i>Contrast</i></span><span><b>C</b><i>Answer</i></span><span><b>V</b><i>Duet</i></span></div>
+          </div></div>
+          <p class="sub" style="margin-top:10px"><b>Foot pedal or page turner:</b> left pedal (← or Page Up) = Hush while held, right pedal (→ or Page Down) = next world. ↑ = Swell while held, ↓ = Strike. Red keys act only while held. 1–4 layer a world on or off; Shift+number plays it alone; Shift+Tab steps back. Space releases the piece (a long musical let-go); Esc is the hard stop. Each press shows a large confirmation at the bottom of the screen.</p>
+        </div>
+      </div>
+    </div>
+  </details>
+
+  <section class="about" id="about">
+    <div>
+      <h2 data-t="a_h1">About</h2>
+      <p class="lead" data-t="a_lead">OMT Motion is the third part of OceanMountain. The Engine (聲境) plays the hour; the Site (殿境) lets weather play a building; Motion (身境) lets a body play the room.</p>
+      <p data-t="a_p1">A camera reads how much she moves, how fast, how high, where, and how still. Those readings never play notes directly. They push a few slow forces (energy, brightness, density, chaos, stillness), and the instrument decides what to say: when to open, when to strike, when to storm, when to rest. That gap between the body and the sound is the point: it is meant to answer like a partner, not follow like a shadow.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h2">How to play</h2>
+      <ul>
+        <li data-t="a_l1"><b>Move slowly</b> and the world opens upward, one partial at a time.</li>
+        <li data-t="a_l2"><b>Move suddenly</b> and a single bell is struck.</li>
+        <li data-t="a_l3"><b>Move wildly</b> with two or more worlds layered (keys 1 to 4) and the Edge comes in: glitch, ring and feedback, still tuned to the worlds.</li>
+        <li data-t="a_l4"><b>Hold still</b> and the room swells; the melody slows and rests.</li>
+        <li data-t="a_l5"><b>Space</b> lets the piece go slowly. <b>Esc</b> is the stop. The Rig panel holds the full performance setup.</li>
+      </ul>
+    </div>
+    <div>
+      <h2 data-t="a_h3">Four worlds</h2>
+      <div class="worlds4">
+        <div style="--c:var(--ground)"><span class="gl">土</span><b data-t="w1">Ground</b><span data-t="w1d">Low harmonics, slow, close to the fundamental.</span></div>
+        <div style="--c:var(--water)"><span class="gl">水</span><b data-t="w2">Water</b><span data-t="w2d">Middle partials that drift and beat against each other.</span></div>
+        <div style="--c:var(--fire)"><span class="gl">火</span><b data-t="w3">Fire</b><span data-t="w3d">The 7th, 11th and 13th: bright, unstable, quick to strike.</span></div>
+        <div style="--c:var(--air)"><span class="gl">空</span><b data-t="w4">Air</b><span data-t="w4d">High, thin, far away; the space above the others.</span></div>
+      </div>
+      <p style="margin-top:14px" data-t="a_w">All four are drawn from one harmonic series on A, or from the resonances of your own room if you measure it in the Rig. The four are a design choice, not the Five Phases (五行).</p>
+    </div>
+    <div>
+      <h2 data-t="a_h4">Four registers</h2>
+      <p data-t="a_rp">OceanMountain keeps every claim in one of four registers, so that what is measured is never confused with what is chosen or hoped.</p>
+      <table class="reg">
+        <tr><th data-t="r1">Measured<small>可量測</small></th><td data-t="r1d">Motion, speed, height, position and stillness from the camera; pitch and attacks from the microphone; room resonances from a ten-second test sweep.</td></tr>
+        <tr><th data-t="r2">Traditional-symbolic<small>傳統象徵</small></th><td data-t="r2d">None claimed. The glyphs 土 水 火 空 are names for the worlds, not a cosmological mapping.</td></tr>
+        <tr><th data-t="r3">Design choice<small>藝術設計</small></th><td data-t="r3d">The four worlds and their harmonic ladders; the breath pace (about six a minute); the rule modes; how chaos is earned, spent and gated by layering.</td></tr>
+        <tr><th data-t="r4">Hypothesis<small>實驗假設</small></th><td data-t="r4d">That the quality of movement (flow, time, weight, space), read from a flat image, can shape musical form, not only loudness. Untested.</td></tr>
+      </table>
+      <p style="margin-top:14px" data-t="a_nc">No health or therapeutic claims are made. The breath pace is a musical decision.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h5">Privacy</h2>
+      <p data-t="a_pv">Camera and microphone are processed inside your browser. Nothing is recorded or sent anywhere. A stage area and room tuning, if you set them, are saved only in this browser. Pose tracking, when you turn it on, downloads its model from Google's servers.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h6">Status</h2>
+      <p data-t="a_st">Beta 0.20, made in November 2026 for a live piano and contemporary dance improvisation in Mexico City. Next: a shared generator with the Engine, and a sound engine in Max/RNBO. Touch mode is the gentlest start; camera mode is the real instrument.</p>
+    </div>
+  </section>
+  <footer class="foot"><span>山海 OceanMountain · 身境 OMT Motion β 0.20</span><span>© 2026 Haishan Lai</span><a href="/">oceanmountainlai.art</a></footer>
+</div>
+
+<script>
+const WORLDS=[
+  {id:'ground',glyph:'土',name:'Ground',desc:'Low ladder on A1: root, octave, fifth, then third, 7th, 9th, 11th, 13th as the arc rises.',h:[1,2,3,4,6,5,7,9,11,13],beat:.08,strike:[4,6,8],cool:2.2,sMul:2,sGate:.12},
+  {id:'water', glyph:'水',name:'Water', desc:'Middle ladder: thirds and ninths arrive early, then the 7th and 11th.',h:[2,3,4,6,5,10,9,7,14,11],beat:.22,strike:[10,12,15,18],cool:1.5,sMul:4,sGate:.2},
+  {id:'fire',  glyph:'火',name:'Fire',  desc:'Tense ladder: the 7th comes straight after the fifth, then 9th, 11th, 13th and beyond.',h:[4,6,7,9,11,13,14,15,17,19],beat:.5,strike:[14,18,22,26],cool:.8,sMul:3,sGate:.45},
+  {id:'air',   glyph:'空',name:'Air',   desc:'High ladder on A5: octave and fifth, then third, 7th, 9th, 11th, 13th as threads.',h:[16,24,32,40,28,36,44,52],beat:.12,strike:[32,48],cool:3,sMul:1,sGate:.15}
+];
+WORLDS.forEach(w=>w.w=w.h.map((_,i)=>1/(1+.16*i)));
+const RUNG={1:'root',3:'5th',5:'3rd',7:'7th',9:'9th',11:'11th',13:'13th',15:'maj 7',17:'♭9',19:'♭3'};
+function rungName(h){let o=h;while(o%2===0)o/=2;return RUNG[o]||('×'+h)}
+const MODES=[
+  {id:'mirror',name:'Mirror',key:'Z',desc:'The sound follows her. More motion, more sound. The default.'},
+  {id:'contrast',name:'Contrast',key:'X',desc:'The sound pushes against her. Her stillness blooms; her motion thins it to a thread.'},
+  {id:'answer',name:'Answer',key:'C',desc:'The sound listens to you. It steps back while you play and fills the rests, shaped by her motion.'},
+  {id:'duet',name:'Duet',key:'V',desc:'The bed holds still. Her motion plays only your remembered notes, like hands over open strings.'}
+];
+const LAYERS=[
+  {id:'bed',name:'Tone bed',v:.55,c:'--ground'},
+  {id:'mem',name:'Piano memory',v:.6,c:'--water'},
+  {id:'edge',name:'Edge (weirdness)',v:.4,c:'--fire'},
+  {id:'space',name:'Space',v:.7,c:'--air'},
+  {id:'line',name:'Line (melody)',v:.45,c:'--water'},
+  {id:'breath',name:'Breath',v:.4,c:'--air'},
+  {id:'floor',name:'Level when still',v:.3,c:'--mute'},
+  {id:'depth',name:'Motion depth',v:.55,c:'--fire'},
+  {id:'arc',name:'Arc time',v:.35,c:'--air',fmt:v=>Math.round(20+v*280)+' s'},
+  {id:'brate',name:'Breath rate',v:.25,c:'--air',fmt:v=>(4+v*8).toFixed(1)+' /min',adv:1},
+  {id:'pulse',name:'Pulse',v:.32,c:'--fire',fmt:v=>Math.round(40+v*100)+' bpm',adv:1},
+  {id:'root',name:'A root (55 Hz)',v:.15,c:'--ground',adv:1},
+  {id:'strike',name:'Strikes',v:.45,c:'--fire',adv:1},
+  {id:'wild',name:'Wild voice',v:.5,c:'--fire',adv:1},
+  {id:'storm',name:'Storm',v:.5,c:'--fire',adv:1},
+  {id:'stormAt',name:'Storm threshold',v:.55,c:'--fire',adv:1},
+  {id:'recall',name:'Recall',v:.5,c:'--water',adv:1},
+  {id:'release',name:'Release time',v:.45,c:'--air',fmt:v=>Math.round(4+v*26)+' s',adv:1},
+  {id:'settle',name:'Settle time',v:.6,c:'--air',fmt:v=>(1+v*11).toFixed(1)+' s',adv:1},
+  {id:'sens',name:'Camera sensitivity',v:.5,c:'--fg',adv:1},
+  {id:'gate',name:'Piano listen threshold',v:.4,c:'--water',adv:1}
+];
+const NOTE=['C','C♯','D','D♯','E','F','F♯','G','G♯','A','A♯','B'];
+const S={w:0,mode:'mirror',auto:false,running:false,lv:{},still:0,base:0,mot:0,hi:.5,pan:0,calN:0,calSum:0,calibrating:false,fade:false,freeze:false,snap:false,A4:440,
+  pno:0,rmsSm:0,pose:false,pset:'ladder',bph:0,breathV:.5,breathD:0,mRaw1:0,stIdx:0,state:'calm',cand:'calm',candT:0,prevActive:'calm',lastPeak:-99,fam:{},hab:1,budget:1,rel:0,relAmt:1,pxRaw:0,vx:0,wildAmp:0,spoke:false,lastMark:-9,st:{bed:1,glitch:1,strike:1,wild:0,comb:1,line:1},stillIn:false,sh:0,lastJit:0,ten:0,ceil:2,build:false,mPrev:0,jerk:0,bound:0,sud:0,dir:0,wgt:0,path:[],roi:null,track:false,tx:40,ty:30,trR:16,lost:0,area:0,drawing:false,peak:0,autoRange:true,memMode:'notes',lastPart:0,spread:0,tuning:'a',room:null,roomW:null,measuring:false,stopped:false,lastOnset:-9,mem:[],lastStrike:0,peakM:0,swell:false,hush:false,lock:false,swellAmt:0,hushAmt:0,on:[true,false,false,false],order:[0],fast:0,storm:0,stormOut:0,stormHold:false};
+const activeIdx=()=>S.on.map((v,i)=>v?i:-1).filter(i=>i>=0);
+LAYERS.forEach(l=>S.lv[l.id]=l.v);
+const $=id=>document.getElementById(id);
+const fmt=l=>l.fmt?l.fmt(S.lv[l.id]):Math.round(S.lv[l.id]*100);
+const pickOne=a=>a[Math.random()*a.length|0];
+const beat=()=>60/(40+S.lv.pulse*100);
+/* Note sets: what the machine may say as notes (strikes, wild voice, body notes, storm, memory ring). The bed stays on its ladder or the room. */
+const PSET={black:[1,3,6,8,10],white:[0,2,4,5,7,9,11]};
+function qz(f){
+  if(!f||S.pset==='ladder')return f;
+  if(S.pset==='room'){if(!S.room)return f;let best=f,bd=9;S.room.forEach(r=>{let x=r;while(x<f/1.414)x*=2;while(x>f*1.414)x/=2;const d=Math.abs(Math.log2(x/f));if(d<bd){bd=d;best=x}});return best}
+  const set=PSET[S.pset],m=69+12*Math.log2(f/S.A4);let best=m,bd=99;
+  for(let o=Math.floor(m)-6;o<=Math.floor(m)+6;o++){const pc=((o%12)+12)%12;if(set.includes(pc)&&Math.abs(o-m)<bd){bd=Math.abs(o-m);best=o}}
+  return S.A4*Math.pow(2,(best-69)/12);
+}
+const SH_RATIOS=[7/4,11/8,13/8,9/8,15/8,17/16,4/3,3/2,11/16,13/16,7/8];
+const MOD_CALM=[1,1.5,2,2.5,1.75],MOD_WILD=[1.414,2.76,3.33,2.75,3.25];
+const clamp=(v,a=0,b=1)=>Math.max(a,Math.min(b,v));
+const smooth=(a,b,x)=>{const t=clamp((x-a)/(b-a));return t*t*(3-2*t)};
+
+/* ---- UI ---- */
+WORLDS.forEach((w,i)=>{const b=document.createElement('button');b.textContent=`${i+1} ${w.name}`;b.title='Click to layer, Shift‑click to play alone';b.addEventListener('click',e=>e.shiftKey?setWorld(i):toggleWorld(i));$('wBtns').appendChild(b)});
+MODES.forEach(m=>{const b=document.createElement('button');b.id='mode-'+m.id;b.innerHTML=`${m.name} <kbd>${m.key}</kbd>`;b.addEventListener('click',()=>setMode(m.id));$('mBtns').appendChild(b)});
+LAYERS.forEach(l=>{const d=document.createElement('div');d.className='knob';d.style.setProperty('--c',`var(${l.c})`);
+  d.innerHTML=`<div class="row"><label class="label" for="k-${l.id}">${l.name}</label><span class="num" id="kv-${l.id}">${fmt(l)}</span></div><input id="k-${l.id}" type="range" min="0" max="1" step="0.01" value="${l.v}">`;
+  d.querySelector('input').addEventListener('input',e=>{S.lv[l.id]=+e.target.value;$('kv-'+l.id).textContent=fmt(l);applyLevels()});
+  $(l.adv?'mixAdv':'mix').appendChild(d)});
+
+/* ---- Audio graph ---- */
+let dynLP,pre,glitch,ringOsc,ringDepth,ringMix,combs=[],combIn,combOut,selfG,lastComb=0,stopG,ctx,master,bus,bedBus,verbG,dryG,rootV,rootG,banks=[],memGrain,memIn,memRes=[],memG,strikeG,an,fd,td,micSrc,useSP=false;
+const G=v=>{const g=ctx.createGain();g.gain.value=v;return g};
+const biq=(t,f,q=.7)=>{const b=ctx.createBiquadFilter();b.type=t;b.frequency.value=f;b.Q.value=q;return b};
+function impulse(sec,dec){const sr=ctx.sampleRate,n=sr*sec|0,b=ctx.createBuffer(2,n,sr);for(let c=0;c<2;c++){const d=b.getChannelData(c);let lp=0;for(let i=0;i<n;i++){const x=Math.random()*2-1;lp+=(x-lp)*(.5-.42*i/n);d[i]=lp*Math.pow(1-i/n,dec)}}return b}
+
+/* Granular memory: writes only while the piano is sounding (gate) and not frozen, so it keeps your last phrase. */
+const GRAIN_SRC=`class Grain extends AudioWorkletProcessor{
+static get parameterDescriptors(){return[{name:'density',defaultValue:3},{name:'size',defaultValue:.5},{name:'spread',defaultValue:.6},{name:'gate',defaultValue:.01},{name:'freeze',defaultValue:0}]}
+constructor(){super();this.N=sampleRate*8|0;this.b=new Float32Array(this.N);this.w=0;this.g=[];this.env=0;this.filled=0}
+process(ins,outs,p){const inp=ins[0]&&ins[0][0];const L=outs[0][0],R=outs[0][1]||L;const n=L.length,N=this.N,b=this.b;const den=p.density[0],sz=p.size[0],sp=p.spread[0],gt=p.gate[0],fr=p.freeze[0]>.5;
+for(let k=0;k<n;k++){const x=inp?inp[k]:0;const ax=Math.abs(x);this.env=ax>this.env?ax:this.env*.99985;
+ if(!fr&&this.env>gt){b[this.w]=x;this.w=(this.w+1)%N;if(this.filled<N)this.filled++}
+ if(this.filled>sampleRate*.3&&Math.random()<den/sampleRate&&this.g.length<24){const len=Math.max(400,sz*sampleRate*(.7+Math.random()*.6));const span=Math.min(this.filled,sampleRate*sp*6);const back=len*1.1+Math.random()*Math.max(0,span-len);this.g.push({pos:(this.w-back+N*4)%N,len,t:0,pan:Math.random()})}
+ let l=0,r=0;for(let j=this.g.length-1;j>=0;j--){const q=this.g[j];const env=.5-.5*Math.cos(2*Math.PI*q.t/q.len);const s=b[(q.pos|0)%N]*env;l+=s*(1-q.pan);r+=s*q.pan;q.pos++;if(q.pos>=N)q.pos-=N;q.t++;if(q.t>=q.len)this.g.splice(j,1)}
+ const norm=1/Math.sqrt(Math.max(1,this.g.length*.5));L[k]=l*norm;R[k]=r*norm}
+return true}}registerProcessor('grain',Grain);`;
+function makeGrain(){
+  if(!useSP)return new AudioWorkletNode(ctx,'grain',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2]});
+  const sp=ctx.createScriptProcessor(1024,1,2);const P={density:3,size:.5,spread:.6,gate:.01,freeze:0};const prm={};
+  for(const k in P)prm[k]={get value(){return P[k]},set value(v){P[k]=v},setTargetAtTime(v){P[k]=v}};sp.parameters={get:k=>prm[k]};
+  const sr=ctx.sampleRate,N=sr*8|0,b=new Float32Array(N),g=[];let w=0,env=0,filled=0;
+  sp.onaudioprocess=e=>{const inp=e.inputBuffer.getChannelData(0),L=e.outputBuffer.getChannelData(0),R=e.outputBuffer.getChannelData(1);const fr=P.freeze>.5;
+    for(let k=0;k<L.length;k++){const x=inp[k],ax=Math.abs(x);env=ax>env?ax:env*.99985;
+      if(!fr&&env>P.gate){b[w]=x;w=(w+1)%N;if(filled<N)filled++}
+      if(filled>sr*.3&&Math.random()<P.density/sr&&g.length<24){const len=Math.max(400,P.size*sr*(.7+Math.random()*.6));const span=Math.min(filled,sr*P.spread*6);g.push({pos:(w-len*1.1-Math.random()*Math.max(0,span-len)+N*4)%N,len,t:0,pan:Math.random()})}
+      let l=0,r=0;for(let j=g.length-1;j>=0;j--){const q=g[j];const en=.5-.5*Math.cos(2*Math.PI*q.t/q.len);const s=b[(q.pos|0)%N]*en;l+=s*(1-q.pan);r+=s*q.pan;q.pos++;if(q.pos>=N)q.pos-=N;q.t++;if(q.t>=q.len)g.splice(j,1)}
+      const norm=1/Math.sqrt(Math.max(1,g.length*.5));L[k]=l*norm;R[k]=r*norm}};
+  return sp;
+}
+
+/* Glitch: a 3 s memory of the whole output. Events repeat, reverse, tape-stop or drop it; crush holds samples and cuts bits. */
+function makeGlitch(){
+  const sp=ctx.createScriptProcessor(1024,2,2),sr=ctx.sampleRate,N=sr*3|0,B=[new Float32Array(N),new Float32Array(N)];let w=0;
+  const g={mode:'',pos:0,start:0,len:1,rate:1,left:0,ramp:0,hold:1,bits:16,hc:0,h0:0,h1:0};
+  sp.trigger=(type,o={})=>{g.mode=type;g.pos=0;g.rate=o.rate||1;
+    if(type==='tape'){g.len=Math.round((o.dur||.5)*sr);g.start=(w-256+N)%N;g.ramp=1/g.len;g.left=g.len}
+    else if(type==='drop'){g.left=Math.round((o.dur||.08)*sr);g.len=1}
+    else{g.len=Math.max(256,Math.round((o.len||.12)*sr));g.start=(w-g.len+N*4)%N;g.left=Math.round(g.len*(o.reps||4)/Math.abs(g.rate))}};
+  sp.set=(h,b)=>{g.hold=Math.max(1,h|0);g.bits=b};
+  sp.busy=()=>g.left>0;
+  sp.onaudioprocess=e=>{const iL=e.inputBuffer.getChannelData(0),iR=e.inputBuffer.getChannelData(1),oL=e.outputBuffer.getChannelData(0),oR=e.outputBuffer.getChannelData(1);
+    const q=g.bits<15.5?Math.pow(2,Math.max(2,g.bits)-1):0;
+    for(let k=0;k<iL.length;k++){B[0][w]=iL[k];B[1][w]=iR[k];w=(w+1)%N;let l=iL[k],r=iR[k];
+      if(g.left>0){
+        if(g.mode==='drop'){l=0;r=0}
+        else{const ph=g.pos%g.len,rd=g.mode==='rev'?g.len-1-ph:ph,idx=(g.start+(rd|0))%N,env=Math.min(1,ph/96,(g.len-ph)/96);
+          l=B[0][idx]*env;r=B[1][idx]*env;if(g.mode==='tape'){g.rate=Math.max(0,g.rate-g.ramp);g.pos+=g.rate}else g.pos+=Math.abs(g.rate)}
+        g.left--}
+      if(g.hold>1){if(g.hc++%g.hold===0){g.h0=l;g.h1=r}l=g.h0;r=g.h1}
+      if(q){l=Math.round(l*q)/q;r=Math.round(r*q)/q}
+      oL[k]=l;oR[k]=r}};
+  return sp;
+}
+/* Edge: how far the body is allowed to break the sound. Qualities decide how it breaks. */
+function weird(dt){
+  if(!glitch)return;const E=clamp(S.lv.edge+(poseOn()?(P.handL-.5)*.4:0)),t=ctx.currentTime,h=(1-S.hushAmt)*(S.fade?0:1)*(S.rel?S.relAmt*S.relAmt:1);
+  /* Shatter: with two or more worlds and wild motion, the ladder breaks into an inharmonic cloud, then heals when she calms. */
+  const nW=S.on.filter(Boolean).length,shT=nW<2?0:clamp((S.storm*.7+S.bound*.3+S.sud*.3)*(.6+.4*(nW-1))*(.4+E*1.2))*h*(.3+.7*S.budget);
+  S.sh+=(shT-S.sh)*(1-Math.exp(-dt/(shT>S.sh?.25:2)));
+  if(S.sh>.15&&t-S.lastJit>beat()*(S.sh>.5?.25:.5)){S.lastJit=t;banks.forEach(b=>b.parts.forEach((p,i)=>{if(i>0)p.jit=pickOne(SH_RATIOS)}));
+    ringOsc.frequency.setValueAtTime(60+Math.random()*1800*S.sh,t)}
+  glitch.set(1+Math.round((E*(S.storm*14+S.bound*6)+S.sh*10)*h),16-(E*(S.storm*10+S.bound*5)+S.sh*5)*h);
+  const rate=E*E*(1.4*S.sud+.9*S.bound+.7*S.storm+.15*S.ten)*h*(1+3*S.sh)*S.st.glitch*(S.mot>=.035?S.hab:1);// events per second
+  if(!glitch.busy()&&Math.random()<rate*dt){
+    if(S.sud>.35&&Math.random()<.55)glitch.trigger(Math.random()<.5?'rev':'tape',{len:.2+Math.random()*.5,dur:.3+Math.random()*.7,reps:1});
+    else if(S.bound>.35||Math.random()<.65)glitch.trigger('rep',{len:beat()*pickOne([1/16,1/8,1/8,1/4,3/16,1/2]),reps:2+(Math.random()*10|0),rate:Math.random()<E*.6?pickOne([.5,2,1.5,.75]):1});
+    else glitch.trigger('drop',{dur:.04+Math.random()*.14});
+  }
+  // ring mod: depth from the arc, carrier from the newest open rung, lower for strong weight
+  const b=banks[S.w],top=b?b.parts[Math.max(0,Math.min(b.parts.length-1,Math.floor(S.ceil-.001)))]:null,fc=(top&&top.f)||220;
+  if(S.sh<.15)ringOsc.frequency.setTargetAtTime(fc*1.414*(S.wgt>.5?.5:1)*(1+S.bound*.03*Math.sin(t*7)),t,.4);
+  const rd=Math.min(1,E*(.2+.8*S.ten)+S.sh*.6)*h;ringDepth.gain.setTargetAtTime(rd,t,.3);ringMix.gain.setTargetAtTime(rd*.9,t,.3);
+  // combs: the room sings at the open rungs (or room modes); feedback rises with the arc
+  if(t-lastComb>.5&&b){lastComb=t;const fr=roomOn()?S.room.slice():b.parts.filter(p=>(p.avail||0)>.5&&p.f).map(p=>p.f);
+    combs.forEach((c,i)=>{let f=fr.length?fr[(fr.length-1-i+fr.length*4)%fr.length]:110*(i+1);while(f<70)f*=2;while(f>1400)f/=2;c.d.delayTime.setTargetAtTime(1/(f*(1+(i%2?1:-1)*S.sh*.08*(i+1))),t,.25)})}
+  const fbv=Math.min(.95,.45+E*(.3+.2*S.ten+.1*S.dir)+(S.state==='aftermath'?.12:0));combs.forEach(c=>c.fb.gain.setTargetAtTime(fbv,t,.3));
+  combIn.gain.setTargetAtTime(E*.5*h,t,.3);combOut.gain.setTargetAtTime(E*(.25+.5*S.ten)*h*S.st.comb,t,.4);
+  // eat itself when the piano rests
+  selfG.gain.setTargetAtTime(E>.25&&t-S.lastOnset>4?E*3:0,t,.8);
+}
+async function initAudio(){
+  ctx=new AudioContext({latencyHint:'playback'});
+  try{await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([GRAIN_SRC],{type:'application/javascript'})))}catch(e){useSP=true}
+  master=G(.85);const hp=biq('highpass',40);const comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;comp.attack.value=.05;comp.release.value=1;
+  stopG=G(1);glitch=makeGlitch();dynLP=biq('lowpass',4000,.5);master.connect(dynLP).connect(glitch).connect(hp).connect(comp).connect(stopG).connect(ctx.destination);
+  bus=G(1);dryG=G(.6);bus.connect(dryG).connect(master);
+  pre=ctx.createDelay(1);pre.delayTime.value=.09;const verb=ctx.createConvolver();verb.buffer=impulse(12,2);const damp=biq('lowpass',4200);verbG=G(.8);
+  bus.connect(pre).connect(verb).connect(damp).connect(verbG).connect(master);
+
+  // bed bus with a slow stereo chorus, so pure sines feel alive in the room
+  bedBus=G(1);const chIn=G(1),chOut=G(.5);bedBus.connect(bus);bedBus.connect(chIn);
+  [-1,1].forEach((side,i)=>{const d=ctx.createDelay(.1);d.delayTime.value=.022+i*.009;const lfo=ctx.createOscillator(),lg=G(.004);lfo.frequency.value=.07+i*.04;lfo.connect(lg).connect(d.delayTime);lfo.start();const p=ctx.createStereoPanner();p.pan.value=side*.8;chIn.connect(d).connect(p).connect(chOut)});
+  chOut.connect(bus);
+  // Ring modulation of the bed: inharmonic, metallic sidebands
+  ringOsc=ctx.createOscillator();ringOsc.frequency.value=150;ringOsc.start();ringDepth=G(0);
+  const ringVCA=G(0);ringOsc.connect(ringDepth).connect(ringVCA.gain);bedBus.connect(ringVCA);ringMix=G(0);ringVCA.connect(ringMix).connect(bus);
+  // The room sings: four tuned feedback combs fed by everything the machine plays (never by the raw mic)
+  combIn=G(0);combOut=G(0);bus.connect(combIn);
+  for(let i=0;i<4;i++){const d=ctx.createDelay(.1),fb=G(.5),lp=biq('lowpass',3500),sh=ctx.createWaveShaper();
+    const c=new Float32Array(1024);for(let k=0;k<1024;k++){const x=k/512-1;c[k]=Math.tanh(x*1.5)}sh.curve=c;
+    d.delayTime.value=.004+i*.003;combIn.connect(d);d.connect(lp).connect(sh).connect(fb).connect(d);const pn=ctx.createStereoPanner();pn.pan.value=i/3*1.6-.8;d.connect(pn).connect(combOut);combs.push({d,fb})}
+  combOut.connect(master);
+  // Eat itself: with Edge up and the piano resting, the machine granulates its own bed
+  selfG=G(0);
+
+  rootG=G(0);rootV=[0,1].map(i=>{const o=ctx.createOscillator();o.connect(rootG);o.start();return o});rootG.connect(bus);
+
+  WORLDS.forEach(w=>{const out=G(0);out.connect(bedBus);const parts=w.h.map((h,i)=>{
+      const pan=ctx.createStereoPanner(),g=G(0);const spread=(i%2?1:-1)*(.15+i*.1);pan.pan.value=spread;
+      const o1=ctx.createOscillator(),o2=ctx.createOscillator();o1.connect(g);o2.connect(g);g.connect(pan).connect(out);o1.start();o2.start();
+      return {h,o1,o2,g,pan,spread,lvl:0}});
+    banks.push({out,parts})});
+
+  // piano memory: mic -> gated granular buffer -> six resonators tuned to your notes
+  memIn=G(1);memGrain=makeGrain();memG=G(0);memIn.connect(memGrain);bedBus.connect(selfG).connect(memIn);
+  const memDirect=G(.12);memGrain.connect(biq('lowpass',2400)).connect(memDirect).connect(memG);
+  for(let i=0;i<6;i++){const f=biq('bandpass',440,45),g=G(0);memGrain.connect(f).connect(g).connect(memG);memRes.push({f,g,midi:null,on:0})}
+  memG.connect(bus);
+
+  strikeG=G(1);strikeG.connect(bus);buildStorm();buildWild();buildLine();
+  recall=makeRecall();recG=G(0);bus.connect(recall);recall.connect(recG);recG.connect(master);recG.connect(pre);
+  an=ctx.createAnalyser();an.fftSize=8192;an.smoothingTimeConstant=0;fd=new Float32Array(an.frequencyBinCount);td=new Float32Array(an.fftSize);
+  setTuning(S.A4);setWorld(S.w,true);applyLevels();
+}
+/* Tuning: either the harmonic series of A, or frequencies measured from the room itself. */
+const roomOn=()=>S.tuning==='room'&&S.roomW;
+function partFreq(wi,pi){return roomOn()?S.roomW[wi][pi]:S.A4/8*WORLDS[wi].h[pi]}
+function rootFreq(){if(!roomOn())return S.A4/8;let f=S.roomW[0][0];while(f>110)f/=2;return f}
+function setTuning(a4){if(a4)S.A4=a4;if(!ctx){applyWorlds(true);return}const t=ctx.currentTime,rf=rootFreq();
+  rootV.forEach((o,i)=>o.frequency.setTargetAtTime(rf+(i?.07:0),t,1.2));
+  banks.forEach((b,wi)=>b.parts.forEach((p,pi)=>{const f=partFreq(wi,pi),bt=WORLDS[wi].beat*(.6+Math.random()*.8);p.f=f;p.bt=bt;p.o1.frequency.setTargetAtTime(f,t,1.2);p.o2.frequency.setTargetAtTime(f+bt,t,1.2)}));
+  retuneMem();applyWorlds(true)}
+
+/* Room tuning: a quiet 10 s sine sweep through the speaker; the mic hears where the room (with this speaker and mic) rings.
+   Peaks above the octave-smoothed response become the partials of the four worlds. */
+function buildRoomWorlds(pk){
+  const pick=(lo,hi,n)=>{let c=pk.filter(f=>f>=lo&&f<hi);
+    pk.map(f=>{let x=f;while(x<lo)x*=2;while(x>=hi)x/=2;return x}).filter(x=>x>=lo&&x<hi).forEach(x=>{if(c.length<n*2&&!c.some(y=>Math.abs(Math.log2(y/x))<.06))c.push(x)});
+    c.sort((a,b)=>a-b);
+    if(c.length>n){const o=[];for(let i=0;i<n;i++)o.push(c[Math.round(i*(c.length-1)/(n-1))]);c=o}
+    while(c.length<n)c.push((c[c.length-1]||lo)*1.5);return c.map(f=>Math.round(f*10)/10)};
+  return [pick(45,220,10),pick(180,700,10),pick(600,2400,10),pick(1500,6000,8)];
+}
+function useRoom(pk,save){S.room=pk;S.roomW=buildRoomWorlds(pk);const o=$('tuneRoom');o.disabled=false;
+  $('roomInfo').innerHTML='Room peaks: <b>'+pk.map(f=>Math.round(f)).join(' · ')+'</b> Hz';$('roomInfo').hidden=false;
+  if(save)try{localStorage.setItem('mb-room',JSON.stringify(pk))}catch(_){}}
+async function measureRoom(){
+  if(!ctx||!micSrc){showErr('Room tuning needs audio and the microphone running. Press Start first.');return}
+  if(S.measuring)return;S.measuring=true;const btn=$('roomBtn');btn.textContent='Measuring · keep quiet';btn.disabled=true;
+  const wasHush=S.hush;S.hush=true;allNotesOff();
+  const T=10,f0=45,f1=2400,t0=ctx.currentTime+1.2,lat=(ctx.outputLatency||0)+(ctx.baseLatency||0)+.02;
+  const o=ctx.createOscillator(),g=G(0);o.frequency.setValueAtTime(f0,t0);o.frequency.exponentialRampToValueAtTime(f1,t0+T);
+  g.gain.setValueAtTime(0,t0);g.gain.linearRampToValueAtTime(.1,t0+.4);g.gain.setValueAtTime(.1,t0+T-.4);g.gain.linearRampToValueAtTime(0,t0+T);
+  o.connect(g).connect(stopG);o.start(t0);o.stop(t0+T+.1);
+  const pts=[],binHz=ctx.sampleRate/an.fftSize;
+  await new Promise(res=>{const iv=setInterval(()=>{const el=ctx.currentTime-t0-lat;if(el>T||S.stopped){clearInterval(iv);res();return}
+    if(el<.4)return;const f=f0*Math.pow(f1/f0,el/T);an.getFloatFrequencyData(fd);const b=Math.round(f/binHz);let v=-200;for(let i=b-1;i<=b+1;i++)if(fd[i]>v)v=fd[i];pts.push([f,v]);
+    btn.textContent='Measuring · '+Math.round(f)+' Hz'},35)});
+  S.hush=wasHush;S.measuring=false;btn.disabled=false;btn.textContent='Tune to room';
+  if(S.stopped||pts.length<60){showErr('Room measurement stopped before it finished.');return}
+  const sm=pts.map((_,i)=>{let a=0,n=0;for(let j=Math.max(0,i-3);j<=Math.min(pts.length-1,i+3);j++){a+=pts[j][1];n++}return a/n});
+  const W=Math.round(pts.length/11);// about half an octave each side
+  const res=sm.map((v,i)=>{let a=0,n=0;for(let j=Math.max(0,i-W);j<=Math.min(sm.length-1,i+W);j++){a+=sm[j];n++}return v-a/n});
+  let peaks=[];for(let i=2;i<res.length-2;i++)if(res[i]>1.5&&res[i]>=res[i-1]&&res[i]>=res[i+1]&&res[i]>=res[i-2]&&res[i]>=res[i+2])peaks.push([pts[i][0],res[i]]);
+  peaks.sort((a,b)=>b[1]-a[1]);const keep=[];for(const [f] of peaks){if(keep.length>=16)break;if(keep.every(k=>Math.abs(Math.log2(f/k))>.2))keep.push(f)}
+  if(keep.length<6){showErr('The room did not show clear resonances (found '+keep.length+'). Try the speaker louder or closer to a wall, then measure again. Staying on A.');return}
+  keep.sort((a,b)=>a-b);useRoom(keep,true);$('tune').value='room';S.tuning='room';setTuning();toast('Tuned to room');
+}
+async function initMic(){
+  try{const st=await navigator.mediaDevices.getUserMedia({audio:{echoCancellation:false,noiseSuppression:false,autoGainControl:false}});micSrc=ctx.createMediaStreamSource(st);micSrc.connect(memIn);micSrc.connect(an)}
+  catch(e){showErr('No microphone found. The tone bed, strikes and modes still work; piano memory and Answer mode need the mic.')}
+}
+function setWorld(i,instant){S.on=S.on.map((_,j)=>j===i);S.order=[i];S.w=i;applyWorlds(instant)}
+function toggleWorld(i){
+  if(S.on[i]){if(activeIdx().length<2)return;S.on[i]=false;S.order=S.order.filter(x=>x!==i)}
+  else{S.on[i]=true;S.order.push(i)}
+  S.w=S.order[S.order.length-1];applyWorlds();
+}
+function applyWorlds(instant){
+  const a=activeIdx(),w=WORLDS[S.w];document.documentElement.style.setProperty('--c',`var(--${w.id})`);
+  $('wGlyph').textContent=a.map(i=>WORLDS[i].glyph).join('');$('wGlyph').style.fontSize=a.length>2?'38px':a.length>1?'48px':'60px';
+  $('wName').textContent=a.map(i=>WORLDS[i].name).join(' + ');
+  $('wDesc').textContent=roomOn()&&a.length===1?`Room partials: ${S.roomW[S.w].map(Math.round).join(' · ')} Hz`:a.length>1?`Layered. Each world sits at ${Math.round(100/Math.sqrt(a.length))}% so the room stays clear. Strikes and color follow ${w.name}, the last one added.`:w.desc;
+  [...$('wBtns').children].forEach((b,j)=>b.setAttribute('aria-pressed',S.on[j]));
+  if(!ctx)return;const t=ctx.currentTime,sc=1/Math.sqrt(a.length);banks.forEach((b,j)=>b.out.gain.setTargetAtTime(S.on[j]?sc:0,t,instant?.01:2.2));
+}
+
+/* ---- Storm: tuned noise, FM grit and stutter, only when her motion goes wild ---- */
+let storm=null;
+function buildStorm(){
+  const out=G(0),lp=biq('lowpass',3000),pre=G(1),sh=ctx.createWaveShaper(),gate=G(1);
+  const c=new Float32Array(2048);for(let i=0;i<2048;i++){const x=i/1024-1;c[i]=Math.tanh(x*3)}sh.curve=c;sh.oversample='2x';
+  const nb=ctx.createBuffer(1,ctx.sampleRate*3,ctx.sampleRate);const d=nb.getChannelData(0);for(let i=0;i<d.length;i++)d[i]=Math.random()*2-1;
+  const ns=ctx.createBufferSource();ns.buffer=nb;ns.loop=true;ns.start();
+  const bands=[];for(let i=0;i<6;i++){const f=biq('bandpass',500,12),g=G(0),p=ctx.createStereoPanner();p.pan.value=i/5*1.8-.9;ns.connect(f).connect(g).connect(p).connect(pre);bands.push({f,g})}
+  const fms=[0,1].map(i=>{const car=ctx.createOscillator(),mod=ctx.createOscillator(),idx=G(0),g=G(0),p=ctx.createStereoPanner();p.pan.value=i?.6:-.6;mod.connect(idx).connect(car.frequency);car.connect(g).connect(p).connect(pre);car.start();mod.start();return{car,mod,idx,g,fc:200}});
+  pre.connect(sh).connect(gate).connect(lp).connect(out);out.connect(bus);
+  storm={out,lp,pre,gate,bands,fms,next:0};
+}
+function stormRetune(){
+  const t=ctx.currentTime,pool=[];activeIdx().forEach(i=>WORLDS[i].h.forEach((h,pi)=>pool.push(partFreq(i,pi)*(roomOn()?[1,2,3][pi%3]:WORLDS[i].sMul))));
+  for(let k=0;k<pool.length;k++)pool[k]=qz(pool[k]);pool.sort((a,b)=>a-b);const L=pool.length;S.stIdx=(S.stIdx+pickOne([1,1,2,-1,3])+L)%L;
+  storm.bands.forEach((b,k)=>{const fq=pool[(S.stIdx+k*2)%L];b.f.frequency.setTargetAtTime(Math.min(9000,fq),t,.03)});
+  const mods=S.storm>.7||S.sh>.4?MOD_WILD:MOD_CALM;
+  storm.fms.forEach((f,k)=>{const fq=pool[(S.stIdx+k*3)%L];f.fc=Math.min(3500,fq);const ratio=mods[(S.stIdx+k)%mods.length];f.car.frequency.setTargetAtTime(f.fc,t,.02);f.mod.frequency.setTargetAtTime(f.fc*ratio,t,.02)});
+}
+function stormDrive(){
+  if(!storm)return;const t=ctx.currentTime,c=S.fade?0:S.storm,w=WORLDS[S.w];
+  if(c>.02&&t>storm.next){stormRetune();storm.next=t+beat()*(c>.6?.25:c>.3?.5:1)}
+  storm.out.gain.setTargetAtTime(c*c*S.lv.storm*.45*(1+S.lv.edge)*(1-S.hushAmt*.95),t,c>S.stormOut?.15:.7);S.stormOut=c;
+  storm.bands.forEach(b=>{b.g.gain.setTargetAtTime(c*1.3,t,.1);b.f.Q.setTargetAtTime(14-c*12,t,.2)});
+  storm.fms.forEach(f=>{f.idx.gain.setTargetAtTime(f.fc*c*2.5,t,.1);f.g.gain.setTargetAtTime(c*.22,t,.1)});
+  storm.pre.gain.setTargetAtTime(.6+c*2.4,t,.1);
+  storm.lp.frequency.setTargetAtTime(600+S.hi*8000*(.4+c*.6),t,.2);
+  storm.gate.gain.setTargetAtTime(c>.35&&Math.random()<w.sGate*c?0:1,t,.004);
+}
+function setMode(id){S.mode=id;const m=MODES.find(x=>x.id===id);MODES.forEach(x=>$('mode-'+x.id).setAttribute('aria-pressed',x.id===id));$('mDesc').textContent=m.desc}
+function setFreeze(on){S.freeze=on;$('freeze').setAttribute('aria-pressed',on);$('freeze').innerHTML=(on?'Frozen':'Freeze')+' <kbd>Q</kbd>';if(memGrain)memGrain.parameters.get('freeze').value=(on||S.lock)?1:0;flag()}
+function flag(){const f=$('flag');const t=S.stopped?'STOPPED · Esc to resume':S.fade?'Released · Space to return':S.rel?'Releasing…':S.freeze?'Frozen':'';f.classList.toggle('red',!!S.stopped);f.textContent=t;f.hidden=!t}
+function applyLevels(){if(!ctx)return;const t=ctx.currentTime;
+  dryG.gain.setTargetAtTime(.75-S.lv.space*.45,t,.2);
+  rootG.gain.setTargetAtTime(S.fade?0:S.lv.root*.18,t,S.fade?3:.3);
+  strikeG.gain.setTargetAtTime(S.fade?0:1,t,1);
+  memGrain.parameters.get('gate').value=.003+S.lv.gate*.05}
+
+/* ---- Piano listening ---- */
+const mtof=m=>S.A4*Math.pow(2,(m-69)/12);
+function memFreq(m){return memFreqHz(mtof(m))}
+function memFreqHz(f){if(S.snap){if(roomOn()){let best=f,bd=9;S.room.forEach(r=>{let x=r;while(x<f/1.414)x*=2;while(x>f*1.414)x/=2;const d=Math.abs(Math.log2(x/f));if(d<bd){bd=d;best=x}});f=best}else{const a1=S.A4/8;f=a1*Math.max(1,Math.round(f/a1))}}f=qz(f);const oct=S.hi>.68?2:S.hi<.3?.5:1;return Math.min(6000,f*oct)}
+function retuneMem(){if(!ctx)return;const t=ctx.currentTime;memRes.forEach(r=>{if(r.f0)r.f.frequency.setTargetAtTime(memFreqHz(r.f0),t,1.2);else if(r.midi!=null)r.f.frequency.setTargetAtTime(memFreq(r.midi),t,1.2)})}
+function listen(dt){
+  if(!micSrc)return;
+  an.getFloatTimeDomainData(td);let s=0;for(let i=td.length-2048;i<td.length;i++)s+=td[i]*td[i];const rms=Math.sqrt(s/2048);
+  const gate=.003+S.lv.gate*.05;
+  const lvl=clamp(rms/(gate*6));S.pno+=(lvl-S.pno)*(lvl>S.pno?1-Math.exp(-dt/.15):1-Math.exp(-dt/2));
+  const now=ctx.currentTime;
+  if(rms>gate&&rms>S.rmsSm*1.9&&now-S.lastOnset>.12){S.lastOnset=now;setTimeout(()=>detectPitch(),40)}
+  S.rmsSm+=(rms-S.rmsSm)*(1-Math.exp(-dt/.25));
+}
+function detectPitch(){
+  an.getFloatFrequencyData(fd);const sr=ctx.sampleRate,bin=sr/an.fftSize;let lo=Math.floor(60/bin),hi=Math.floor(2200/bin),best=-1,bv=-200;
+  for(let i=lo;i<hi;i++)if(fd[i]>bv){bv=fd[i];best=i}
+  if(best<1||bv<-75)return;
+  // prefer a fundamental an octave below if it is nearly as strong (piano often has a strong 2nd partial)
+  const half=Math.round(best/2);if(half>lo){let hv=-200,hb=half;for(let i=half-2;i<=half+2;i++)if(fd[i]>hv){hv=fd[i];hb=i}if(hv>bv-10)best=hb}
+  const a=fd[best-1],b=fd[best],c=fd[best+1];const off=.5*(a-c)/(a-2*b+c||1);const f=(best+off)*bin;
+  const midi=Math.round(69+12*Math.log2(f/S.A4));if(!isFinite(midi))return;
+  if(S.memMode==='partials')return;
+  if(performance.now()-M.inAt<4000)return;// a MIDI keyboard is playing: trust it over the mic
+  if(addMem(midi)&&M.echo)noteOut(0,midi,80,600);
+}
+function addMem(midi){
+  if(S.lock||S.freeze||!ctx)return false;
+  const i=S.mem.findIndex(m=>m===midi);if(i>=0)S.mem.splice(i,1);S.mem.push(midi);if(S.mem.length>6)S.mem.shift();
+  const t=ctx.currentTime;memRes.forEach((r,k)=>{const m=S.mem[k];if(m==null){r.midi=null;r.g.gain.setTargetAtTime(0,t,.5);return}
+    if(r.midi!==m){r.midi=m;r.f0=null;r.f.frequency.setTargetAtTime(memFreq(m),t,.03)}});
+  renderMem(midi);return true;
+}
+function clearMem(){S.mem=[];if(ctx){const t=ctx.currentTime;memRes.forEach(r=>{r.midi=null;r.f0=null;r.g.gain.setTargetAtTime(0,t,.8)})}renderMem()}
+function renderMem(fresh){const el=$('mem');if(!S.mem.length){el.innerHTML='<span class="chip none">Play a few notes</span>';return}
+  el.innerHTML=S.mem.map(m=>`<span class="chip${m===fresh?' new':''}">${NOTE[((m%12)+12)%12]}${Math.floor(m/12)-1}</span>`).join('')}
+
+/* ---- Partials: follow what the piano actually sounds, not which note it was ----
+   Right after each attack, the strongest spectral peaks (up to 6, at least a semitone apart) retune the resonators.
+   Works for chords and for prepared, inharmonic strings. Only updates within 1.5 s of an attack, so the machine never chases its own output.
+   In room tuning, partials that match a room mode get a +6 dB preference: the room amplifies what it already likes. */
+function trackPartials(){
+  if(S.memMode!=='partials'||!micSrc||S.lock||S.freeze)return;const now=performance.now();if(now-S.lastPart<110)return;S.lastPart=now;
+  if(S.pno<.12||ctx.currentTime-S.lastOnset>1.5)return;
+  an.getFloatFrequencyData(fd);const bin=ctx.sampleRate/an.fftSize,lo=Math.floor(80/bin),hi=Math.floor(4200/bin),c=[];
+  for(let i=lo;i<hi;i++){const v=fd[i];if(v>-72&&v>fd[i-1]&&v>=fd[i+1]&&v>fd[i-2]&&v>=fd[i+2]){
+    const a=fd[i-1],cc=fd[i+1],off=.5*(a-cc)/(a-2*v+cc||1),f=(i+off)*bin;let sc=v;
+    if(roomOn()&&S.room.some(r=>{let x=r;while(x<f/1.04)x*=2;return Math.abs(Math.log2(x/f))<.06}))sc+=6;c.push({f,sc})}}
+  c.sort((a,b)=>b.sc-a.sc);const pk=[];for(const p of c){if(pk.length>=6)break;if(pk.every(q=>Math.abs(Math.log2(q/p.f))>1/12))pk.push(p.f)}
+  if(pk.length<2)return;
+  const t=ctx.currentTime,free=[...pk];
+  memRes.forEach(r=>{if(!free.length)return;let bi=0,bd=9;if(r.f0)free.forEach((f,i)=>{const d=Math.abs(Math.log2(f/r.f0));if(d<bd){bd=d;bi=i}});
+    const f=free.splice(bi,1)[0];r.f0=f;r.midi='p';r.f.frequency.setTargetAtTime(memFreqHz(f),t,.06)});
+  S.mem=[...new Set(pk.map(toMidi))];
+  $('mem').innerHTML=pk.slice().sort((a,b)=>a-b).map(f=>`<span class="chip">${Math.round(f)} Hz</span>`).join('');
+}
+function setMemMode(m){S.memMode=m;clearMem();$('follow').setAttribute('aria-pressed',m==='partials');$('follow').innerHTML=(m==='partials'?'Follow: partials':'Follow: notes')+' <kbd>H</kbd>';
+  if(m==='partials')$('mem').innerHTML='<span class="chip none">Play: the strongest partials will appear here</span>'}
+
+/* ---- Strikes: one pure tone, never a burst ---- */
+function strike(amount=.6){
+  if(!ctx||S.fade)return;const now=ctx.currentTime,w=WORLDS[S.w];
+  let f;if(S.mem.length&&Math.random()<.5){f=memFreq(S.mem[Math.random()*S.mem.length|0]);while(f<400)f*=2}else if(roomOn()){f=S.room[Math.random()*S.room.length|0];while(f<400)f*=2;while(f>4000)f/=2}else{const b=banks[S.w];const opn=b?b.parts.filter(p=>(p.avail||0)>.5&&p.f):[];f=opn.length?pickOne(opn.slice(-3)).f:S.A4/8*pickOne(w.strike);while(f<400)f*=2;while(f>3500)f/=2}
+  f=qz(f);
+  const g=G(0),p=ctx.createStereoPanner();p.pan.value=clamp(S.pan*.7+(Math.random()-.5)*.4,-1,1);g.connect(p).connect(strikeG);
+  const lv=S.lv.strike*.16*clamp(amount,.25,1),dec=w.id==='air'?7:w.id==='fire'?3:5;
+  [[1,1],[2.003,.18],[3.01,.06]].forEach(([r,a])=>{const o=ctx.createOscillator();o.frequency.value=f*r;const og=G(0);og.gain.setValueAtTime(0,now);og.gain.linearRampToValueAtTime(lv*a,now+.03);og.gain.exponentialRampToValueAtTime(.0001,now+dec/r);o.connect(og).connect(g);g.gain.value=1;o.start(now);o.stop(now+dec+.1)});
+  S.lastStrike=now;noteOut(2,toMidi(f),50+amount*60,dec*400);
+}
+
+/* ---- Camera ---- */
+const vid=$('vid'),ov=$('ov'),og=ov.getContext('2d');const CW=80,CH=60;
+const sm=document.createElement('canvas');sm.width=CW;sm.height=CH;const sg=sm.getContext('2d',{willReadFrequently:true});
+let prev=null,lastT=0;const PX=new Int32Array(CW*CH),DF=new Float32Array(CW*CH);
+/* Stage area (drawn on the camera view) and dancer lock. Frame coordinates are 80×60; the view is mirrored. */
+function drawTrackUI(){
+  const rb=$('roiBox'),rg=$('ring');
+  if(S.roi){const r=S.roi;rb.hidden=false;rb.style.left=(1-(r.x1+1)/CW)*100+'%';rb.style.width=(r.x1-r.x0+1)/CW*100+'%';rb.style.top=r.y0/CH*100+'%';rb.style.height=(r.y1-r.y0+1)/CH*100+'%'}else rb.hidden=true;
+  if(S.track&&!poseOn()){rg.hidden=false;rg.style.left=(1-S.tx/CW)*100+'%';rg.style.top=S.ty/CH*100+'%';rg.style.width=2*S.trR/CW*100+'%';rg.style.height=2*S.trR/CH*100+'%';rg.classList.toggle('lost',S.lost>.8)}else rg.hidden=true;
+}
+function camXY(e){const r=$('cam').getBoundingClientRect();return[Math.max(0,Math.min(CW-1,Math.round((1-(e.clientX-r.left)/r.width)*CW))),Math.max(0,Math.min(CH-1,Math.round((e.clientY-r.top)/r.height*CH)))]}
+let drag=null;
+function setDrawing(on){S.drawing=on;$('roiBtn').setAttribute('aria-pressed',on);$('roiBtn').textContent=on?'Drag on the camera…':'Stage area';$('cam').classList.toggle('drawing',on)}
+async function initCam(id){
+  if(vid.srcObject)vid.srcObject.getTracks().forEach(t=>t.stop());
+  const st=await navigator.mediaDevices.getUserMedia({video:id?{deviceId:{exact:id},width:640,height:480}:{width:640,height:480}});
+  vid.srcObject=st;await vid.play();$('camEmpty').hidden=true;prev=null;
+  try{const ds=(await navigator.mediaDevices.enumerateDevices()).filter(d=>d.kind==='videoinput');const cur=st.getVideoTracks()[0].getSettings().deviceId;
+    $('camSel').innerHTML=ds.map((d,i)=>`<option value="${esc(d.deviceId)}">${esc(d.label||'Camera '+(i+1))}</option>`).join('');$('camSel').value=cur||''}catch(_){}
+}
+function hex(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.slice(2,4),16),parseInt(h.slice(4,6),16)]}
+
+function frame(ts){
+  requestAnimationFrame(frame);if(!S.running||ts-lastT<50)return;const dt=Math.min(.2,(ts-lastT)/1000);lastT=ts;
+  let raw=0,cnt=0,sx=0,sy=0,sx2=0,sy2=0;
+  let tm=-1;
+  if(PT.on){tm=touchFrame(dt);cnt=40;const sp=3+tm*12;sx=PT.x*cnt;sy=PT.y*cnt;sx2=cnt*(PT.x*PT.x+sp*sp);sy2=cnt*(PT.y*PT.y+sp*sp)}
+  else if(vid.readyState>=2){
+    sg.drawImage(vid,0,0,CW,CH);const d=sg.getImageData(0,0,CW,CH).data;const n=CW*CH;const cur=new Float32Array(n);
+    for(let i=0;i<n;i++){const j=i*4;cur[i]=d[j]*.3+d[j+1]*.59+d[j+2]*.11}
+    if(ov.width!==CW){ov.width=CW;ov.height=CH}
+    const img=og.createImageData(CW,CH);
+    if(prev){const thr=50-S.lv.sens*40;const rgb=hex(getComputedStyle(document.documentElement).getPropertyValue('--'+WORLDS[S.w].id).trim());
+      const R=S.roi,x0=R?R.x0:0,x1=R?R.x1:CW-1,y0=R?R.y0:0,y1=R?R.y1:CH-1;let np=0;
+      // 1. changed pixels inside the stage area only
+      for(let y=y0;y<=y1;y++)for(let x=x0;x<=x1;x++){const i=y*CW+x;const df=Math.abs(cur[i]-prev[i]);if(df>thr){PX[np]=i;DF[np]=df;np++}}
+      // 2. lock: keep only pixels near the tracked body; re-acquire the busiest area if she is lost
+      let keep=null;
+      if(S.track&&np>0){
+        const rad=S.trR,r2=rad*rad;keep=new Uint8Array(np);let k=0,kx=0,ky=0;
+        for(let q=0;q<np;q++){const i=PX[q],x=i%CW,y=(i/CW)|0,dx=x-S.tx,dy=y-S.ty;if(dx*dx+dy*dy<=r2){keep[q]=1;k++;kx+=x;ky+=y}}
+        if(k>6){S.lost=0;S.tx+=(kx/k-S.tx)*.35;S.ty+=(ky/k-S.ty)*.35}
+        else{S.lost+=dt;if(S.lost>6&&np>25){const G=new Uint16Array(48);for(let q=0;q<np;q++){const i=PX[q];G[Math.min(5,((i/CW)|0)/10|0)*8+Math.min(7,(i%CW)/10|0)]++}
+          let b=0;for(let c=1;c<48;c++)if(G[c]>G[b])b=c;if(G[b]>20){S.tx=(b%8)*10+5;S.ty=((b/8)|0)*10+5;S.lost=0}}}
+      }
+      for(let q=0;q<np;q++){const i=PX[q],j=i*4,inn=!keep||keep[q];
+        if(inn){cnt++;const xx=i%CW,yy=(i/CW)|0;sx+=xx;sy+=yy;sx2+=xx*xx;sy2+=yy*yy;img.data[j]=rgb[0];img.data[j+1]=rgb[1];img.data[j+2]=rgb[2];img.data[j+3]=Math.min(200,DF[q]*3)}
+        else{img.data[j]=120;img.data[j+1]=120;img.data[j+2]=120;img.data[j+3]=50}}
+      S.area=(x1-x0+1)*(y1-y0+1)}
+    og.putImageData(img,0,0);prev=cur;raw=cnt/(S.area||n);drawTrackUI();
+  }
+  if(S.calibrating){S.calSum+=raw;S.calN++;if(S.calN>=40){S.base=S.calSum/S.calN*1.5;S.calibrating=false;$('cal').textContent='Calibrated';setTimeout(()=>$('cal').textContent='Calibrate room',1500)}}
+  // Auto range: scale motion to her own recent peak (about a minute), so it reads the same near or far from the camera
+  const net=Math.max(0,raw-S.base);S.peak=Math.max(net,S.peak*Math.exp(-dt/45));
+  runPose(dt);
+  let m=Math.min(1,net/(S.autoRange?Math.max(.012,S.peak*.85):.12));
+  if(poseOn())m=P.pm;
+  if(tm>=0)m=tm;                                            // skeleton speed in body units: same at any distance
+  const settle=1+S.lv.settle*11;
+  const mS=(m+S.mRaw1)/2;S.mRaw1=m;const k=mS>S.mot?1-Math.exp(-dt/1.5):1-Math.exp(-dt/settle);S.mot+=(mS-S.mot)*k;
+  // fast envelope for the storm: it should arrive with wild motion and leave soon after
+  S.fast+=(m-S.fast)*(m>S.fast?1-Math.exp(-dt/.25):1-Math.exp(-dt/.8));
+  const sThr=.4+S.lv.stormAt*.5,nW=S.on.filter(Boolean).length,lf=clamp([0,.35+.65*S.lv.edge,.8+.2*S.lv.edge,1][Math.min(3,nW)]+S.ten*.3),sTarget=S.rel?0:(S.stormHold?1:smooth(sThr,sThr+.25,S.fast)*lf*(.3+.7*S.budget)*(S.mot>=.035?S.hab:1));
+  if(!S.freeze)S.storm+=(sTarget-S.storm)*(sTarget>S.storm?1-Math.exp(-dt/.3):1-Math.exp(-dt/1.5));
+  // a sudden change: fast motion jumping well above the slow envelope
+  const w=WORLDS[S.w];
+  if(!S.freeze&&!S.rel&&m-S.mot>.28&&ctx&&ctx.currentTime-S.lastStrike>w.cool/Math.max(.3,S.st.strike)&&Math.random()<S.hab*Math.min(1,S.st.strike+.2))strike(m);
+  if(cnt>10){const pxr=-((sx/cnt)/CW*2-1);S.vx+=((pxr-S.pxRaw)/dt-S.vx)*(1-Math.exp(-dt/.15));S.pxRaw=pxr}else S.vx*=Math.exp(-dt/.3);
+  if(cnt>10){const mx=sx/cnt,my=sy/cnt,sd=Math.sqrt(Math.max(0,sx2/cnt-mx*mx)+Math.max(0,sy2/cnt-my*my));S.spread+=(clamp(sd/26)-S.spread)*(1-Math.exp(-dt/1.2))}else S.spread*=Math.exp(-dt/3);
+  if(poseOn()){const ex2=k=>1-Math.exp(-dt/k);const oO=S.hi>.68?2:S.hi<.3?.5:1;S.hi+=(P.ph-S.hi)*ex2(.8);S.pan+=(P.pp-S.pan)*ex2(1);S.spread+=(P.ps-S.spread)*ex2(.6);S.vx=P.vx;S.pxRaw=P.pp;const nO=S.hi>.68?2:S.hi<.3?.5:1;if(oO!==nO)retuneMem()}
+  else if(cnt>10){const hy=1-(sy/cnt)/CH,px=-((sx/cnt)/CW*2-1);const oldOct=S.hi>.68?2:S.hi<.3?.5:1;S.hi+=(hy-S.hi)*(1-Math.exp(-dt/2));S.pan+=(px-S.pan)*(1-Math.exp(-dt/2.5));const newOct=S.hi>.68?2:S.hi<.3?.5:1;if(oldOct!==newOct)retuneMem()}
+  if(S.mot<.03)S.still+=dt;else S.still=Math.max(0,S.still-dt*3);
+  // Movement quality (Laban-style efforts, estimated from a flat camera picture)
+  const ex=k=>1-Math.exp(-dt/k);
+  S.jerk+=(Math.abs(m-S.mPrev)/dt-S.jerk)*ex(.5);S.mPrev=m;S.bound+=(clamp(S.jerk/3)-S.bound)*ex(.6);          // flow: bound (jerky) vs free
+  S.sud+=(clamp(Math.max(0,S.fast-S.mot)/.3)-S.sud)*ex(.4);                                                     // time: sudden vs sustained
+  if(cnt>10){S.path.push([S.tx0=sx/cnt,S.ty0=sy/cnt]);if(S.path.length>30)S.path.shift()}
+  if(S.path.length>8){let L=0;for(let q=1;q<S.path.length;q++)L+=Math.hypot(S.path[q][0]-S.path[q-1][0],S.path[q][1]-S.path[q-1][1]);
+    const a=S.path[0],b=S.path[S.path.length-1],net=Math.hypot(b[0]-a[0],b[1]-a[1]);S.dir+=((L>3?clamp(net/L):S.dir)-S.dir)*ex(.8)}   // space: direct vs indirect
+  S.wgt+=((poseOn()?P.pw:clamp(.6*m+.4*(1-S.hi)))-S.wgt)*ex(.6);                                                                // weight: strong vs light
+  // The arc: a slow integrator of both performers. It climbs the harmonic ladder over minutes and resolves in stillness.
+  const arcT=20+S.lv.arc*280,drv=clamp(.75*S.mot*S.lv.depth*1.6+.3*S.pno+.25*S.storm+(S.build?.9:0));
+  let tau=drv>S.ten?arcT:arcT*1.4;if(S.still>8)tau/=3;if(!S.freeze&&!S.rel)S.ten+=(drv*(S.state==='pressure'?1.5:1)-S.ten)*ex(tau);
+  updateStates(dt,m);
+  S.bph+=dt*(4+S.lv.brate*8)/60*2*Math.PI;S.breathV=.5-.5*Math.cos(S.bph);
+  const bF={catch:1,resonance:1,speaks:1,emptying:1,aftermath:.6,drift:.7,pressure:.3,sparks:.15,impact:0,shatter:0,calm:.8}[S.state]??.6;
+  S.breathD+=(S.lv.breath*bF-S.breathD)*ex(1.5);
+  if(S.auto&&S.still>=8){const a=activeIdx();if(a.length>1){S.still=-6;toggleWorld(S.order[0])}else if(S.w<WORLDS.length-1){S.still=-6;setWorld(S.w+1)}}
+  S.swellAmt+=((S.swell?1:0)-S.swellAmt)*(1-Math.exp(-dt/(S.swell?1.2:3)));
+  S.hushAmt+=((S.hush?1:0)-S.hushAmt)*(1-Math.exp(-dt/(S.hush?.4:2)));
+  if(ctx){listen(dt);trackPartials();if(!S.freeze){stormDrive();weird(dt);wildDrive(dt);lineTick(dt)}}
+  midiTick();if(M.lastTxt)$('mLast').textContent=M.lastTxt;
+  drive();meters();
+}
+function baseEnergies(){
+  const mot=S.mot*S.lv.depth*1.6,rest=ctx?clamp((ctx.currentTime-S.lastOnset-1)/3):1;
+  switch(S.mode){
+    case 'contrast':return{bed:clamp(1-mot*1.3)*.85,mem:clamp(mot*.6+.15)};
+    case 'answer':  return{bed:clamp(mot*.7+rest*.45)*(1-.8*S.pno),mem:clamp(mot*.8+rest*.35)*(1-.6*S.pno)};
+    case 'duet':    return{bed:0,mem:clamp(mot*1.4)};
+    default:        return{bed:clamp(mot),mem:clamp(mot)};
+  }
+}
+/* Hand gestures sit on top of every mode: Swell pushes toward full bloom, Hush pulls everything to near silence. */
+function energies(){const e=baseEnergies(),sw=S.swellAmt*.9,h=1-S.hushAmt*.92;
+  return{bed:clamp(Math.max(e.bed,S.mode==='duet'?0:sw))*h,mem:clamp(Math.max(e.mem,sw))*h,hush:h}}
+/* ---- Pose tracking (MediaPipe Pose Landmarker, lite model) ----
+   Loads from ./mediapipe/ when served from a local server (offline bundle), otherwise from the CDN (needs internet).
+   Follows a real skeleton: one chosen person, any distance. Frame difference keeps running underneath as a fallback. */
+const MP_VER='0.10.35',MP_CDN='https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@'+MP_VER,
+  MP_MODEL='https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task';
+const SKEL=[[11,12],[11,13],[13,15],[12,14],[14,16],[11,23],[12,24],[23,24],[23,25],[25,27],[24,26],[26,28],[0,11],[0,12]];
+let poseLM=null,poseLoading=false,lastPoseTs=0,poseFresh=0,prevLm=null;
+const P={pm:0,ph:.5,pp:0,ps:0,pw:0,handR:.5,handL:.5,vx:0,cx:.5,cy:.5,lastStep:0,ankY:[0,0],ankV:[0,0]};
+async function exists(u){try{const r=await fetch(u,{method:'HEAD'});return r.ok}catch(_){return false}}
+async function initPose(){
+  if(poseLM||poseLoading)return;poseLoading=true;$('poseBtn').textContent='Loading pose…';
+  try{
+    const served=location.protocol.startsWith('http'),local=served&&await exists('mediapipe/vision_bundle.mjs');
+    const base=local?new URL('mediapipe',location.href).href:MP_CDN;
+    const model=local&&await exists('mediapipe/pose_landmarker_lite.task')?new URL('mediapipe/pose_landmarker_lite.task',location.href).href:MP_MODEL;
+    const vision=await import(base+'/vision_bundle.mjs');
+    const fs=await vision.FilesetResolver.forVisionTasks(base+'/wasm');
+    const opts=d=>({baseOptions:{modelAssetPath:model,delegate:d},runningMode:'VIDEO',numPoses:3,minPoseDetectionConfidence:.5,minPosePresenceConfidence:.5,minTrackingConfidence:.5});
+    try{poseLM=await vision.PoseLandmarker.createFromOptions(fs,opts('GPU'))}catch(_){poseLM=await vision.PoseLandmarker.createFromOptions(fs,opts('CPU'))}
+    S.pose=true;$('poseBtn').setAttribute('aria-pressed',true);$('poseBtn').textContent='Pose: on';toast(local?'Pose tracking (offline)':'Pose tracking');
+  }catch(e){showErr('Pose tracking could not load. Online: check the internet connection. Offline: start the page with the included start script so it runs from localhost. Motion tracking still works.');$('poseBtn').textContent='Pose tracking'}
+  poseLoading=false;
+}
+function setPose(on){if(on&&!poseLM){initPose();return}S.pose=on&&!!poseLM;$('poseBtn').setAttribute('aria-pressed',S.pose);$('poseBtn').textContent=S.pose?'Pose: on':'Pose tracking';if(!S.pose)skCtx.clearRect(0,0,sk.width,sk.height);toast(S.pose?'Pose on':'Pose off')}
+const poseOn=()=>S.pose&&poseLM&&performance.now()-poseFresh<400;
+function pickPose(list){
+  if(list.length===1)return list[0];let best=list[0],bd=1e9;
+  list.forEach(lm=>{const cx=(lm[23].x+lm[24].x)/2,cy=(lm[23].y+lm[24].y)/2;
+    const d=S.track?Math.hypot(cx-P.cx,cy-P.cy):-Math.abs((lm[11].y+lm[12].y)/2-(lm[27].y+lm[28].y)/2);   // locked: nearest to her; else the biggest body
+    if(d<bd){bd=d;best=lm}});return best;
+}
+function runPose(dt){
+  if(!S.pose||!poseLM||vid.readyState<2)return;
+  let ts=performance.now();if(ts<=lastPoseTs)ts=lastPoseTs+1;lastPoseTs=ts;
+  let res;try{res=poseLM.detectForVideo(vid,ts)}catch(_){return}
+  const list=res&&res.landmarks||[];if(!list.length){drawSkel(null,list);return}
+  const lm=pickPose(list);poseFresh=performance.now();
+  const mid=(a,b)=>({x:(lm[a].x+lm[b].x)/2,y:(lm[a].y+lm[b].y)/2});
+  const sh=mid(11,12),hp=mid(23,24),L=Math.max(.05,Math.hypot(sh.x-hp.x,sh.y-hp.y));   // torso length: everything is measured in body units
+  P.cx+=(hp.x-P.cx)*.5;P.cy+=(hp.y-P.cy)*.5;
+  if(prevLm&&dt>0){const ks=[0,13,14,15,16,25,26,27,28];let v=0;ks.forEach(k=>{v+=Math.hypot(lm[k].x-prevLm[k].x,lm[k].y-prevLm[k].y)});
+    P.pm=clamp(v/ks.length/L/dt/1.4);P.vx+=(-(hp.x-(prevLm[23].x+prevLm[24].x)/2)/dt/L/2-P.vx)*.4}
+  const topY=Math.min(lm[0].y,lm[15].y,lm[16].y),stand=clamp((hp.y-lm[0].y)/(1.9*L));
+  P.ph=clamp(.45*stand+.55*clamp((sh.y-topY)/(1.6*L)+.35));                                   // standing tall and arms up = high
+  P.handR=clamp((sh.y-lm[16].y)/(1.4*L)+.5);P.handL=clamp((sh.y-lm[15].y)/(1.4*L)+.5);       // camera image is mirrored on screen: 16 appears on her right
+  P.ps=clamp(Math.hypot(lm[15].x-lm[16].x,lm[15].y-lm[16].y)/L/3.2*.7+Math.abs(lm[27].x-lm[28].x)/L/1.6*.3);
+  P.pw=clamp(.55*(1-stand)+.45*P.pm);P.pp=clamp(-(hp.x*2-1),-1,1);
+  // footsteps: an ankle moving down fast, then stopping
+  [27,28].forEach((k,i)=>{const v=(lm[k].y-P.ankY[i])/Math.max(dt,.02)/L;if(P.ankV[i]>1.2&&v<.3&&performance.now()-P.lastStep>220&&S.lv.edge>.15){P.lastStep=performance.now();footStep(lm[k].x)}P.ankV[i]=v;P.ankY[i]=lm[k].y});
+  prevLm=lm.map(o=>({x:o.x,y:o.y}));drawSkel(lm,list);
+}
+function footStep(x){if(!ctx||S.fade||S.rel||S.st.strike<.25||Math.random()>S.hab)return;strike(.55+P.pw*.4)}
+const sk=document.createElement('canvas'),skCtx=sk.getContext('2d');
+function drawSkel(lm,list){
+  if(!sk.parentNode){sk.className='skel';$('cam').appendChild(sk)}
+  const VW=vid.videoWidth||640,VH=vid.videoHeight||480;if(sk.width!==VW||sk.height!==VH){sk.width=VW;sk.height=VH}skCtx.clearRect(0,0,VW,VH);if(!S.pose)return;
+  const col=getComputedStyle(document.documentElement).getPropertyValue('--'+WORLDS[S.w].id).trim()||'#fff';
+  list.forEach(o=>{const me=o===lm;skCtx.strokeStyle=me?col:'rgba(160,160,160,.35)';skCtx.lineWidth=(me?4:2)*VW/640;skCtx.beginPath();
+    SKEL.forEach(([a,b])=>{skCtx.moveTo(o[a].x*VW,o[a].y*VH);skCtx.lineTo(o[b].x*VW,o[b].y*VH)});skCtx.stroke();
+    if(me){skCtx.fillStyle=col;[15,16,27,28,0].forEach(k=>{skCtx.beginPath();skCtx.arc(o[k].x*VW,o[k].y*VH,(k===0?7:6)*VW/640,0,7);skCtx.fill()})}});
+}
+
+/* ---- The Line ----
+   Three soft voices that move on the Pulse by voice leading, never one note per gesture.
+   Bass every 4 beats, middle every 2, top every 1 or 2. Phrases of 8 steps rise then fall to a cadence, then breathe for 2.
+   Motion shapes it (density, register, loudness, how far up the ladder it may reach); stillness settles it onto a chord and holds.
+   In "Machine speaks" the top voice replays its own last phrase slowly. Pitches come from the open rungs, through the Note set. */
+let line=null;
+function buildLine(){
+  const out=G(0);out.connect(bus);
+  const v=[-.45,0,.45].map(pn=>{const o=ctx.createOscillator(),m=ctx.createOscillator(),mi=G(0),g=G(0),p=ctx.createStereoPanner();
+    m.connect(mi).connect(o.frequency);o.connect(g).connect(p).connect(out);p.pan.value=pn;o.start();m.start();o.frequency.value=220;m.frequency.value=440;return{o,m,mi,g,f:220,amp:0}});
+  line={out,v,step:0,t:0,ph:0,rest:0,hist:[],replay:-1};
+}
+function linePool(){
+  const b=banks[S.w];let fr=b?b.parts.filter((p,i)=>i<5||(p.avail||0)>.5).map(p=>p.f).filter(Boolean):[];
+  if(fr.length<3)fr=[S.A4/8*2,S.A4/8*3,S.A4/8*4];
+  const out=[];fr.forEach(f=>{f=qz(f);for(let k=-2;k<=4;k++){const x=f*Math.pow(2,k);if(x>=100&&x<=1500)out.push(x)}});
+  return [...new Set(out.map(x=>Math.round(x*10)/10))].sort((a,b)=>a-b);
+}
+function lineMove(cur,dir,lo,hi,hold,pool){
+  const band=pool.filter(f=>f>=lo&&f<=hi);if(!band.length)return cur;
+  let i=0,bd=9;band.forEach((f,k)=>{const d=Math.abs(Math.log2(f/cur));if(d<bd){bd=d;i=k}});
+  if(Math.random()<hold)return band[i];                                    // common tone held
+  const st=Math.random()<.75?1:2,j=Math.max(0,Math.min(band.length-1,i+dir*st));return band[j];   // mostly steps, sometimes a skip
+}
+function lineTick(dt){
+  if(!line)return;const t=ctx.currentTime,still=S.stillIn,e=clamp(S.mot*S.lv.depth*1.6),h=(1-S.hushAmt)*(S.fade?0:1)*(S.rel?S.relAmt:1);
+  const lvl=S.lv.line*S.st.line*h;line.out.gain.setTargetAtTime(lvl*.2,t,1.2);
+  const pool=linePool(),chord=pool.filter(f=>{const r=f/(S.A4/8);let o=r;while(o>=2)o/=2;return Math.abs(o-1)<.02||Math.abs(o-1.5)<.02});
+  line.t+=dt;const bt=beat()*(still?2:1);if(line.t<bt)return;line.t=0;line.step++;
+  const V=line.v,bands=[[100,330],[200,700],[300,1500]];
+  const setV=(k,f,amp,glide)=>{const vo=V[k];vo.f=f;vo.o.frequency.setTargetAtTime(f,t,glide);vo.m.frequency.setTargetAtTime(f*2,t,glide);
+    vo.mi.gain.setTargetAtTime(f*(.15+.6*S.ten+.4*S.bound)*Math.max(amp,.2),t,.3);vo.g.gain.setTargetAtTime(amp,t,amp>vo.amp?.08:.6);vo.amp=amp};
+  if(still){                                                               // settle onto a chord and hold, or speak
+    if(S.state==='speaks'&&line.hist.length>2){line.replay=(line.replay+1)%line.hist.length;setV(2,line.hist[line.replay]/(Math.random()<.5?2:1),.45,.4)}
+    else{const c=chord.length?chord:pool;[0,1,2].forEach(k=>{const cand=c.filter(f=>f>=bands[k][0]&&f<=bands[k][1]);if(cand.length){let best=cand[0];cand.forEach(f=>{if(Math.abs(Math.log2(f/V[k].f))<Math.abs(Math.log2(best/V[k].f)))best=f});setV(k,best,k===2?.35:.5,1.5)}})}
+    return}
+  line.replay=-1;
+  const regUp=S.hi>.6?1.25:S.hi<.35?.8:1;
+  if(line.rest>0){line.rest--;setV(2,V[2].f,0,.1);if(line.step%4===0)setV(0,lineMove(V[0].f,-1,100,330,.7,pool),.55,.4);return}
+  line.ph=(line.ph+1)%8;const dir=line.ph<4?1:-1,cad=line.ph===7;
+  if(line.step%4===0)setV(0,lineMove(V[0].f,pickOne([-1,1]),100*regUp,330*regUp,.6,pool),.55,.35);
+  if(line.step%2===0)setV(1,lineMove(V[1].f,-dir,200*regUp,700*regUp,.5-e*.25,pool),.5,.25);
+  const topEvery=e>.45?1:2;
+  if(line.step%topEvery===0){let f=cad&&chord.length?lineMove(V[2].f,-1,300,1500,0,chord):lineMove(V[2].f,dir,300*regUp,1500,.35-e*.3,pool);
+    setV(2,f,.35+e*.4,e>.6?.06:.15);line.hist.push(f);if(line.hist.length>8)line.hist.shift()}
+  if(cad)line.rest=e>.6?0:2;                                               // a phrase ends, the line breathes
+}
+
+/* ---- State engine ----
+   Stillness is a ladder (catch, resonance, the machine speaks, emptying); motion states come from quality combinations.
+   Each state uses only some layers. Repeating a state habituates it; big states spend a budget that refills slowly. */
+const ST={
+  catch:     {bed:1,   glitch:0,  strike:0,  wild:0,  comb:1,   line:.9},
+  resonance: {bed:.95, glitch:0,  strike:0,  wild:0,  comb:1.3, line:.75},
+  speaks:    {bed:.8,  glitch:.1, strike:.2, wild:0,  comb:1,   line:.6},
+  emptying:  {bed:.6,  glitch:0,  strike:0,  wild:0,  comb:.5,  line:.25},
+  aftermath: {bed:.85, glitch:0,  strike:0,  wild:0,  comb:1.8, line:.4},
+  drift:     {bed:1,   glitch:.2, strike:.3, wild:0,  comb:1,   line:1},
+  pressure:  {bed:1.05,glitch:.4, strike:.5, wild:.3, comb:1.5, line:1},
+  sparks:    {bed:.9,  glitch:.8, strike:1.6,wild:.6, comb:.8,  line:.7},
+  impact:    {bed:.85, glitch:1.2,strike:1.5,wild:1,  comb:1.3, line:.5},
+  shatter:   {bed:1,   glitch:1.5,strike:1,  wild:1,  comb:1.5, line:.35},
+  calm:      {bed:1,   glitch:.5, strike:1,  wild:.2, comb:1,   line:.9}
+};
+const STLABEL={catch:'Catch',resonance:'Resonance',speaks:'Machine speaks',emptying:'Emptying',aftermath:'Aftermath',drift:'Drift',pressure:'Pressure',sparks:'Sparks',impact:'Impact',shatter:'Shatter',calm:'Calm'};
+function classify(){
+  const nW=S.on.filter(Boolean).length,t=ctx?ctx.currentTime:0;
+  S.stillIn=S.stillIn?S.mot<.055:S.mot<.03;
+  if(S.stillIn){const st=S.still;if(t-S.lastPeak<6&&st<8)return st<1.5?'catch':'aftermath';
+    return st<2?'catch':st<6?'resonance':st<15?'speaks':'emptying'}
+  if(nW>=2&&(S.storm>.45||S.sh>.3))return'shatter';
+  if(S.sud>.45&&S.wgt>.55)return'impact';
+  if(S.sud>.45)return'sparks';
+  if(S.bound>.45&&S.dir>.5)return'pressure';
+  return'drift';
+}
+function updateStates(dt,m){
+  if(!ctx)return;const t=ctx.currentTime,c=classify();
+  if(c!==S.cand){S.cand=c;S.candT=0}else S.candT+=dt;
+  const need={impact:.12,sparks:.4,shatter:.4,catch:.25,aftermath:.25,drift:1.5,resonance:1.2,pressure:1.2}[c]??1;   // hysteresis
+  if(S.cand!==S.state&&S.candT>=need){const from=S.state;S.state=S.cand;
+    if(['impact','shatter'].includes(S.state)){S.lastPeak=t;markPeak(t)}
+    if(S.state==='impact'&&S.lv.edge>.35&&glitch){glitch.trigger('tape',{dur:.6});strike(.9);S.hushPulse=t}
+    if(['resonance','speaks','emptying'].includes(S.state)===false)S.spoke=false;
+    if(S.state==='speaks'&&!S.spoke&&S.pno<.25){S.spoke=true;setTimeout(()=>recallSpeak(),400)}}
+  if(['impact','shatter'].includes(S.state))S.lastPeak=t;
+  // habituation: time spent in the same motion state in the last minute dulls it
+  for(const k in S.fam)S.fam[k]*=Math.exp(-dt/60);
+  if(!S.stillIn)S.fam[S.state]=(S.fam[S.state]||0)+dt;
+  S.hab=Math.max(.3,1/(1+(S.fam[S.state]||0)/25));
+  // budget: storms, shatter and the wild voice spend it; calm refills it
+  const spend=Math.max(S.storm-.4,0)+Math.max(S.sh-.2,0)+Math.max(S.wildAmp-.25,0);
+  S.budget=clamp(S.budget-spend*dt/10+(spend<.05?dt/45:0));
+  // the current state's layer weights, glided
+  const tgt=ST[S.state]||ST.calm,motion=!S.stillIn;
+  for(const k in S.st){let v=tgt[k];if(motion&&k!=='bed')v*=S.hab;if(S.pno>.3&&!motion&&k!=='comb')v*=.5;S.st[k]+=(v-S.st[k])*(1-Math.exp(-dt/(k==='bed'||k==='line'?2.5:1)))}   // the bed never jumps between states
+  if(S.hushPulse&&t-S.hushPulse<.8)S.st.bed*=1-.35*smooth(0,.8,S.lv.edge);          // a strong impact dips the bed a little, never a hole
+  if(t-S.lastMark>3&&(S.storm>.6||S.sh>.4))markPeak(t);
+  // release ending
+  if(S.rel){S.relAmt=Math.max(0,S.relAmt-dt/(4+S.lv.release*26));if(S.relAmt<=0&&!S.fade){S.fade=true;applyLevels();flag()}}
+}
+function setRelease(on){
+  if(on){S.rel=1;S.relAmt=1;S.stormHold=false;setBody(false);toast('Release');allNotesOff()}
+  else{S.rel=0;S.relAmt=1;S.fade=false;applyLevels();toast('Return')}
+  flag();
+}
+
+/* ---- Wild voice: three FM pairs played directly by her body. Height picks the rung, sideways speed bends the pitch,
+   jerky flow turns on the second modulator. No smoothing: this is the instrument, not the bed. ---- */
+let wild=null;
+function buildWild(){
+  const out=G(0),pan=ctx.createStereoPanner(),sh=ctx.createWaveShaper();const c=new Float32Array(2048);for(let i=0;i<2048;i++){const x=i/1024-1;c[i]=Math.tanh(x*2.5)}sh.curve=c;
+  const ops=[0,1,2].map(i=>{const car=ctx.createOscillator(),mod=ctx.createOscillator(),mod2=ctx.createOscillator(),idx=G(0),idx2=G(0),g=G(.3);
+    mod2.connect(idx2).connect(mod.frequency);mod.connect(idx).connect(car.frequency);car.connect(g).connect(pan);car.start();mod.start();mod2.start();return{car,mod,mod2,idx,idx2}});
+  pan.connect(sh).connect(out);out.connect(bus);wild={out,pan,ops};
+}
+function wildDrive(dt){
+  if(!wild)return;const t=ctx.currentTime,E=S.lv.edge,h=(1-S.hushAmt)*(S.fade?0:1)*(S.rel?0:1);
+  const a=clamp((S.fast-.22)*2.2)*clamp(E*1.4)*S.st.wild*(.25+.75*S.budget)*h;
+  S.wildAmp+=(a-S.wildAmp)*(1-Math.exp(-dt/(a>S.wildAmp?.04:.25)));
+  wild.out.gain.setTargetAtTime(Math.pow(S.wildAmp,1.4)*S.lv.wild*.5,t,.03);
+  const b=banks[S.w];if(!b)return;const n=Math.max(1,Math.min(b.parts.length,Math.ceil(S.ceil)));
+  const base=Math.min(n-1,Math.floor((poseOn()?P.handR:S.hi)*n)),step=Math.round(clamp(S.vx*1.2,-3,3));
+  const p=b.parts[Math.max(0,Math.min(n-1,base+step))];let f=qz((p&&p.f)||220);while(f<110)f*=2;
+  const bend=Math.pow(2,clamp(S.vx*1.2-step,-.5,.5)/12);
+  [[1,S.sh>.3?1.414:2],[1.5,S.sh>.3?2.76:3],[.5,S.sh>.3?.73:1]].forEach(([r,mr],i)=>{const o=wild.ops[i],fc=f*r*bend;
+    o.car.frequency.setTargetAtTime(fc,t,.06);o.mod.frequency.setTargetAtTime(fc*mr,t,.06);o.mod2.frequency.setTargetAtTime(fc*.37,t,.05);
+    o.idx.gain.setTargetAtTime(fc*S.wildAmp*(3+6*S.ten),t,.03);o.idx2.gain.setTargetAtTime(fc*S.wildAmp*S.bound*18,t,.04)});
+  wild.pan.pan.setTargetAtTime(clamp(S.pxRaw,-1,1),t,.05);
+}
+
+/* ---- Recall: 24 s memory of the machine's own sound. Peaks are marked; in long stillness one returns, slowed or reversed. ---- */
+let recall=null,recG=null;const marks=[];
+function makeRecall(){
+  const sp=ctx.createScriptProcessor(2048,2,2),sr=ctx.sampleRate,N=sr*24|0,B=new Float32Array(N);let w=0;const r={on:false,pos:0,start:0,len:1,rate:.5,rev:false};
+  sp.now=()=>w;sp.N=N;
+  sp.play=(start,len,rate,rev)=>{r.start=start;r.len=Math.max(2000,len|0);r.rate=rate;r.rev=rev;r.pos=0;r.on=true};
+  sp.onaudioprocess=e=>{const iL=e.inputBuffer.getChannelData(0),iR=e.inputBuffer.getChannelData(1),oL=e.outputBuffer.getChannelData(0),oR=e.outputBuffer.getChannelData(1);
+    for(let k=0;k<iL.length;k++){B[w]=(iL[k]+iR[k])*.5;w=(w+1)%N;let v=0;
+      if(r.on){const ph=r.pos/r.len,idx=(r.start+((r.rev?r.len-r.pos:r.pos)|0)+N*2)%N;v=B[idx]*Math.sin(Math.PI*ph);r.pos+=r.rate;if(r.pos>=r.len)r.on=false}
+      oL[k]=v;oR[k]=v*.9}};
+  return sp;
+}
+function markPeak(t){if(!recall)return;S.lastMark=t;marks.push({w:recall.now(),t});if(marks.length>10)marks.shift()}
+function recallSpeak(){
+  if(!recall||!marks.length||S.fade||S.rel)return;const sr=ctx.sampleRate,now=ctx.currentTime;
+  const ok=marks.filter(m=>now-m.t>4&&now-m.t<22);if(!ok.length)return;const m=ok[Math.random()*ok.length|0];
+  const len=(1.5+Math.random()*2.5)*sr,rate=pickOne([.5,.5,.75,.25]);
+  recall.play((m.w-len*.5+recall.N)%recall.N,len/rate*rate,rate,Math.random()<.4);
+  recG.gain.setTargetAtTime(S.lv.recall*.9,now,.3);toast('Recall');
+}
+
+function drive(){
+  if(!ctx||S.freeze)return;const t=ctx.currentTime;
+  const e=energies(),floor=S.lv.floor;
+  // piano frequencies the bed should lean toward
+  const pf=memRes.filter(r=>r.midi!=null).map(r=>r.f0||mtof(r.midi));
+  const near=f=>pf.some(x=>{let y=x;while(y<f/1.42)y*=2;while(y>f*1.42)y/=2;return Math.abs(Math.log2(y/f))<1/24});
+  activeIdx().forEach(bi=>{const b=banks[bi],w=WORLDS[bi],n=b.parts.length;
+  const c=2+clamp(S.ten*1.6)*(n-2);if(bi===S.w)S.ceil=c;           // ladder ceiling set by the arc
+  const top=Math.max(1,Math.min(n-1,Math.floor(c-.001)));
+  const tiltAmt=(S.hi-.5)*1.6-(S.wgt-.5)*.8,free=1-S.bound;
+  b.parts.forEach((p,i)=>{
+    const pos=n>1?i/(n-1):0,avail=clamp(c-i);
+    const tilt=1+tiltAmt*(pos-.5)*2;
+    const open=i===0?1:clamp((e.bed*1.3-(i/Math.max(1,c))*.5)*2);
+    let lv=(i===0?Math.max(floor,.35+e.bed*.4):(floor*.2+open*(1-floor*.2))*avail)*w.w[i]*Math.max(.2,tilt);
+    if(i>0&&i!==top)lv*=1-.5*S.dir;else if(i===top)lv*=1+.6*S.dir;       // direct movement focuses on the newest rung
+    if(p.f&&near(p.f))lv*=1.6;                                           // lean toward what the piano is sounding
+    if(S.mode==='duet')lv=(i===0?floor:floor*.2*avail)*w.w[i];
+    lv*=e.hush*S.st.bed*(S.rel?S.relAmt:1)*(1+S.breathD*.22*(S.breathV*2-1));if(S.fade)lv=0;p.lvl=lv;p.avail=avail;
+    p.g.gain.setTargetAtTime(lv*S.lv.bed*.22,t,S.fade?3:.6);
+    p.pan.pan.setTargetAtTime(clamp(p.spread*(.35+S.spread*1.2+e.bed*.3)+S.pan*.45,-1,1),t,1.2);
+    if(p.f){const fj=p.f*Math.pow(p.jit||1,clamp(S.sh*1.4)),tc=S.sh>.15?.03:1.5;p.o1.frequency.setTargetAtTime(fj,t,tc);
+      p.o2.frequency.setTargetAtTime(fj+p.bt*(1+(1-S.dir)*2+free)*(1+S.sh*4),t,tc)}   // shatter detunes; indirect, free movement widens beating
+  });});
+  // memory: her energy opens the resonators; newer notes ring a little louder
+  memRes.forEach((r,k)=>{const age=S.mem.length?(k+1)/S.mem.length:0;const v=r.midi==null||S.fade?0:(.25+.75*age)*e.mem;r.on=v;r.g.gain.setTargetAtTime(v*7,t,.7)});
+  memG.gain.setTargetAtTime(S.fade?0:S.lv.mem*.5*(S.rel?S.relAmt:1),t,S.fade?3:.4);
+  memGrain.parameters.get('density').setTargetAtTime(2+e.mem*9+S.bound*e.mem*22,t,.3);memGrain.parameters.get('size').setTargetAtTime(Math.max(.05,.55-S.bound*.5),t,.3);
+  // the room holds her stillness: the tail swells after 2 s still
+  const en=clamp(S.mot*1.1+S.ten*.5+S.storm*.6+S.sh*.6+S.wildAmp*.5);
+  const fTar=Math.min(18000,1500*Math.pow(2,en*3.4)*(1+(S.stillIn?S.breathD*.3:0)*(S.breathV-.5)));dynLP.frequency.setTargetAtTime(fTar,t,fTar>dynLP.frequency.value?.3:1.8);   // opens quickly, closes slowly
+  const thr=smooth(2,7,S.still)*.35+(S.rel?(1-S.relAmt)*.6:0)+(S.state==='aftermath'?.3:0);verbG.gain.setTargetAtTime(S.lv.space*(1.05+thr+S.spread*.25),t,.8);
+}
+let rungKey='';
+function renderRungs(){
+  const w=WORLDS[S.w],b=banks[S.w];const key=S.w+'|'+S.tuning+'|'+S.A4;
+  if(key!==rungKey){rungKey=key;$('rungs').innerHTML=w.h.map((h,i)=>`<div class="rung" id="rg${i}"><span class="nm">${roomOn()?'mode '+(i+1):rungName(h)}</span><span class="bar"><i id="rb${i}"></i></span><span class="hz">${Math.round(partFreq(S.w,i))} Hz</span></div>`).join('')}
+  if(b)b.parts.forEach((p,i)=>{const el=$('rg'+i);if(!el)return;el.classList.toggle('off',(p.avail||0)<.05&&i>0);$('rb'+i).style.width=Math.min(100,p.lvl*120).toFixed(0)+'%'});
+  let hi=0;w.h.forEach((h,i)=>{if(i<S.ceil-.05)hi=i});
+  $('archl').textContent=`${STLABEL[S.state]||''} · arc ${Math.round(S.ten*100)} · up to ${roomOn()?'mode '+(hi+1):rungName(w.h[hi])} · budget ${Math.round(S.budget*100)}${S.hab<.8?' · tired':''}`;
+}
+function meters(){
+  const set=(id,v,txt)=>{$('m'+id).style.width=(clamp(v)*100).toFixed(0)+'%';$('n'+id).textContent=txt};
+  set('Mot',S.mot,Math.round(S.mot*100));set('Hi',S.hi,Math.round(S.hi*100));
+  $('mPan').style.width=((S.pan+1)/2*100).toFixed(0)+'%';$('nPan').textContent=S.pan<-.2?'L':S.pan>.2?'R':'C';
+  const st=Math.max(0,S.still);set('St',st/8,st.toFixed(1)+' s');set('Pno',S.pno,Math.round(S.pno*100));set('Stm',S.storm,Math.round(S.storm*100));
+  set('Arc',S.ten,Math.round(S.ten*100));
+  set('Flo',S.bound,S.bound>.5?'bound':'free');set('Sud',S.sud,S.sud>.4?'sudden':'sustained');
+  set('Dir',S.dir,S.dir>.5?'direct':'indirect');set('Wgt',S.wgt,S.wgt>.5?'strong':'light');
+  renderRungs();
+  const m=MODES.find(x=>x.id===S.mode);
+  $('status').innerHTML=`<b>${activeIdx().map(i=>WORLDS[i].name).join(' + ')}</b> · <b>${m.name}</b>${S.breathD>.05?' · breath '+(4+S.lv.brate*8).toFixed(1)+'/min':''}${S.sh>.15?' · <b style="color:var(--fire)">shatter '+Math.round(S.sh*100)+'</b>':''} · A4 ${S.A4}${S.auto?' · advance on':''}`;
+}
+function showErr(m){$('err').textContent=m;$('err').hidden=false}
+
+/* ---- MIDI bridge ----
+   In:  notes from a digital piano or controller go straight into the memory (exact pitch, no guessing).
+   Out: ch 1 echoes your notes, ch 2 is the body playing your notes, ch 3 carries strikes.
+        CC 20–28 carry the motion signals (see the machine sheet). */
+let midi=null,mOut=null,mIn=null;
+const M={echo:true,body:false,cc:true,last:{},next:0,learnUntil:0,inAt:-1e9,lastTxt:''};
+const CCS=[[20,'motion'],[21,'fast'],[22,'height'],[23,'position'],[24,'stillness'],[25,'storm'],[26,'piano'],[27,'worlds'],[28,'mode'],[29,'expansion'],[30,'arc'],[31,'bound flow'],[32,'sudden'],[33,'direct'],[34,'weight'],[35,'edge']];
+const esc=t=>String(t).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+function midiStat(t){$('midiStat').textContent=t}
+async function initMidi(){
+  if(!navigator.requestMIDIAccess){midiStat('This browser has no Web MIDI. Use Chrome.');return}
+  try{midi=await navigator.requestMIDIAccess();midi.onstatechange=fillPorts;fillPorts();
+    midiStat(midi.outputs.size?'Ready. Pick an output (on a Mac: IAC Driver Bus 1).':'No MIDI outputs found. On a Mac, turn on the IAC Driver in Audio MIDI Setup, then reload.')}
+  catch(e){midiStat('MIDI permission was refused. Allow MIDI for this file in Chrome site settings, then reload.')}
+}
+function fillPorts(){
+  if(!midi)return;const o=$('midiOut'),i=$('midiIn'),ov=o.value,iv=i.value;
+  o.innerHTML='<option value="">No output</option>'+[...midi.outputs.values()].map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  i.innerHTML='<option value="">No input</option>'+[...midi.inputs.values()].map(p=>`<option value="${esc(p.id)}">${esc(p.name)}</option>`).join('');
+  if([...o.options].some(x=>x.value===ov))o.value=ov;else{const iac=[...o.options].find(x=>/iac|loopmidi|bus/i.test(x.textContent));if(iac)o.value=iac.value}
+  if([...i.options].some(x=>x.value===iv))i.value=iv;
+  selectPorts();
+}
+function selectPorts(){
+  allNotesOff();mOut=midi&&$('midiOut').value?midi.outputs.get($('midiOut').value):null;
+  if(mIn)mIn.onmidimessage=null;mIn=midi&&$('midiIn').value?midi.inputs.get($('midiIn').value):null;
+  // never read our own output back in (feedback loop)
+  if(mIn&&mOut&&mIn.name===mOut.name){mIn=null;$('midiIn').value='';midiStat('In and out were the same port, so input was turned off to avoid a loop.')}
+  if(mIn)mIn.onmidimessage=onMidiIn;
+}
+/* Remote control: any phone or controller sending notes on MIDI channel 16 runs the machine. Held pads act while held. */
+const REMOTE={36:'hush',37:'next',38:'strike',39:'storm',40:'swell',41:'freeze',42:'stop',43:'reset',44:'lock',45:'body',
+  48:'w0',49:'w1',50:'w2',51:'w3',52:'mirror',53:'contrast',54:'answer',55:'duet',56:'advance',57:'fade',58:'edgeDown',59:'edgeUp'};
+function remote(n,on){const a=REMOTE[n];if(!a)return;
+  const held={hush:'hush',storm:'stormHold',swell:'swell'}[a];if(held){S[held]=on;if(on)toast({hush:'Hush',stormHold:'Storm',swell:'Swell'}[held]);return}
+  if(!on)return;
+  if(a==='next'){const k=Math.min(3,S.w+1);setWorld(k);toast('→ '+WORLDS[k].name)}
+  else if(a==='strike'){strike(.8);toast('Strike')}
+  else if(a==='freeze'){setFreeze(!S.freeze);toast(S.freeze?'Frozen':'Unfrozen')}
+  else if(a==='stop')setStop(!S.stopped);
+  else if(a==='reset')panic();
+  else if(a==='lock'){setLock(!S.lock);toast(S.lock?'Phrase locked':'Listening')}
+  else if(a==='body'){setBody(!M.body);toast(M.body?'Body plays notes':'Body notes off')}
+  else if(a[0]==='w'&&a.length===2){const i=+a[1];toggleWorld(i);toast((S.on[i]?'+ ':'− ')+WORLDS[i].name)}
+  else if(['mirror','contrast','answer','duet'].includes(a)){setMode(a);toast(MODES.find(m=>m.id===a).name)}
+  else if(a==='edgeDown'||a==='edgeUp')setEdge(S.lv.edge+(a==='edgeUp'?.1:-.1));
+  else if(a==='advance'){$('auto').click();toast(S.auto?'Advance on':'Advance off')}
+  else if(a==='fade')setRelease(!(S.rel||S.fade));
+}
+function onMidiIn(e){const [st,n,v]=e.data;
+  if((st&0x0f)===15){const t=st&0xf0;if(t===0x90)remote(n,v>0);else if(t===0x80)remote(n,false);return}
+  if((st&0xf0)===0x90&&v>0){M.inAt=performance.now();if(addMem(n)&&M.echo)noteOut(0,n,v,700)}}
+function noteOut(ch,n,vel,dur){if(!mOut)return;n=Math.max(0,Math.min(127,Math.round(n)));vel=Math.max(1,Math.min(127,Math.round(vel)));
+  try{mOut.send([0x90|ch,n,vel]);mOut.send([0x80|ch,n,0],performance.now()+dur)}catch(_){}
+  M.lastTxt=`ch${ch+1} ${NOTE[n%12]}${Math.floor(n/12)-1} v${vel}`}
+function allNotesOff(){if(!mOut)return;try{for(let c=0;c<3;c++)mOut.send([0xB0|c,123,0])}catch(_){}}
+function ccOut(cc,v){if(!mOut||!M.cc||performance.now()<M.learnUntil)return;v=Math.max(0,Math.min(127,Math.round(v)));if(M.last[cc]===v)return;M.last[cc]=v;try{mOut.send([0xB0,cc,v])}catch(_){}}
+function learnCC(cc){if(!mOut){midiStat('Pick a MIDI output first.');return}M.learnUntil=performance.now()+1600;
+  [0,30,60,90,127,90,60].forEach((v,i)=>setTimeout(()=>{try{mOut.send([0xB0,cc,v])}catch(_){}},i*120));delete M.last[cc];toast('CC '+cc)}
+const toMidi=f=>Math.round(69+12*Math.log2(f/S.A4));
+function bodyPool(){
+  if(S.mem.length)return[...new Set(S.mem.map(n=>toMidi(qz(mtof(n)))))].sort((a,b)=>a-b);
+  const set=new Set();activeIdx().forEach(i=>WORLDS[i].h.forEach((h,pi)=>{if(pi>=S.ceil)return;let m=toMidi(qz(partFreq(i,pi)));while(m<45)m+=12;set.add(m)}));return[...set].sort((a,b)=>a-b);
+}
+function midiTick(){
+  if(!mOut)return;
+  ccOut(20,S.mot*127);ccOut(21,S.fast*127);ccOut(22,S.hi*127);ccOut(23,(S.pan+1)/2*127);ccOut(24,Math.max(0,S.still)/8*127);
+  ccOut(25,S.storm*127);ccOut(26,S.pno*127);ccOut(27,S.on.reduce((a,v,i)=>a+(v?1<<i:0),0));ccOut(28,MODES.findIndex(m=>m.id===S.mode));ccOut(29,S.spread*127);ccOut(30,S.ten*127);ccOut(31,S.bound*127);ccOut(32,S.sud*127);ccOut(33,S.dir*127);ccOut(34,S.wgt*127);ccOut(35,S.lv.edge*127);
+  // the body plays your notes: motion sets density and velocity, position picks low to high, height picks the octave
+  const now=performance.now();if(!M.body||S.fade||S.freeze||S.hushAmt>.5||now<M.next)return;
+  const e=clamp(Math.max(S.mot*S.lv.depth*1.6,S.fast));if(e<.06){M.next=now+200;return}
+  const pool=bodyPool();if(!pool.length)return;
+  let idx=Math.round((S.pan+1)/2*(pool.length-1));if(Math.random()<.35)idx+=Math.random()<.5?-1:1;idx=Math.max(0,Math.min(pool.length-1,idx));
+  let n=pool[idx]+(S.hi>.72?12:S.hi<.28?-12:0);if(S.storm>.4&&Math.random()<S.storm)n+=[12,24,-12][Math.random()*3|0];
+  const vel=35+e*80+S.storm*12,dur=1900-e*1700;noteOut(1,n,vel,dur);
+  if(S.storm>.5)noteOut(1,pool[(idx+2)%pool.length]+12,vel*.8,dur*.6);
+  M.next=now+(2200-e*2050)*(.7+Math.random()*.6);
+}
+
+/* ---- Controls ---- */
+/* ---- Site start: touch mode (no permissions) or camera + mic ---- */
+const PT={on:false,x:CW/2,y:CH/2,acc:0,m:0,seen:false};
+async function boot(){
+  if(S.running)return true;
+  try{await initAudio()}catch(e){showErr('Audio could not start: '+e.message);return false}
+  S.running=true;lastT=0;requestAnimationFrame(frame);return true;
+}
+function setHint(t){const h=$('hint');if(!t){h.hidden=true;return}h.textContent=t;h.hidden=false;h.style.opacity=1}
+async function startTouch(){
+  $('startTouch').disabled=true;if(!await boot()){$('startTouch').disabled=false;return}
+  PT.on=true;$('gate').hidden=true;$('cam').classList.add('touch');$('camEmpty').hidden=true;
+  setHint(L('h_touch'));toast(L('t_touch'));
+}
+async function startCam(){
+  $('start').disabled=true;$('camBtn').disabled=true;
+  if(!await boot()){$('start').disabled=false;$('camBtn').disabled=false;return}
+  try{await initCam();PT.on=false;$('cam').classList.remove('touch');setHint('');$('gate').hidden=true;$('camBtn').textContent='Camera on'}
+  catch(e){showErr('Camera blocked or unavailable. Allow the camera for this site in Chrome, or keep playing with touch.');$('start').disabled=false;$('camBtn').disabled=false;if(!PT.on)startTouch();return}
+  await initMic();
+}
+$('startTouch').addEventListener('click',startTouch);
+$('start').addEventListener('click',startCam);
+$('camBtn').addEventListener('click',startCam);
+$('midiBtn').addEventListener('click',()=>{$('midiBtn').disabled=true;$('midiBtn').textContent='MIDI on';initMidi()});
+$('relBtn').addEventListener('click',()=>setRelease(!(S.rel||S.fade)));
+$('cam').addEventListener('pointermove',e=>{if(!PT.on||S.drawing)return;const r=$('cam').getBoundingClientRect();
+  const x=(1-(e.clientX-r.left)/r.width)*CW,y=(e.clientY-r.top)/r.height*CH;
+  if(PT.seen)PT.acc+=Math.hypot(x-PT.x,y-PT.y);PT.x=Math.max(0,Math.min(CW-1,x));PT.y=Math.max(0,Math.min(CH-1,y));PT.seen=true;
+  if(!$('hint').hidden){$('hint').style.opacity=0;setTimeout(()=>{$('hint').hidden=true},1500)}});
+$('cam').addEventListener('pointerleave',()=>{PT.seen=false});
+$('cam').addEventListener('pointerdown',e=>{if(PT.on&&e.pointerType!=='mouse')PT.seen=false});
+/* touch mode: pointer speed stands in for the dancer. Same signals, same rules. */
+function touchFrame(dt){
+  const spd=PT.acc/CW/dt;PT.acc=0;const tgt=Math.min(1,Math.pow(spd/2.4,.85));
+  PT.m+=(tgt-PT.m)*(1-Math.exp(-dt/(tgt>PT.m?.08:.25)));
+  if(ov.width!==CW){ov.width=CW;ov.height=CH}
+  og.fillStyle='rgba(14,13,16,.16)';og.fillRect(0,0,CW,CH);
+  const c=getComputedStyle(document.documentElement).getPropertyValue('--'+WORLDS[S.w].id).trim();
+  og.fillStyle=c;og.globalAlpha=.35+.65*PT.m;const r=1.5+PT.m*5;og.beginPath();og.arc(PT.x,PT.y,r,0,7);og.fill();og.globalAlpha=1;
+  return PT.m;
+}
+$('auto').addEventListener('click',()=>{S.auto=!S.auto;$('auto').setAttribute('aria-pressed',S.auto)});
+$('cal').addEventListener('click',()=>{S.base=0;S.calSum=0;S.calN=0;S.calibrating=true;$('cal').textContent='Hold still…'});
+$('tune').addEventListener('change',e=>{const v=e.target.value;if(v==='room'){S.tuning='room';setTuning()}else{S.tuning='a';setTuning(+v)}});
+$('roomBtn').addEventListener('click',measureRoom);
+$('poseBtn').addEventListener('click',()=>setPose(!S.pose));
+$('pset').addEventListener('change',e=>{S.pset=e.target.value;if(S.pset==='room'&&!S.room)showErr('Room modes only needs a room measurement first. Press Tune to room.');retuneMem();toast($('pset').selectedOptions[0].textContent)});
+$('roiBtn').addEventListener('click',()=>setDrawing(!S.drawing));
+$('roiClr').addEventListener('click',()=>{S.roi=null;try{localStorage.removeItem('mb-roi')}catch(_){}drawTrackUI();toast('Whole frame')});
+function setEdge(v){S.lv.edge=clamp(Math.round(v*10)/10);const el=$('k-edge');if(el){el.value=S.lv.edge;$('kv-edge').textContent=Math.round(S.lv.edge*100)}toast('Edge '+Math.round(S.lv.edge*100))}
+function setTrack(on){S.track=on;S.lost=on?3:0;$('trackBtn').setAttribute('aria-pressed',on);drawTrackUI();toast(on?'Locked on dancer':'Lock off')}
+$('trackBtn').addEventListener('click',()=>setTrack(!S.track));
+$('trR').addEventListener('input',e=>{S.trR=+e.target.value;drawTrackUI()});
+$('cam').addEventListener('pointerdown',e=>{
+  if(S.drawing){const [x,y]=camXY(e);drag={x,y};$('cam').setPointerCapture(e.pointerId);S.roi={x0:x,x1:x,y0:y,y1:y};drawTrackUI();return}
+  if(S.track){const [x,y]=camXY(e);S.tx=x;S.ty=y;S.lost=0;P.cx=x/CW;P.cy=y/CH;drawTrackUI();toast(S.pose?'Following this person':'Lock moved')}});// tap her to lock onto her
+$('cam').addEventListener('pointermove',e=>{if(!drag)return;const [x,y]=camXY(e);S.roi={x0:Math.min(drag.x,x),x1:Math.max(drag.x,x),y0:Math.min(drag.y,y),y1:Math.max(drag.y,y)};drawTrackUI()});
+$('cam').addEventListener('pointerup',()=>{if(!drag)return;drag=null;const r=S.roi;
+  if(!r||r.x1-r.x0<8||r.y1-r.y0<6){S.roi=null;toast('Area too small')}else{try{localStorage.setItem('mb-roi',JSON.stringify(r))}catch(_){}toast('Stage area set')}
+  setDrawing(false);S.peak=0;drawTrackUI()});
+try{const r=JSON.parse(localStorage.getItem('mb-roi')||'null');if(r&&r.x1>r.x0)S.roi=r}catch(_){}
+$('autoR').addEventListener('click',()=>{S.autoRange=!S.autoRange;S.peak=0;$('autoR').setAttribute('aria-pressed',S.autoRange)});
+$('camSel').addEventListener('change',e=>initCam(e.target.value).catch(()=>showErr('That camera could not start. Check it is connected and not used by another app.')));
+$('stopBtn').addEventListener('click',()=>setStop(!S.stopped));
+try{const r=JSON.parse(localStorage.getItem('mb-room')||'null');if(Array.isArray(r)&&r.length>=6)useRoom(r,false)}catch(_){}
+/* Red light: everything silent within about 50 ms. Press again for a slow 3 s return. */
+function setStop(on){S.stopped=on;const b=$('stopBtn');b.innerHTML=(on?'Resume':'Stop')+' <kbd>Esc</kbd>';b.setAttribute('aria-pressed',on);
+  if(on){allNotesOff();setBody(false);S.stormHold=false;S.storm=0}
+  if(stopG){const t=ctx.currentTime;stopG.gain.cancelScheduledValues(t);stopG.gain.setValueAtTime(stopG.gain.value,t);on?stopG.gain.setTargetAtTime(0,t,.012):stopG.gain.setTargetAtTime(1,t,1)}
+  flag();toast(on?'STOPPED':'Resuming')}
+$('freeze').addEventListener('click',()=>setFreeze(!S.freeze));
+$('strikeBtn').addEventListener('click',()=>strike(.8));
+$('clear').addEventListener('click',clearMem);
+$('lock').addEventListener('click',()=>setLock(!S.lock));
+$('follow').addEventListener('click',()=>setMemMode(S.memMode==='notes'?'partials':'notes'));
+$('midiOut').addEventListener('change',selectPorts);$('midiIn').addEventListener('change',selectPorts);
+function setBody(on){M.body=on;$('mBody').setAttribute('aria-pressed',on);if(!on)try{mOut&&mOut.send([0xB1,123,0])}catch(_){}}
+$('mBody').addEventListener('click',()=>setBody(!M.body));
+$('mEcho').addEventListener('click',()=>{M.echo=!M.echo;$('mEcho').setAttribute('aria-pressed',M.echo)});
+$('mCC').addEventListener('click',()=>{M.cc=!M.cc;M.last={};$('mCC').setAttribute('aria-pressed',M.cc)});
+CCS.forEach(([cc,name])=>{const b=document.createElement('button');b.textContent=`CC${cc} ${name}`;b.addEventListener('click',()=>learnCC(cc));$('learn').appendChild(b)});
+$('snap').addEventListener('click',()=>{S.snap=!S.snap;$('snap').setAttribute('aria-pressed',S.snap);retuneMem()});
+/* One-hand map: everything sits under the left hand so the right hand stays on the piano. */
+let toastT;
+function toast(txt){const el=$('toast');el.textContent=txt;el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>el.hidden=true,1100)}
+function panic(){allNotesOff();S.ten=0;S.build=false;S.budget=1;S.rel=0;S.relAmt=1;S.fam={};if(typeof setBody==='function')setBody(false);S.fade=false;S.stormHold=false;S.swell=false;S.hush=false;S.storm=0;setFreeze(false);setLock(false);setMode('mirror');setWorld(0);applyLevels();flag();toast('Reset · Ground · Mirror')}
+function setLock(on){S.lock=on;$('lock').setAttribute('aria-pressed',on);$('lock').innerHTML=(on?'Locked':'Lock phrase')+' <kbd>F</kbd>';if(memGrain)memGrain.parameters.get('freeze').value=(S.freeze||on)?1:0}
+const HOLD={b:'build',r:'stormHold',s:'swell',d:'hush',arrowleft:'hush',pageup:'hush',arrowup:'swell'};
+document.addEventListener('keyup',e=>{const f=HOLD[e.key.toLowerCase()];if(f)S[f]=false});
+window.addEventListener('blur',()=>{S.stormHold=S.swell=S.hush=S.build=false});
+document.addEventListener('keydown',e=>{if(!S.running||!S.inView||e.metaKey||e.ctrlKey||e.altKey||/^(SELECT|INPUT|TEXTAREA)$/.test(e.target.tagName||''))return;const k=e.key.toLowerCase();
+  if(k==='tab'&&e.target.closest&&e.target.closest('a,button,summary,details'))return;
+  if(k==='tab'){e.preventDefault()}
+  if(e.repeat)return;
+  if(k==='escape'){e.preventDefault();setStop(!S.stopped);return}
+  const dg=e.code.match(/^Digit([1-4])$/);if(dg){const i=+dg[1]-1;e.shiftKey?setWorld(i):toggleWorld(i);toast((e.shiftKey?'Solo ':S.on[i]?'+ ':'− ')+WORLDS[i].name);return}
+  if(e.code==='Backquote'){panic();return}
+  if(k==='arrowright'||k==='pagedown'){e.preventDefault();const n=Math.min(3,S.w+1);setWorld(n);toast('→ '+WORLDS[n].name);return}
+  if(k==='arrowdown'){e.preventDefault();strike(.8);toast('Strike');return}
+  if(k==='tab'){const n=e.shiftKey?Math.max(0,S.w-1):Math.min(3,S.w+1);setWorld(n);toast('→ '+WORLDS[n].name);return}
+  const hf=HOLD[k];if(hf){e.preventDefault();S[hf]=true;toast({stormHold:'Storm',swell:'Swell',hush:'Hush',build:'Build arc'}[hf]);return}
+  const md={z:'mirror',x:'contrast',c:'answer',v:'duet'}[k];if(md){setMode(md);toast(MODES.find(m=>m.id===md).name);return}
+  if(k==='q'){setFreeze(!S.freeze);toast(S.freeze?'Frozen':'Unfrozen');return}
+  if(k==='w'){strike(.8);toast('Strike');return}
+  if(k==='e'){clearMem();toast('Memory cleared');return}
+  if(k==='f'){setLock(!S.lock);toast(S.lock?'Phrase locked':'Listening');return}
+  if(k==='5'||k==='6'){setEdge(S.lv.edge+(k==='6'?.1:-.1));return}
+  if(k==='p'){setPose(!S.pose);return}
+  if(k==='l'){setTrack(!S.track);return}
+  if(k==='h'){setMemMode(S.memMode==='notes'?'partials':'notes');toast(S.memMode==='partials'?'Follow partials':'Follow notes');return}
+  if(k==='g'){setBody(!M.body);toast(M.body?'Body plays notes':'Body notes off');return}
+  if(k==='t'){$('snap').click();toast(S.snap?'Snap to A':'Free pitch');return}
+  if(k==='a'){$('auto').click();toast(S.auto?'Advance on':'Advance off');return}
+  if(k===' '){e.preventDefault();setRelease(!(S.rel||S.fade))}});
+setWorld(0,true);setMode('mirror');renderRungs();
+S.inView=true;try{new IntersectionObserver(es=>{S.inView=es[0].isIntersecting},{threshold:.15}).observe(document.querySelector('.stage'))}catch(_){}
+/* ---- bilingual reading text (EN / 繁中) ---- */
+const ZH={
+ nav_play:'演奏',nav_about:'關於',nav_omt:'山海 ↗',
+ band:'測試版 0.20 · 進行中 · 建議在筆電上用 Chrome，接喇叭或耳機',
+ intro:'身體，即樂器。舞者移動，或你移動手，四個純音世界便回應：展開、敲擊、風暴、休止。為鋼琴與舞蹈的即興現場而做。',
+ notes:'音集',g_touch:'觸控演奏',g_cam:'鏡頭＋麥克風',
+ g_note:'觸控：在此移動滑鼠或手指，不需任何權限。鏡頭：舞者或你在鏡頭前；麥克風聆聽鋼琴。不錄音、不上傳。',
+ rig:'演出設定：鏡頭、姿態、舞台範圍、調音、MIDI、踏板、左手鍵位',
+ a_h1:'關於',a_lead:'身境是山海的第三部分。聲境演奏時辰；殿境讓天氣演奏建築；身境讓身體演奏空間。',
+ a_p1:'鏡頭讀出她動了多少、多快、多高、在哪裡、靜了多久。這些讀數從不直接彈奏音符，只推動幾股緩慢的力（能量、明暗、密度、混沌、靜止），由樂器決定說什麼：何時展開、何時敲擊、何時風暴、何時休止。身體與聲音之間的這段距離正是重點——它應像夥伴一樣回應，而不是像影子一樣跟隨。',
+ a_h2:'怎麼玩',
+ a_l1:'<b>慢慢移動</b>，世界便一個泛音一個泛音地向上展開。',
+ a_l2:'<b>突然一動</b>，敲響一聲鐘。',
+ a_l3:'疊上兩個以上的世界（按鍵 1 至 4）後<b>狂動</b>，邊緣層便進來：碎裂、環形調變與回授，仍然對準世界的音。',
+ a_l4:'<b>靜止</b>，房間便漲起來；旋律放慢、休止。',
+ a_l5:'<b>空白鍵</b>讓整首慢慢放下，<b>Esc</b> 是停止。完整的演出設定在「Rig」面板。',
+ a_h3:'四個世界',w1:'土',w1d:'低泛音，緩慢，靠近基音。',w2:'水',w2d:'中段泛音，漂移並彼此拍頻。',w3:'火',w3d:'第七、十一、十三泛音：明亮、不穩、容易敲響。',w4:'空',w4d:'高、薄、遙遠；其他世界之上的空間。',
+ a_w:'四者都取自 A 的同一泛音列，或者——若你在 Rig 中量測——取自你房間本身的共振。這四者是設計選擇，並非五行。',
+ a_h4:'四種語域',a_rp:'山海把每一項主張放在四種語域之一，讓量測到的、選擇的與期望的永不混淆。',
+ r1:'可量測<small>Measured</small>',r1d:'鏡頭讀出的動量、速度、高低、位置與靜止；麥克風讀出的音高與起音；十秒測試掃頻量出的房間共振。',
+ r2:'傳統象徵<small>Traditional-symbolic</small>',r2d:'不作主張。土 水 火 空 只是世界的名字，並非宇宙論的對應。',
+ r3:'藝術設計<small>Design choice</small>',r3d:'四個世界與其泛音階梯；呼吸速度（約每分鐘六次）；規則模式；混沌如何被累積、消耗，並由疊層把關。',
+ r4:'實驗假設<small>Hypothesis</small>',r4d:'從平面影像讀出的動作質感（流動、時間、重量、空間），能塑造音樂的形式，而不只是音量。尚未驗證。',
+ a_nc:'本作不作任何健康或療效主張。呼吸速度是一個音樂決定。',
+ a_h5:'隱私',a_pv:'鏡頭與麥克風都在你的瀏覽器內處理，不錄音、不傳送。若你設定了舞台範圍與房間調音，只會存在這個瀏覽器。開啟姿態追蹤時，會從 Google 的伺服器下載模型。',
+ a_h6:'狀態',a_st:'測試版 0.20，2026 年 11 月為墨西哥城一場鋼琴與當代舞即興而做。下一步：與聲境共用的生成器，以及 Max/RNBO 的聲音引擎。觸控模式是最溫和的開始；鏡頭模式才是真正的樂器。',
+ h_touch:'在這裡移動',t_touch:'觸控模式'
+};
+const EN={h_touch:'move here',t_touch:'Touch mode'};
+let LANG='en';try{LANG=localStorage.getItem('omt-lang')==='zh'?'zh':'en'}catch(_){}
+function L(k){return (LANG==='zh'&&ZH[k])||EN[k]||k}
+document.querySelectorAll('[data-t]').forEach(el=>{el.dataset.en=el.innerHTML});
+function applyLang(){document.documentElement.lang=LANG==='zh'?'zh-Hant':'en';document.body.classList.toggle('zh',LANG==='zh');
+  document.querySelectorAll('[data-t]').forEach(el=>{const z=ZH[el.dataset.t];el.innerHTML=LANG==='zh'&&z?z:el.dataset.en});
+  $('langBtn').textContent=LANG==='zh'?'EN':'中文'}
+$('langBtn').addEventListener('click',()=>{LANG=LANG==='zh'?'en':'zh';try{localStorage.setItem('omt-lang',LANG)}catch(_){}applyLang()});
+applyLang();
+</script>
+</body>
+</html>
