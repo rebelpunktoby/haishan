@@ -435,7 +435,7 @@ const LAYERS=[
   {id:'stormAt',name:'Storm threshold',v:.55,c:'--fire',adv:1},
   {id:'recall',name:'Recall',v:.5,c:'--water',adv:1},
   {id:'release',name:'Release time',v:.45,c:'--air',fmt:v=>Math.round(4+v*26)+' s',adv:1},
-  {id:'settle',name:'Settle time',v:.6,c:'--air',fmt:v=>(1+v*11).toFixed(1)+' s',adv:1},
+  {id:'settle',name:'Settle time',v:.6,c:'--air',fmt:v=>(1+v*4).toFixed(1)+' s',adv:1},
   {id:'sens',name:'Camera sensitivity',v:.5,c:'--fg',adv:1},
   {id:'gate',name:'Piano listen threshold',v:.4,c:'--water',adv:1}
 ];
@@ -547,14 +547,14 @@ function weird(dt){
   if(t-lastComb>.5&&b){lastComb=t;const fr=roomOn()?S.room.slice():b.parts.filter(p=>(p.avail||0)>.5&&p.f).map(p=>p.f);
     combs.forEach((c,i)=>{let f=fr.length?fr[(fr.length-1-i+fr.length*4)%fr.length]:110*(i+1);while(f<70)f*=2;while(f>1400)f/=2;c.d.delayTime.setTargetAtTime(1/(f*(1+(i%2?1:-1)*S.sh*.08*(i+1))),t,.25)})}
   const fbv=Math.min(.95,.45+E*(.3+.2*S.ten+.1*S.dir)+(S.state==='aftermath'?.12:0));combs.forEach(c=>c.fb.gain.setTargetAtTime(fbv,t,.3));
-  combIn.gain.setTargetAtTime(E*.5*h,t,.3);combOut.gain.setTargetAtTime(E*(.25+.5*S.ten)*h*S.st.comb,t,.4);
+  const bd=S.body||0;combIn.gain.setTargetAtTime(E*.5*h*(.2+.8*bd),t,bd>.3?.15:.8);combOut.gain.setTargetAtTime(E*(.25+.5*S.ten)*h*S.st.comb*(.35+.65*bd),t,bd>.3?.2:1);
   // eat itself when the piano rests
-  selfG.gain.setTargetAtTime(E>.25&&t-S.lastOnset>4?E*3:0,t,.8);
+  selfG.gain.setTargetAtTime(E>.25&&t-S.lastOnset>4?E*3*clamp(bd*1.4):0,t,bd>.3?.3:.8);
 }
 async function initAudio(){
   ctx=new AudioContext({latencyHint:'playback'});
   try{await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([GRAIN_SRC],{type:'application/javascript'})))}catch(e){useSP=true}
-  master=G(.85);const hp=biq('highpass',40);const comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=4;comp.attack.value=.05;comp.release.value=1;
+  master=G(.85);const hp=biq('highpass',40);const comp=ctx.createDynamicsCompressor();comp.threshold.value=-9;comp.ratio.value=3;comp.attack.value=.05;comp.release.value=1;
   stopG=G(1);glitch=makeGlitch();dynLP=biq('lowpass',4000,.5);master.connect(dynLP).connect(glitch).connect(hp).connect(comp).connect(stopG).connect(ctx.destination);
   bus=G(1);dryG=G(.6);bus.connect(dryG).connect(master);
   pre=ctx.createDelay(1);pre.delayTime.value=.09;const verb=ctx.createConvolver();verb.buffer=impulse(12,2);const damp=biq('lowpass',4200);verbG=G(.8);
@@ -790,7 +790,7 @@ function hex(h){h=h.replace('#','');return[parseInt(h.slice(0,2),16),parseInt(h.
 
 function frame(ts){
   requestAnimationFrame(frame);if(!S.running||ts-lastT<50)return;const dt=Math.min(.2,(ts-lastT)/1000);lastT=ts;
-  let raw=0,cnt=0,sx=0,sy=0,sx2=0,sy2=0;
+  let raw=0,cnt=0,sx=0,sy=0,sx2=0,sy2=0,wsum=0;
   let tm=-1;
   if(PT.on){tm=touchFrame(dt);cnt=40;const sp=3+tm*12;sx=PT.x*cnt;sy=PT.y*cnt;sx2=cnt*(PT.x*PT.x+sp*sp);sy2=cnt*(PT.y*PT.y+sp*sp)}
   else if(vid.readyState>=2){
@@ -812,32 +812,37 @@ function frame(ts){
           let b=0;for(let c=1;c<48;c++)if(G[c]>G[b])b=c;if(G[b]>20){S.tx=(b%8)*10+5;S.ty=((b/8)|0)*10+5;S.lost=0}}}
       }
       for(let q=0;q<np;q++){const i=PX[q],j=i*4,inn=!keep||keep[q];
-        if(inn){cnt++;const xx=i%CW,yy=(i/CW)|0;sx+=xx;sy+=yy;sx2+=xx*xx;sy2+=yy*yy;img.data[j]=rgb[0];img.data[j+1]=rgb[1];img.data[j+2]=rgb[2];img.data[j+3]=Math.min(200,DF[q]*3)}
+        if(inn){cnt++;wsum+=Math.min(60,DF[q]-thr);const xx=i%CW,yy=(i/CW)|0;sx+=xx;sy+=yy;sx2+=xx*xx;sy2+=yy*yy;img.data[j]=rgb[0];img.data[j+1]=rgb[1];img.data[j+2]=rgb[2];img.data[j+3]=Math.min(200,DF[q]*3)}
         else{img.data[j]=120;img.data[j+1]=120;img.data[j+2]=120;img.data[j+3]=50}}
       S.area=(x1-x0+1)*(y1-y0+1);inkFeed(np,keep)}
-    og.putImageData(img,0,0);prev=cur;raw=cnt/(S.area||n);drawTrackUI();
+    og.putImageData(img,0,0);prev=cur;raw=wsum/30/(S.area||n);drawTrackUI();
   }
   if(S.calibrating){S.calSum+=raw;S.calN++;if(S.calN>=40){S.base=S.calSum/S.calN*1.5;S.calibrating=false;$('cal').textContent='Calibrated';setTimeout(()=>$('cal').textContent='Calibrate room',1500)}}
   // Auto range: scale motion to her own recent peak (about a minute), so it reads the same near or far from the camera
-  const net=Math.max(0,raw-S.base);S.peak=Math.max(net,S.peak*Math.exp(-dt/45));
+  const net=Math.max(0,raw-S.base);S.peak=Math.max(net,S.peak*Math.exp(-dt/90));
   runPose(dt);
-  let m=Math.min(1,net/(S.autoRange?Math.max(.012,S.peak*.85):.12));
+  let m=Math.min(1,net/(S.autoRange?Math.max(.02,S.peak*.85):.12));
   if(poseOn())m=P.pm;
   if(tm>=0)m=tm;                                            // skeleton speed in body units: same at any distance
-  const settle=1+S.lv.settle*11;
+  const settle=1+S.lv.settle*4;
   const mS=(m+S.mRaw1)/2;S.mRaw1=m;const k=mS>S.mot?1-Math.exp(-dt/1.5):1-Math.exp(-dt/settle);S.mot+=(mS-S.mot)*k;
+  // follow: the body, almost as it happens (in about 0.15 s, out in about 0.6 s)
+  S.fol=(S.fol||0)+(m-(S.fol||0))*(m>(S.fol||0)?1-Math.exp(-dt/.15):1-Math.exp(-dt/.6));
+  // her own recent floor, rising slowly: a strike is a jump above it, even in the middle of a phrase
+  S.fmin=Math.min(m,(S.fmin??0)+dt*.5);
+  S.body=clamp((S.fol||0)*1.6+S.storm*.8);
   // fast envelope for the storm: it should arrive with wild motion and leave soon after
   S.fast+=(m-S.fast)*(m>S.fast?1-Math.exp(-dt/.25):1-Math.exp(-dt/.8));
   const sThr=.4+S.lv.stormAt*.5,nW=S.on.filter(Boolean).length,lf=clamp([0,.35+.65*S.lv.edge,.8+.2*S.lv.edge,1][Math.min(3,nW)]+S.ten*.3),sTarget=S.rel?0:(S.stormHold?1:smooth(sThr,sThr+.25,S.fast)*lf*(.3+.7*S.budget)*(S.mot>=.035?S.hab:1));
   if(!S.freeze)S.storm+=(sTarget-S.storm)*(sTarget>S.storm?1-Math.exp(-dt/.3):1-Math.exp(-dt/1.5));
   // a sudden change: fast motion jumping well above the slow envelope
   const w=WORLDS[S.w];
-  if(!S.freeze&&!S.rel&&m-S.mot>.28&&ctx&&ctx.currentTime-S.lastStrike>w.cool/Math.max(.3,S.st.strike)&&Math.random()<S.hab*Math.min(1,S.st.strike+.2))strike(m);
+  if(!S.freeze&&!S.rel&&m-S.fmin>.3&&m>S.fol-.05&&ctx&&ctx.currentTime-S.lastStrike>w.cool/Math.max(.3,S.st.strike)&&(S.still>2||Math.random()<S.hab*Math.min(1,S.st.strike+.2)))strike(m);
   if(cnt>10){const pxr=-((sx/cnt)/CW*2-1);S.vx+=((pxr-S.pxRaw)/dt-S.vx)*(1-Math.exp(-dt/.15));S.pxRaw=pxr}else S.vx*=Math.exp(-dt/.3);
   if(cnt>10){const mx=sx/cnt,my=sy/cnt,sd=Math.sqrt(Math.max(0,sx2/cnt-mx*mx)+Math.max(0,sy2/cnt-my*my));S.spread+=(clamp(sd/26)-S.spread)*(1-Math.exp(-dt/1.2))}else S.spread*=Math.exp(-dt/3);
   if(poseOn()){const ex2=k=>1-Math.exp(-dt/k);const oO=S.hi>.68?2:S.hi<.3?.5:1;S.hi+=(P.ph-S.hi)*ex2(.8);S.pan+=(P.pp-S.pan)*ex2(1);S.spread+=(P.ps-S.spread)*ex2(.6);S.vx=P.vx;S.pxRaw=P.pp;const nO=S.hi>.68?2:S.hi<.3?.5:1;if(oO!==nO)retuneMem()}
   else if(cnt>10){const hy=1-(sy/cnt)/CH,px=-((sx/cnt)/CW*2-1);const oldOct=S.hi>.68?2:S.hi<.3?.5:1;S.hi+=(hy-S.hi)*(1-Math.exp(-dt/2));S.pan+=(px-S.pan)*(1-Math.exp(-dt/2.5));const newOct=S.hi>.68?2:S.hi<.3?.5:1;if(oldOct!==newOct)retuneMem()}
-  if(S.mot<.03)S.still+=dt;else S.still=Math.max(0,S.still-dt*3);
+  if(S.fol<.04)S.still+=dt;else S.still=Math.max(0,S.still-dt*3);
   // Movement quality (Laban-style efforts, estimated from a flat camera picture)
   const ex=k=>1-Math.exp(-dt/k);
   S.jerk+=(Math.abs(m-S.mPrev)/dt-S.jerk)*ex(.5);S.mPrev=m;S.bound+=(clamp(S.jerk/3)-S.bound)*ex(.6);          // flow: bound (jerky) vs free
@@ -861,7 +866,7 @@ function frame(ts){
   drive();meters();
 }
 function baseEnergies(){
-  const mot=S.mot*S.lv.depth*1.6,rest=ctx?clamp((ctx.currentTime-S.lastOnset-1)/3):1;
+  const mot=(.75*(S.fol||0)+.25*S.mot)*S.lv.depth*1.6,rest=ctx?clamp((ctx.currentTime-S.lastOnset-1)/3):1;
   switch(S.mode){
     case 'contrast':return{bed:clamp(1-mot*1.3)*.85,mem:clamp(mot*.6+.15)};
     case 'answer':  return{bed:clamp(mot*.7+rest*.45)*(1-.8*S.pno),mem:clamp(mot*.8+rest*.35)*(1-.6*S.pno)};
@@ -959,16 +964,16 @@ function lineMove(cur,dir,lo,hi,hold,pool){
   const st=Math.random()<.75?1:2,j=Math.max(0,Math.min(band.length-1,i+dir*st));return band[j];   // mostly steps, sometimes a skip
 }
 function lineTick(dt){
-  if(!line)return;const t=ctx.currentTime,still=S.stillIn,e=clamp(S.mot*S.lv.depth*1.6),h=(1-S.hushAmt)*(S.fade?0:1)*(S.rel?S.relAmt:1);
-  const lvl=S.lv.line*S.st.line*h;line.out.gain.setTargetAtTime(lvl*.2,t,1.2);
+  if(!line)return;const t=ctx.currentTime,still=S.stillIn,e=clamp((.6*(S.fol||0)+.4*S.mot)*S.lv.depth*1.6),h=(1-S.hushAmt)*(S.fade?0:1)*(S.rel?S.relAmt:1);
+  const lvl=S.lv.line*S.st.line*h*(.35+.65*clamp((S.fol||0)*2.5));line.out.gain.setTargetAtTime(lvl*.2,t,.5);
   const pool=linePool(),chord=pool.filter(f=>{const r=f/(S.A4/8);let o=r;while(o>=2)o/=2;return Math.abs(o-1)<.02||Math.abs(o-1.5)<.02});
   line.t+=dt;const bt=beat()*(still?2:1);if(line.t<bt)return;line.t=0;line.step++;
   const V=line.v,bands=[[100,330],[200,700],[300,1500]];
   const setV=(k,f,amp,glide)=>{const vo=V[k];vo.f=f;vo.o.frequency.setTargetAtTime(f,t,glide);vo.m.frequency.setTargetAtTime(f*2,t,glide);
     vo.mi.gain.setTargetAtTime(f*(.15+.6*S.ten+.4*S.bound)*Math.max(amp,.2),t,.3);vo.g.gain.setTargetAtTime(amp,t,amp>vo.amp?.08:.6);vo.amp=amp};
   if(still){                                                               // settle onto a chord and hold, or speak
-    if(S.state==='speaks'&&line.hist.length>2){line.replay=(line.replay+1)%line.hist.length;setV(2,line.hist[line.replay]/(Math.random()<.5?2:1),.45,.4)}
-    else{const c=chord.length?chord:pool;[0,1,2].forEach(k=>{const cand=c.filter(f=>f>=bands[k][0]&&f<=bands[k][1]);if(cand.length){let best=cand[0];cand.forEach(f=>{if(Math.abs(Math.log2(f/V[k].f))<Math.abs(Math.log2(best/V[k].f)))best=f});setV(k,best,k===2?.35:.5,1.5)}})}
+    if(S.state==='speaks'&&line.hist.length>2){line.replay=(line.replay+1)%line.hist.length;setV(2,line.hist[line.replay]/(Math.random()<.5?2:1),.3,.4)}
+    else{const c=chord.length?chord:pool;[0,1,2].forEach(k=>{const cand=c.filter(f=>f>=bands[k][0]&&f<=bands[k][1]);if(cand.length){let best=cand[0];cand.forEach(f=>{if(Math.abs(Math.log2(f/V[k].f))<Math.abs(Math.log2(best/V[k].f)))best=f});setV(k,best,k===2?.22:.32,1.5)}})}
     return}
   line.replay=-1;
   const regUp=S.hi>.6?1.25:S.hi<.35?.8:1;
@@ -1001,7 +1006,7 @@ const ST={
 const STLABEL={catch:'Catch',resonance:'Resonance',speaks:'Machine speaks',emptying:'Emptying',aftermath:'Aftermath',drift:'Drift',pressure:'Pressure',sparks:'Sparks',impact:'Impact',shatter:'Shatter',calm:'Calm'};
 function classify(){
   const nW=S.on.filter(Boolean).length,t=ctx?ctx.currentTime:0;
-  S.stillIn=S.stillIn?S.mot<.055:S.mot<.03;
+  S.stillIn=S.stillIn?S.fol<.07:(S.fol<.04&&S.still>1.5);
   if(S.stillIn){const st=S.still;if(t-S.lastPeak<6&&st<8)return st<1.5?'catch':'aftermath';
     return st<2?'catch':st<6?'resonance':st<15?'speaks':'emptying'}
   if(nW>=2&&(S.storm>.45||S.sh>.3))return'shatter';
@@ -1100,24 +1105,24 @@ function drive(){
     const pos=n>1?i/(n-1):0,avail=clamp(c-i);
     const tilt=1+tiltAmt*(pos-.5)*2;
     const open=i===0?1:clamp((e.bed*1.3-(i/Math.max(1,c))*.5)*2);
-    let lv=(i===0?Math.max(floor,.35+e.bed*.4):(floor*.2+open*(1-floor*.2))*avail)*w.w[i]*Math.max(.2,tilt);
+    let lv=(i===0?Math.max(floor*.3,.08+e.bed*.92):(floor*.1+open*(1-floor*.1))*avail)*w.w[i]*Math.max(.2,tilt);
     if(i>0&&i!==top)lv*=1-.5*S.dir;else if(i===top)lv*=1+.6*S.dir;       // direct movement focuses on the newest rung
     if(p.f&&near(p.f))lv*=1.6;                                           // lean toward what the piano is sounding
     if(S.mode==='duet')lv=(i===0?floor:floor*.2*avail)*w.w[i];
     lv*=e.hush*S.st.bed*(S.rel?S.relAmt:1)*(1+S.breathD*.22*(S.breathV*2-1));if(S.fade)lv=0;p.lvl=lv;p.avail=avail;
-    p.g.gain.setTargetAtTime(lv*S.lv.bed*.22,t,S.fade?3:.6);
+    p.g.gain.setTargetAtTime(lv*S.lv.bed*.22,t,S.fade?3:lv>(p.lv0||0)?.12:.5);p.lv0=lv;
     p.pan.pan.setTargetAtTime(clamp(p.spread*(.35+S.spread*1.2+e.bed*.3)+S.pan*.45,-1,1),t,1.2);
     if(p.f){const fj=p.f*Math.pow(p.jit||1,clamp(S.sh*1.4)),tc=S.sh>.15?.03:1.5;p.o1.frequency.setTargetAtTime(fj,t,tc);
       p.o2.frequency.setTargetAtTime(fj+p.bt*(1+(1-S.dir)*2+free)*(1+S.sh*4),t,tc)}   // shatter detunes; indirect, free movement widens beating
   });});
   // memory: her energy opens the resonators; newer notes ring a little louder
-  memRes.forEach((r,k)=>{const age=S.mem.length?(k+1)/S.mem.length:0;const v=r.midi==null||S.fade?0:(.25+.75*age)*e.mem;r.on=v;r.g.gain.setTargetAtTime(v*7,t,.7)});
-  memG.gain.setTargetAtTime(S.fade?0:S.lv.mem*.5*(S.rel?S.relAmt:1),t,S.fade?3:.4);
+  memRes.forEach((r,k)=>{const age=S.mem.length?(k+1)/S.mem.length:0;const v=r.midi==null||S.fade?0:(.25+.75*age)*e.mem;r.on=v;r.g.gain.setTargetAtTime(v*7,t,v>(r.v0||0)?.15:.6);r.v0=v});
+  memG.gain.setTargetAtTime(S.fade?0:S.lv.mem*.5*(S.rel?S.relAmt:1)*(.45+.55*clamp((S.body||0)+S.pno*1.5)),t,S.fade?3:.4);
   memGrain.parameters.get('density').setTargetAtTime(2+e.mem*9+S.bound*e.mem*22,t,.3);memGrain.parameters.get('size').setTargetAtTime(Math.max(.05,.55-S.bound*.5),t,.3);
   // the room holds her stillness: the tail swells after 2 s still
-  const en=clamp(S.mot*1.1+S.ten*.5+S.storm*.6+S.sh*.6+S.wildAmp*.5);
-  const fTar=Math.min(18000,1500*Math.pow(2,en*3.4)*(1+(S.stillIn?S.breathD*.3:0)*(S.breathV-.5)));dynLP.frequency.setTargetAtTime(fTar,t,fTar>dynLP.frequency.value?.3:1.8);   // opens quickly, closes slowly
-  const thr=smooth(2,7,S.still)*.35+(S.rel?(1-S.relAmt)*.6:0)+(S.state==='aftermath'?.3:0);verbG.gain.setTargetAtTime(S.lv.space*(1.05+thr+S.spread*.25),t,.8);
+  const en=clamp((S.fol||0)*1.1+S.mot*.25+S.ten*.4+S.storm*.6+S.sh*.6+S.wildAmp*.5);
+  const fTar=Math.min(18000,1500*Math.pow(2,en*3.4)*(1+(S.stillIn?S.breathD*.3:0)*(S.breathV-.5)));dynLP.frequency.setTargetAtTime(fTar,t,fTar>dynLP.frequency.value?.12:.7);   // opens quickly, closes slowly
+  const thr=smooth(1.5,6,S.still)*.18+(S.rel?(1-S.relAmt)*.6:0)+(S.state==='aftermath'?.12:0);verbG.gain.setTargetAtTime(S.lv.space*(.6+thr+S.spread*.15),t,.8);
 }
 let rungKey='';
 function renderRungs(){
@@ -1360,7 +1365,7 @@ function inkFrame(ts){
   if(!S.running||!S.inView||document.hidden){INK.last=ts;return}
   if(!INK.W)inkSize();if(!INK.W)return;
   const dt=Math.min(.05,(ts-INK.last)/1000||.016);INK.last=ts;const g=INK.g,W=INK.W,H=INK.H,U=Math.min(W,H),t=ts/1000,rm=INK.rm;
-  const nW=S.on.filter(Boolean).length,rel=S.rel?S.relAmt:1,mot=clamp(S.mot),fast=clamp(S.fast),storm=clamp(S.storm);
+  const nW=S.on.filter(Boolean).length,rel=S.rel?S.relAmt:1,mot=clamp(S.fol||0),fast=clamp(S.fast),storm=clamp(S.storm);
   const wild=!rm&&nW>=2?clamp(Math.max(storm,(S.state==='shatter'||S.state==='impact')?.75:0)):0;
   // stop dims at once; release lets the whole picture sink
   $('cam').classList.toggle('dim',!!S.stopped);
