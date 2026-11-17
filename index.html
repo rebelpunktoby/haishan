@@ -655,6 +655,44 @@ section.block::before{inset:-45% -20%;filter:blur(40px);background:radial-gradie
 .study .mentor{margin-top:1.6rem;grid-column:auto;align-self:auto;}
 body.lang-zh .study-h{letter-spacing:.24em;}
 @media(min-width:980px){section.block#omt .row:not([hidden])+.row:not([hidden]){margin-top:3.2rem;}}
+
+/* OMT pair: Engine / Site */
+.omt-pair{position:relative;display:grid;gap:3.2rem;}
+.omt-item{position:relative;display:grid;grid-template-columns:auto 1fr;column-gap:1.2rem;align-items:baseline;text-decoration:none;color:inherit;padding-block:.4rem;isolation:isolate;}
+.omt-item .k{position:absolute;z-index:-1;right:0;top:50%;transform:translateY(-50%);font-family:"Noto Serif TC",var(--serif);font-size:clamp(6rem,5rem + 6vw,11rem);line-height:1;color:var(--mist);opacity:.05;transition:opacity 1.2s var(--ease),transform 1.6s var(--ease);pointer-events:none;}
+.omt-item .no{grid-row:1 / span 3;font-family:var(--mono);font-size:.68rem;letter-spacing:.18em;color:var(--faint);padding-top:.9em;white-space:nowrap;}
+.omt-item .t{font-family:var(--serif);font-weight:300;font-size:clamp(2.3rem,1.5rem + 3.4vw,4.8rem);line-height:1;letter-spacing:-.015em;color:var(--mist);transition:letter-spacing 1.4s var(--ease),color .6s var(--ease);}
+.omt-item .zh{font-family:"Noto Serif TC",var(--serif);font-weight:300;font-size:clamp(.95rem,.85rem + .4vw,1.2rem);letter-spacing:.42em;color:rgb(120,200,190);margin-top:.9rem;transition:letter-spacing 1.4s var(--ease);}
+.omt-item .r{font-family:var(--serif);font-style:italic;font-size:clamp(.98rem,.9rem + .4vw,1.2rem);color:var(--haze);margin-top:.55rem;}
+.omt-item .go{position:absolute;right:0;top:.2rem;font-size:1.1rem;color:var(--faint);transition:transform .7s var(--ease),color .5s;}
+.omt-seam{display:block;height:1px;width:100%;background:linear-gradient(90deg,transparent,rgba(120,200,190,.45),transparent);transform-origin:left;}
+.omt-item:hover .t,.omt-item:focus-visible .t{letter-spacing:.01em;}
+.omt-item:hover .zh,.omt-item:focus-visible .zh{letter-spacing:.6em;}
+.omt-item:hover .k,.omt-item:focus-visible .k{opacity:.11;}
+.omt-item:hover .go{transform:translate(.25rem,-.25rem);color:var(--lumen);}
+.omt-pair:has(.omt-item:hover) .omt-item:not(:hover){opacity:.45;}
+.omt-item{transition:opacity .7s var(--ease);}
+@media(min-width:980px){
+  .omt-pair{grid-column:2;grid-template-columns:1fr 1fr;column-gap:0;row-gap:0;align-items:start;min-height:min(62vh,560px);}
+  .omt-item.eng{grid-column:1 / span 2;grid-row:1;padding-right:30%;}
+  .omt-seam{grid-column:1 / span 2;grid-row:2;margin-block:clamp(2.6rem,6vh,4.5rem);}
+  .omt-item.site{grid-column:1 / span 2;grid-row:3;padding-left:24%;}
+  .omt-item.site .k{right:auto;left:8%;}
+  .omt-item.eng .go{right:30%;}
+}
+@supports (animation-timeline:view()){
+  @media(prefers-reduced-motion:no-preference){
+    .omt-item.eng .k{animation:omtK1 linear both;animation-timeline:view();animation-range:entry 0% exit 100%;}
+    .omt-item.site .k{animation:omtK2 linear both;animation-timeline:view();animation-range:entry 0% exit 100%;}
+    .omt-seam{animation:omtSeam linear both;animation-timeline:view();animation-range:entry 10% cover 45%;}
+    .omt-item.site{animation:omtSlide linear both;animation-timeline:view();animation-range:entry 0% cover 40%;}
+  }
+}
+@keyframes omtK1{from{transform:translate(-3rem,-30%)}to{transform:translate(2rem,-70%)}}
+@keyframes omtK2{from{transform:translate(3rem,-70%)}to{transform:translate(-2rem,-30%)}}
+@keyframes omtSeam{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
+@keyframes omtSlide{from{translate:3rem 0}to{translate:0 0}}
+body.lang-zh .omt-item .zh{letter-spacing:.5em;}
 </style>
 </head>
 <body>
@@ -757,21 +795,26 @@ body.lang-zh .study-h{letter-spacing:.24em;}
   <section class="block" id="omt">
     <div class="wrap">
       <div class="seclabel" data-reveal><span class="tag">OMT&nbsp;β</span><span class="tx" aria-hidden="true">山海</span><span class="rule"></span><span class="idx" data-i18n="idx_omt">In progress</span></div>
-      <div class="rows">
-        <div class="row" data-reveal>
-          <div class="title">
-            <a href="/circadian/" class="work-link"><span data-i18n="art2_title">山海 OceanMountain</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="art2_role">Sound shaped by the hour.</span>
-          </div>
-          <div class="meta"><span class="yr">2026</span></div>
-        </div>
-        <div class="row" data-reveal>
-          <div class="title">
-            <a href="/omt/ultra/" class="work-link"><span data-i18n="omtU_title">風雨光殿 Ultra OMT</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="omtU_role">A building that wind, rain and light play. Beta.</span>
-          </div>
-          <div class="meta"><span class="yr">2026</span></div>
-        </div>
+      <div class="omt-pair">
+        <a class="omt-item eng" href="/circadian/" data-reveal>
+          <span class="k" aria-hidden="true">聲</span>
+          <span class="no">01</span>
+          <span class="t">OMT Engine</span>
+          <span class="zh">山海 · 聲境</span>
+          <span class="r" data-i18n="omtE_role">The hour, as sound.</span>
+          <span class="go" aria-hidden="true">↗</span>
+        </a>
+        <span class="omt-seam" aria-hidden="true"></span>
+        <a class="omt-item site" href="/omt/ultra/" data-reveal>
+          <span class="k" aria-hidden="true">殿</span>
+          <span class="no">02 · β</span>
+          <span class="t">OMT Site</span>
+          <span class="zh">山海 · 殿境</span>
+          <span class="r" data-i18n="omtS_role">風雨光殿 — the weather, as architecture.</span>
+          <span class="go" aria-hidden="true">↗</span>
+        </a>
+      </div>
+      <div class="rows" hidden>
         <div class="row" data-reveal hidden>
           <div class="title">
             <a href="/omt/laws/" class="work-link"><span data-i18n="omt3_title">The Laws</span> <span class="arr">↗</span></a>
@@ -997,7 +1040,7 @@ body.lang-zh .study-h{letter-spacing:.24em;}
       art1_role:{en:"Free improvisation with a contemporary dancer — prepared piano, live sampling of room and body sounds, and movement that shapes the sound in a closed loop. Mexico City.",zh:"與當代舞者的自由即興——預置鋼琴、即時取樣空間與身體的聲響，讓動作在閉環中塑造聲音。墨西哥城。"},
       art2_title:{en:"山海 OceanMountain",zh:"山海 OceanMountain"},
       art2_role:{en:'Sound shaped by the hour.',zh:'隨時辰而變的聲音。'},
-      omtU_title:{en:'風雨光殿 Ultra OMT',zh:'風雨光殿 Ultra OMT'},omtU_role:{en:'A building that wind, rain and light play. Beta.',zh:'一座由風、雨與光演奏的建築。Beta。'},
+      omtE_role:{en:'The hour, as sound.',zh:'時辰，化為聲音。'},omtS_role:{en:'風雨光殿 — the weather, as architecture.',zh:'風雨光殿——天氣，化為建築。'},
       idx_work:{en:'',zh:''},
       work1_role:{en:"Composer & Producer",zh:"Composer & Producer"},
       work2_role:{en:"Feature composition with Eric Leo",zh:"Feature composition with Eric Leo"},
