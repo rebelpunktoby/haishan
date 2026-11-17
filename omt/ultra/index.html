@@ -169,6 +169,28 @@ button.play[aria-pressed="true"]{animation:breathe 9s ease-in-out infinite}
 footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
 footer a:hover{color:var(--ink)}
 @media (max-width:560px){#system th:nth-child(3),#system td:nth-child(3){display:none}#system table{min-width:0}}
+body::after{content:"";position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
+.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:28px;align-items:start}
+.door{margin:0;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 30px 90px -50px rgba(219,168,74,.35)}
+.door canvas{aspect-ratio:3/2;border-radius:8px}
+.door figcaption{font-size:12.5px;color:var(--ink-2);padding:8px 4px 2px}
+.ladder{margin:14px 0 4px;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;box-shadow:0 30px 100px -60px rgba(142,199,184,.35)}
+.ladder svg{display:block;width:100%;height:auto;font-family:var(--f-body)}
+.ladder .col{transition:opacity .8s}
+.glyph{height:46px;margin:-2px 0 4px;display:block;width:100%;overflow:visible}
+.glyph .flow{stroke-dasharray:6 10;animation:flow 1.6s linear infinite}
+@keyframes flow{to{stroke-dashoffset:-32}}
+.glyph .drop{animation:fall 2.4s cubic-bezier(.5,0,1,1) infinite}
+@keyframes fall{0%{transform:translateY(-16px);opacity:0}15%{opacity:1}55%{transform:translateY(20px);opacity:1}60%{opacity:0}100%{opacity:0}}
+.glyph .ring{transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}
+@keyframes ring{0%,55%{transform:scale(.2);opacity:0}60%{opacity:.9}100%{transform:scale(2.6);opacity:0}}
+.glyph .blade{transform-origin:20px 40px;animation:sweep 9s ease-in-out infinite alternate}
+@keyframes sweep{from{transform:rotate(-28deg)}to{transform:rotate(28deg)}}
+.glyph .bar{transform-box:fill-box;transform-origin:left center;animation:swell 6s ease-in-out infinite alternate}
+@keyframes swell{from{transform:scaleX(.82)}to{transform:scaleX(1)}}
+@media (max-width:860px){.duo{grid-template-columns:1fr}}
+@media (prefers-reduced-motion:reduce){.glyph *{animation:none!important}}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
 html[lang="zh-Hant"] body{line-height:1.8}
 html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
@@ -257,11 +279,13 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
   <div data-i="k2">02 · Origin</div>
   <div>
     <h2 data-i="i_h">A door that sang in winter</h2>
-    <div class="prose">
+    <div class="duo"><div class="prose">
       <p class="lead" data-i="i1">New York, winter. Wind pressed through the gap of a northwest door and came out as tones, layered, almost music from across the room.</p>
       <details><summary data-i="more">Read on</summary><div class="in"><p data-i="i2">The gap was a mouth, the room a body. Instruments are shaped so that sound meets the ear. This work shapes a building the same way, so that what the weather plays arrives as harmony.</p>
       <p data-i="i3">OceanMountain 山海 draws its sound from the hour and the season. This is its body. Nothing here is generated: the weather performs, and silence is part of the weather.</p></div></details>
     </div>
+      <figure class="door"><canvas id="doorcv" width="600" height="400" aria-label="Wind lines enter a narrow door gap and leave as layered waves"></canvas><figcaption data-i="dcap">Wind in, tones out. The gap is a mouth; the room, a body.</figcaption></figure>
+    </div></div>
   </div>
 </div></section>
 
@@ -272,7 +296,8 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
     <div class="prose">
       <p class="lead" data-i="y1">A low A sounds on every wind face. Above it, each face holds three notes. As the wind turns through the year, the same A becomes a fifth, a root, a third.</p>
     </div>
-    <div class="tablewrap"><table>
+    <div class="ladder" id="ladder"></div>
+    <details><summary data-i="tabsum">Notes in hertz</summary><div class="in" style="max-width:none"><div class="tablewrap"><table>
       <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
       <tbody>
         <tr><td><span class="h">震</span><span data-i="f1">East</span></td><td data-i="w1">Spring</td><td class="n">E4 A4 D5 · 330 440 587 Hz</td><td data-i="r1">The fifth of D</td></tr>
@@ -280,12 +305,12 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
         <tr><td><span class="h">兌</span><span data-i="f3">West</span></td><td data-i="w3">Autumn</td><td class="n">F4 A4 C5 · 349 440 523 Hz</td><td data-i="r3">The third of F</td></tr>
         <tr><td><span class="h">乾</span><span data-i="f4">Northwest</span></td><td data-i="w4">Winter</td><td class="n">8 · 12 · 14 · 440 660 770 Hz</td><td data-i="r4">The root, with a harmonic seventh</td></tr>
       </tbody>
-    </table></div>
+    </table></div></div></details>
     <details><summary data-i="faces8">The other four faces</summary><div class="in"><p class="hint" style="margin:0" data-i="y2">Placeholder voicings. 離 south gathers light, 坤 southwest receives you, 坎 north lets water go, 艮 northeast keeps the silence. The trigrams give the building its order; they make no claim about nature.</p></div></details>
 
     <div class="grid">
       <div class="card">
-        <span class="tag" data-i="c1t">Wind</span>
+        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><g fill="none" stroke="#8ec7b8" stroke-width="1.6" stroke-linecap="round"><path class="flow" d="M4 14H120"/><path class="flow" d="M4 23H120" style="animation-delay:-.5s"/><path class="flow" d="M4 32H120" style="animation-delay:-1s"/></g><rect x="122" y="6" width="5" height="13" fill="#9aa5ae"/><rect x="122" y="27" width="5" height="13" fill="#9aa5ae"/><path d="M130 23c8-10 16 10 24 0s16 10 24 0 16 10 24 0" fill="none" stroke="#dba84a" stroke-width="1.6" class="flow" style="stroke-dasharray:none"/></svg><span class="tag" data-i="c1t">Wind</span>
         <h3 data-i="c1h">The slot speaks; the chamber sings</h3>
         <details><summary data-i="how1">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
           <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
@@ -301,7 +326,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
         <p data-i="c1p">Wind at 15 to 40 km/h supplies only 10 to 74 Pa of pressure, a fraction of what an organ uses. So the wind voices are large, low and led by their resonators, with shutters to hold them back in storms.</p></div></details>
       </div>
       <div class="card">
-        <span class="tag" data-i="c2t">Rain</span>
+        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><path class="drop" d="M110 6c4 6 6 9 6 12a6 6 0 0 1-12 0c0-3 2-6 6-12z" fill="#8ec7b8"/><ellipse class="ring" cx="110" cy="40" rx="9" ry="2.2" fill="none" stroke="#dba84a" stroke-width="1.4"/><path d="M60 42H160" stroke="rgba(235,231,221,.25)" stroke-width="1"/></svg><span class="tag" data-i="c2t">Rain</span>
         <h3 data-i="c2h">Rain gathered to a drop, falling on glass</h3>
         <details><summary data-i="how2">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
           <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
@@ -316,13 +341,13 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
         <p data-i="c2p">Rain falling straight onto glass is mostly patter. One gathered drip carries the energy of about fifteen raindrops and lands on one chosen spot. The size of each catchment sets the tempo of its voice.</p></div></details>
       </div>
       <div class="card">
-        <span class="tag" data-i="c3t">Light</span>
+        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><path d="M8 42H212" stroke="rgba(235,231,221,.2)"/><g transform="translate(90,0)"><path class="blade" d="M20 40L20 2" stroke="#dba84a" stroke-width="3" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(219,168,74,.8))"/></g><circle cx="110" cy="40" r="3" fill="#dba84a"/></svg><span class="tag" data-i="c3t">Light</span>
         <h3 data-i="c3h">Light, seen and heard</h3>
         <details><summary data-i="how3">How it works</summary><div class="in"><p data-i="c3p">The south face is cut with sealed slits. A 5 mm slit throws a blade of light that crosses a wall five metres away at about 1.3 m an hour. At 35° north, noon light reaches 0.6 m into the room in midsummer and 4.9 m in midwinter.</p>
         <p data-i="c3q">Sun also warms the air in a chamber and raises its pitch about 3 cents per °C. Two matched pedal chambers, one in sun and one in shade, drift apart and beat slowly by day, then still at dusk.</p></div></details>
       </div>
       <div class="card">
-        <span class="tag" data-i="c4t">Harmony</span>
+        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><g fill="#8ec7b8"><rect class="bar" x="4" y="4" width="64" height="4" rx="2"/><rect class="bar" x="4" y="12" width="68" height="4" rx="2" style="animation-delay:-1s"/><rect class="bar" x="4" y="20" width="76" height="4" rx="2" style="animation-delay:-2s"/><rect class="bar" x="4" y="28" width="92" height="4" rx="2" style="animation-delay:-3s"/><rect class="bar" x="4" y="36" width="120" height="4" rx="2" style="animation-delay:-4s"/></g></svg><span class="tag" data-i="c4t">Harmony</span>
         <h3 data-i="c4h">Spacing before scale</h3>
         <details><summary data-i="how4">How it works</summary><div class="in"><p data-i="c4p">The gap that sounds rough is nearly the same number of hertz in every register. Close intervals belong high or short; low voices sit wide. With that met, any scale works above the pedal, microtones included.</p>
         <div class="bars" aria-label="Smallest smooth gap between two tones, by register">
@@ -453,6 +478,7 @@ p_done:"完成",p_done2:"完成",p_done3:"完成",p_wip:"進行中",p_next:"下�
 ab_h:"關於",ab1:"賴海山（Toby Hysan）是鋼琴家、作曲家與製作人，創作橫跨爵士、電影配樂與生成聲音。OMT Site 是「山海 OceanMountain」的身體；山海是他以十二時辰與二十四節氣塑形的生成聲音生態。",
 more:"繼續閱讀",faces8:"其餘四個面",how1:"運作方式",how2:"運作方式",how3:"運作方式",how4:"運作方式",
 nx1:"此頁隨作品生長。下一步是一面門板大小的測試牆，第一批真實的風與雨的錄音，然後是建築師與一片基地。換季時，再回來聽。",x1:"測試牆",x1s:"一個風聲部，五根玻璃",x2:"第一批錄音",x2s:"真實的風與雨",x3:"建築師與基地",x3s:"形體、土地、真實的風",
+dcap:"風進，音出。門縫是吹口，房間是琴身。",tabsum:"以赫茲列出的音",
 foot:"測試版。本頁隨作品進展而更新。"
 };
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
@@ -463,7 +489,7 @@ function applyLang(){
   document.documentElement.lang=lang==="zh"?"zh-Hant":"en";
   els.forEach(function(e){var k=e.dataset.i;if(k==="play")return;e.innerHTML=T(k);});
   document.getElementById("lang").textContent=lang==="zh"?"English":"繁體中文";
-  setPlayLabel();setReadout();
+  setPlayLabel();setReadout();drawLadder();
 }
 document.getElementById("lang").addEventListener("click",function(){lang=lang==="en"?"zh":"en";applyLang();});
 
@@ -483,7 +509,7 @@ function setReadout(){
 }
 function setSeason(i,byUser){
   cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
-  setReadout();if(audio){audio.season(i);audio.rain(rainBox.checked,S[i].rain);}
+  setReadout();drawLadder();if(audio){audio.season(i);audio.rain(rainBox.checked,S[i].rain);}
   if(byUser){turn.checked=false;}
 }
 chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dataset.s,true);});});
@@ -592,6 +618,42 @@ trks.forEach(function(tr){
   bar.addEventListener("click",function(e){if(!a.duration)return;var r=bar.getBoundingClientRect();a.currentTime=(e.clientX-r.left)/r.width*a.duration;});
 });
 
+/* ---------- harmony ladder ---------- */
+function drawLadder(){
+  var el=document.getElementById("ladder");if(!el)return;
+  var sm=(el.clientWidth||760)<520,W=sm?400:760,H=sm?270:250,top=34,bot=sm?246:226,lo=Math.log(48),hi=Math.log(900),x0=sm?50:86,cw=(W-x0-10)/4;
+  function Y(f){return bot-(Math.log(f)-lo)/(hi-lo)*(bot-top);}
+  var o='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(lang==="zh"?"四季的音":"Notes of the four seasons")+'">';
+  [55,110,220,440,880].forEach(function(f){var y=Y(f).toFixed(1),ped=f<=110;
+    o+='<line x1="'+x0+'" x2="'+(W-14)+'" y1="'+y+'" y2="'+y+'" stroke="'+(ped?"rgba(142,199,184,.75)":"rgba(235,231,221,.12)")+'" stroke-width="'+(ped?2:1)+'"'+(ped?' style="filter:drop-shadow(0 0 6px rgba(142,199,184,.7))"':' stroke-dasharray="3 6"')+'/>';
+    o+='<text x="'+(x0-10)+'" y="'+(+y+4)+'" text-anchor="end" font-size="11" fill="'+(ped?"#8ec7b8":"#9aa5ae")+'">A '+f+'</text>';});
+  o+='<text x="'+(x0-10)+'" y="16" text-anchor="end" font-size="10.5" fill="#9aa5ae">Hz</text>';
+  var TG=["震","巽","兌","乾"];
+  S.forEach(function(s,i){var cx=x0+cw*i+cw/2,act=i===cur,op=act?1:.38;
+    if(act)o+='<rect x="'+(cx-cw/2+6)+'" y="'+(top-24)+'" width="'+(cw-12)+'" height="'+(bot-top+34)+'" rx="10" fill="rgba(142,199,184,.07)" stroke="rgba(142,199,184,.35)"/>';
+    o+='<g class="col" opacity="'+op+'"><text x="'+cx+'" y="'+(top-6)+'" text-anchor="middle" font-size="15" font-family="Noto Serif TC,serif" font-weight="700" fill="'+(act?"#8ec7b8":"#ebe7dd")+'">'+TG[i]+(sm?'':' <tspan font-size="11.5" font-family="IBM Plex Sans,Noto Sans TC,sans-serif" font-weight="500" fill="#9aa5ae">'+T("s"+i)+'</tspan>')+'</text>';
+    var fs=[55,110].concat(s.notes);
+    o+='<line x1="'+cx+'" x2="'+cx+'" y1="'+Y(55).toFixed(1)+'" y2="'+Y(s.notes[2]).toFixed(1)+'" stroke="rgba(235,231,221,.18)"/>';
+    fs.forEach(function(f,j){var y=Y(f).toFixed(1),pd=j<2,c=pd?"#8ec7b8":"#dba84a";
+      o+='<circle cx="'+cx+'" cy="'+y+'" r="'+(pd?5:4.5)+'" fill="'+c+'"'+(act?' style="filter:drop-shadow(0 0 6px '+c+')"':'')+'/>';
+      if(!pd&&act){var lb=s.n.indexOf("·")>0?"×"+s.n.split(" · ")[j-2]:s.n.split(" ")[j-2];o+='<text x="'+(cx+11)+'" y="'+(+y+4)+'" font-size="11" fill="#ebe7dd">'+lb+' <tspan fill="#9aa5ae">'+Math.round(f)+'</tspan></text>';}});
+    o+='</g>';});
+  el.innerHTML=o+'</svg>';
+}
+/* ---------- the door ---------- */
+var dc=document.getElementById("doorcv"),dg=dc?dc.getContext("2d"):null;
+function door(ms){
+  if(!dg)return;var t=ms/1000,w=dc.width,h=dc.height,sx=w*.36,wa=reduce?.6:windArc();
+  dg.clearRect(0,0,w,h);
+  for(var i=0;i<9;i++){var y=h*(.18+.08*i),ph=((t*.55+i*.37)%1);
+    dg.strokeStyle="rgba(142,199,184,"+(.12+.35*wa)*(1-Math.abs(i-4)/5)+")";dg.lineWidth=2;dg.beginPath();
+    var x1=ph*sx*.9,len=sx*.22;dg.moveTo(x1,y+(h/2-y)*(x1/sx));dg.lineTo(Math.min(sx-6,x1+len),y+(h/2-y)*(Math.min(sx-6,x1+len)/sx));dg.stroke();}
+  dg.fillStyle="#9aa5ae";dg.fillRect(sx-5,h*.06,10,h*.42);dg.fillRect(sx-5,h*.52,10,h*.42);
+  for(var k=1;k<=3;k++){dg.beginPath();var amp=h*.11/k*(.4+.8*wa);
+    for(var x=sx+6;x<w-6;x+=2){var d=(x-sx)/(w-sx),y=h/2+Math.sin((x-sx)*.06*k-t*3.2*k)*amp*(1-d*.75);x===sx+6?dg.moveTo(x,y):dg.lineTo(x,y);}
+    dg.strokeStyle="rgba(219,168,74,"+(.75/k)+")";dg.lineWidth=2.2/k+.4;dg.shadowColor="rgba(219,168,74,.7)";dg.shadowBlur=k===1?10:0;dg.stroke();dg.shadowBlur=0;}
+  if(!reduce)requestAnimationFrame(door);
+}
 /* ---------- live plan ---------- */
 var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
 var TRI=["坎","艮","震","巽","離","坤","兌","乾"],WINDF={2:1,3:1,6:1,7:1};
@@ -599,6 +661,7 @@ var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce
 function pt(deg,r){var a=deg*Math.PI/180;return [C+r*Math.sin(a),C-r*Math.cos(a)];}
 function oct(r){g.beginPath();for(var k=0;k<8;k++){var p=pt(22.5+45*k,r);k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);}g.closePath();}
 var streaks=[],ripples=[],windAng=S[0].face*45,nextDrip=0;
+var drops=[],rings=[],nextRing=0;for(var di=0;di<110;di++)drops.push({x:Math.random()*W,y:Math.random()*W,s:.6+Math.random()*.7});
 for(var i=0;i<70;i++)streaks.push({u:Math.random()*2-1,v:Math.random()*2-1,l:.04+Math.random()*.07,s:.5+Math.random()*.8});
 function frame(ms){
   var t=ms/1000,target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
@@ -612,6 +675,11 @@ function frame(ms){
     g.strokeStyle="rgba(142,199,184,"+((.05+.42*wa)*(1-Math.abs(s.v))+.04)+")";
     g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*s.l*W,y+dy*s.l*W);g.stroke();
   });
+  /* rain falling across the plan, slanted by the wind, density from the rain arc */
+  var rav=rainBox.checked?(reduce?.4:rainArc()):0,nv=Math.floor(drops.length*rav);
+  g.strokeStyle="rgba(235,231,221,.22)";g.lineWidth=1.4;
+  for(var di=0;di<nv;di++){var dp=drops[di];if(!reduce){dp.y+=dp.s*9;dp.x+=dx*dp.s*3;if(dp.y>W+20){dp.y=-20;dp.x=Math.random()*W;}if(dp.x<-20)dp.x=W+10;if(dp.x>W+20)dp.x=-10;}
+    g.beginPath();g.moveTo(dp.x,dp.y);g.lineTo(dp.x-dx*8,dp.y-16);g.stroke();}
   /* building */
   oct(R);g.fillStyle="#0f141a";g.fill();g.strokeStyle="rgba(232,229,220,.35)";g.lineWidth=2;g.stroke();
   /* sun blade from the south face */
@@ -629,6 +697,14 @@ function frame(ms){
     g.font=(active?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
     g.fillStyle=active?"#8ec7b8":(k===4?"#dba84a":"rgba(232,229,220,.55)");g.fillText(TRI[k],lp[0],lp[1]);
   }
+  /* sound rings: the active face breathes into the room */
+  var fm=pt(45*S[cur].face,R*Math.cos(Math.PI/8));
+  if(!reduce&&t>nextRing){nextRing=t+2.6-1.4*wa;rings.push(t);}
+  rings=rings.filter(function(r0){return t-r0<4;});
+  g.save();oct(R-3);g.clip();
+  rings.forEach(function(r0){var q=(t-r0)/4;g.strokeStyle="rgba(142,199,184,"+((1-q)*(.12+.4*wa))+")";g.lineWidth=2;g.beginPath();g.arc(fm[0],fm[1],q*R*1.5,0,7);g.stroke();});
+  g.strokeStyle="rgba(142,199,184,"+(.10+.08*Math.sin(t*1.7))+")";g.lineWidth=1.5;g.beginPath();g.arc(C,C,R*.42+4*Math.sin(t*.9),0,7);g.stroke();
+  g.restore();
   /* skywell and rain */
   var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+(.10+.05*Math.sin(t*.7))+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
   if(rainBox.checked&&!reduce&&t>nextDrip){
@@ -652,6 +728,8 @@ var lastPh=-1;setInterval(function(){
 setReadout();
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(reduce)frame(0);});
 requestAnimationFrame(frame);
+drawLadder();requestAnimationFrame(door);
+var lw=0;window.addEventListener('resize',function(){var w=document.getElementById('ladder').clientWidth<520;if(w!==lw){lw=w;drawLadder();}});
 })();
 </script>
 </body>
