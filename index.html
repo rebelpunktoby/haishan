@@ -693,6 +693,13 @@ body.lang-zh .study-h{letter-spacing:.24em;}
 @keyframes omtSeam{from{transform:scaleX(0);opacity:0}to{transform:scaleX(1);opacity:1}}
 @keyframes omtSlide{from{translate:3rem 0}to{translate:0 0}}
 body.lang-zh .omt-item .zh{letter-spacing:.5em;}
+
+.omt-item{grid-template-columns:1fr;}
+.omt-item .t{display:flex;align-items:baseline;flex-wrap:wrap;column-gap:.32em;}
+.omt-item .t i{font-style:normal;font-family:"Noto Serif TC",var(--serif);font-weight:200;font-size:.62em;letter-spacing:.18em;color:rgb(120,200,190);opacity:.85;transition:letter-spacing 1.4s var(--ease),opacity .6s;}
+.omt-item .t sup{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--faint);align-self:flex-start;margin-left:.2em;}
+.omt-item:hover .t i,.omt-item:focus-visible .t i{letter-spacing:.42em;opacity:1;}
+.omt-item .r{margin-top:1rem;}
 </style>
 </head>
 <body>
@@ -798,18 +805,14 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
       <div class="omt-pair">
         <a class="omt-item eng" href="/circadian/" data-reveal>
           <span class="k" aria-hidden="true">聲</span>
-          <span class="no">01</span>
-          <span class="t">OMT Engine</span>
-          <span class="zh">山海 · 聲境</span>
+          <span class="t">Engine<i>聲境</i></span>
           <span class="r" data-i18n="omtE_role">The hour, as sound.</span>
           <span class="go" aria-hidden="true">↗</span>
         </a>
         <span class="omt-seam" aria-hidden="true"></span>
         <a class="omt-item site" href="/omt/ultra/" data-reveal>
           <span class="k" aria-hidden="true">殿</span>
-          <span class="no">02 · β</span>
-          <span class="t">OMT Site</span>
-          <span class="zh">山海 · 殿境</span>
+          <span class="t">Site<i>殿境</i><sup>β</sup></span>
           <span class="r" data-i18n="omtS_role">風雨光殿 — the weather, as architecture.</span>
           <span class="go" aria-hidden="true">↗</span>
         </a>
