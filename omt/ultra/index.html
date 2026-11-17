@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>風雨光殿 Ultra OMT</title>
+<meta name="description" content="風雨光殿 Ultra OMT — a concept for a building that wind, rain and sunlight play as an instrument. The physical OceanMountain. Work in progress by Haishan Lai.">
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<meta property="og:title" content="風雨光殿 Ultra OMT">
+<meta property="og:description" content="A building that wind, rain and sunlight play as an instrument. Concept stage; all sounds are computer models.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
+<style>
+/* Layout idea: one dark "wet stone at dusk" world. Left-aligned editorial column,
+   the live eight-faced plan as the only hero image. Brass = sunlight, celadon = wind and water. */
+:root{
+  color-scheme: dark;
+  --stone:#161c23; --stone-2:#1e2731; --stone-3:#28333f;
+  --ink:#e8e5dc; --ink-2:#a3adb5; --line:rgba(232,229,220,.14);
+  --brass:#dba84a; --celadon:#8ec7b8;
+  --f-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
+  --f-body:"IBM Plex Sans","Noto Sans TC",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  --f-han:"Noto Serif TC","Songti TC",serif;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+a{color:var(--celadon)}
+:focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:4px}
+h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:600;letter-spacing:-.01em}
+p{margin:0}
+.mono{font-family:var(--f-mono);font-size:.82em;letter-spacing:.01em}
+
+.band{background:var(--brass);color:#1a1408;font-family:var(--f-mono);font-size:12.5px;padding:7px 0;text-align:left}
+header{position:sticky;top:0;z-index:5;background:rgba(22,28,35,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:20px;min-height:56px;flex-wrap:wrap}
+.brand{font-family:var(--f-han);font-weight:700;font-size:19px;color:var(--ink);text-decoration:none;display:flex;gap:10px;align-items:baseline}
+.brand span{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);font-weight:400}
+nav{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
+nav a{color:var(--ink-2);text-decoration:none;font-size:14.5px}
+nav a:hover{color:var(--ink)}
+.lang{font:500 13px var(--f-mono);background:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
+.lang:hover{border-color:var(--ink-2)}
+
+.hero{padding:32px 0 28px}
+.hero .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center}
+.eyebrow{font-family:var(--f-mono);font-size:12.5px;color:var(--celadon);text-transform:uppercase;letter-spacing:.12em}
+.han{font-family:var(--f-han);font-weight:700;font-size:clamp(46px,7vw,80px);line-height:1.05;margin:10px 0 4px;letter-spacing:.04em}
+.hero h1{font-size:clamp(22px,2.6vw,30px);color:var(--ink-2);font-weight:400}
+.thesis{font-size:clamp(17px,1.7vw,20px);line-height:1.45;margin-top:14px;max-width:30em}
+.thesis b{color:var(--brass);font-weight:500}
+.plan{position:relative;background:var(--stone-2);border:1px solid var(--line);border-radius:14px;padding:14px}
+canvas{display:block;width:100%;aspect-ratio:1/1;border-radius:8px}
+.readout{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);padding:10px 4px 2px;min-height:3.4em}
+.readout b{color:var(--celadon);font-weight:500}
+.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;align-items:center}
+button.play{font:600 16px var(--f-display);background:var(--brass);color:#1a1408;border:0;border-radius:999px;padding:12px 22px;cursor:pointer}
+button.play[aria-pressed="true"]{background:var(--ink);}
+.chip{font:500 14px var(--f-body);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chip .h{font-family:var(--f-han);margin-right:6px;color:var(--ink-2)}
+.chip[aria-pressed="true"]{border-color:var(--celadon);background:rgba(142,199,184,.14)}
+.chip[aria-pressed="true"] .h{color:var(--celadon)}
+.toggles{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:14.5px;color:var(--ink-2)}
+.toggles label{display:flex;gap:8px;align-items:center;cursor:pointer}
+.toggles input{accent-color:var(--brass);width:16px;height:16px}
+.hint{font-size:13.5px;color:var(--ink-2);margin-top:14px;max-width:38em}
+
+section.block{padding:34px 0;border-top:1px solid var(--line)}
+.sec{display:grid;grid-template-columns:132px minmax(0,1fr);gap:24px}
+.sec>div{min-width:0}
+.sec>div:first-child{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.12em;padding-top:10px}
+.sec h2{font-size:clamp(23px,2.5vw,30px);line-height:1.15;margin-bottom:12px;max-width:22em}
+.prose{display:grid;gap:10px;max-width:68ch}
+.prose p{color:var(--ink)}
+.prose .lead{font-size:17.5px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:14px;align-items:start}
+.card{background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;align-content:start}
+.card h3{font-size:16.5px;line-height:1.3}
+.card p{font-size:14.5px;color:var(--ink-2)}
+.card .tag{font-family:var(--f-mono);font-size:11.5px;color:var(--brass);text-transform:uppercase;letter-spacing:.1em}
+audio{width:100%;margin-top:2px;height:34px}
+.tracks{display:grid;gap:12px}
+.tracks div{display:grid;gap:2px}
+.tracks span{font-size:14px;color:var(--ink)}
+.tablewrap{overflow-x:auto;margin-top:8px}
+table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
+th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 12px var(--f-mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
+td .h{font-family:var(--f-han);font-size:20px;color:var(--celadon);margin-right:8px}
+td.n{font-family:var(--f-mono);font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
+.dia{background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:16px}
+.dia svg{display:block;width:100%;height:auto}
+.dia text{font-family:var(--f-body);fill:var(--ink)}
+.dia .q{fill:var(--ink-2)}
+.bars{display:grid;gap:8px;margin-top:6px}
+.bar{display:grid;grid-template-columns:74px 1fr 150px;gap:10px;align-items:center;font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2)}
+.bar i{display:block;height:10px;border-radius:2px;background:var(--celadon)}
+.bar em{font-style:normal;color:var(--ink)}
+.regs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
+.reg{border-left:3px solid var(--celadon);padding:4px 0 4px 14px}
+.reg:nth-child(2){border-color:var(--brass)}
+.reg:nth-child(3){border-color:var(--ink)}
+.reg:nth-child(4){border-color:var(--ink-2);border-left-style:dashed}
+.reg b{display:block;font-family:var(--f-display);font-size:17px}
+.reg span{font-size:13.5px;color:var(--ink-2);line-height:1.45;display:block}
+ol.laws{margin:8px 0 0;padding-left:1.3em;display:grid;gap:6px;font-size:15.5px;color:var(--ink-2);max-width:66ch}
+ol.laws b{color:var(--ink);font-weight:500}
+.ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));column-gap:28px;margin-top:4px}
+.ledger div{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line);align-items:baseline}
+.ledger small{display:block;color:var(--ink-2);font-size:14px}
+.pill{font:500 11.5px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;border-radius:999px;padding:4px 10px;white-space:nowrap;border:1px solid var(--line);color:var(--ink-2)}
+.pill.done{background:rgba(142,199,184,.16);color:var(--celadon);border-color:transparent}
+.pill.wip{background:rgba(219,168,74,.16);color:var(--brass);border-color:transparent}
+details{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
+.card details{margin-top:4px}
+summary{cursor:pointer;font:500 12.5px var(--f-mono);color:var(--celadon);letter-spacing:.04em;list-style:none;display:inline-flex;gap:8px;align-items:center;padding:2px 0}
+summary::-webkit-details-marker{display:none}
+summary::before{content:"+";display:inline-block;width:1em;color:var(--brass);font-size:15px}
+details[open]>summary::before{content:"\2212"}
+details>.in{display:grid;gap:10px;padding-top:10px;max-width:68ch}
+html[lang="zh-Hant"] summary{font-family:var(--f-body);font-size:13.5px}
+footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
+html[lang="zh-Hant"] body{line-height:1.8}
+html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
+@media (max-width:860px){
+  .hero .wrap{grid-template-columns:1fr;gap:28px}
+  .sec{grid-template-columns:minmax(0,1fr);gap:10px}
+  nav{display:none}
+  .lang{margin-left:auto}
+  section.block{padding:26px 0}
+  .bar{grid-template-columns:60px 1fr 120px}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<div class="band"><div class="wrap" data-i="band">Concept stage · Nothing is built yet · Every sound here is a computer model</div></div>
+<header><div class="wrap">
+  <a class="brand" href="#listen">風雨光殿 <span>Ultra OMT</span></a>
+  <nav aria-label="Sections">
+    <a href="#sounds" data-i="n1">Listen</a><a href="#idea" data-i="n2">Idea</a><a href="#system" data-i="n3">System</a><a href="#method" data-i="n4">Method</a><a href="#status" data-i="n5">Status</a>
+  </nav>
+  <button class="lang" id="lang" type="button" aria-label="Switch language">繁體中文</button>
+</div></header>
+
+<main>
+<section class="hero" id="listen"><div class="wrap">
+  <div>
+    <p class="eyebrow" data-i="eyebrow">Ultra OMT · the physical OceanMountain</p>
+    <div class="han" aria-hidden="true">風雨光殿</div>
+    <h1 data-i="h1">Wind-Rain-Light Temple</h1>
+    <p class="thesis" data-i="thesis">A building that wind, rain and sunlight play as an instrument. <b>Nature plays. The building tunes and listens.</b></p>
+    <div class="controls">
+      <button class="play" id="play" type="button" aria-pressed="false" data-i="play">Play the sketch</button>
+    </div>
+    <div class="controls" role="group" aria-label="Season" style="margin-top:14px">
+      <button class="chip" type="button" data-s="0" aria-pressed="true"><span class="h">震</span><span data-i="s0">Spring</span></button>
+      <button class="chip" type="button" data-s="1" aria-pressed="false"><span class="h">巽</span><span data-i="s1">Summer</span></button>
+      <button class="chip" type="button" data-s="2" aria-pressed="false"><span class="h">兌</span><span data-i="s2">Autumn</span></button>
+      <button class="chip" type="button" data-s="3" aria-pressed="false"><span class="h">乾</span><span data-i="s3">Winter</span></button>
+    </div>
+    <div class="toggles">
+      <label for="turn"><input type="checkbox" id="turn" checked> <span data-i="t1">Turn the year</span></label>
+      <label for="sun"><input type="checkbox" id="sun" checked> <span data-i="t2">Sun warms the pedal</span></label>
+      <label for="rain"><input type="checkbox" id="rain" checked> <span data-i="t3">Rain</span></label>
+    </div>
+    <p class="hint" data-i="hint">Use headphones or speakers with some low end; the pedal sits at 55 and 110 Hz. It starts softly. This is a browser sketch of the idea, not a recording of a building.</p>
+  </div>
+  <div class="plan">
+    <canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced building. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas>
+    <p class="readout" id="readout" aria-live="polite"></p>
+  </div>
+</div></section>
+
+<section class="block" id="sounds"><div class="wrap sec">
+  <div data-i="k1">01 · Listen</div>
+  <div>
+    <h2 data-i="l_h">Three sketches of how it could sound</h2>
+    <div class="grid">
+      <div class="card">
+        <span class="tag" data-i="l1t">Live sketch</span>
+        <h3 data-i="l1h">Pedal and colour</h3>
+        <p data-i="l1p">The plan at the top of the page. One low A holds through the year. Each season's wind opens a different face, and that face's three notes change what the A means.</p>
+      </div>
+      <div class="card">
+        <span class="tag" data-i="l2t">Model · 44 s</span>
+        <h3 data-i="l2h">The door</h3>
+        <p data-i="l2p">Where the idea began: winter wind through the gap of a northwest-facing door. The first half is heard at the door, the second from across the room.</p>
+        <audio controls preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio>
+      </div>
+      <div class="card">
+        <span class="tag" data-i="l3t">Model · 3 × 32 s</span>
+        <h3 data-i="l3h">Three tunings, same weather</h3>
+        <p data-i="l3p">Identical gusts and identical drips. Only the pitches change.</p>
+        <div class="tracks">
+          <div><span data-i="l3a">A · Harmonic series on A</span><audio controls preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div>
+          <div><span data-i="l3b">B · Pentatonic</span><audio controls preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div>
+          <div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><audio controls preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="idea"><div class="wrap sec">
+  <div data-i="k2">02 · Idea</div>
+  <div>
+    <h2 data-i="i_h">It began with a door that sang in winter</h2>
+    <div class="prose">
+      <p class="lead" data-i="i1">In a New York winter, wind pushed through the gap of a floor-to-ceiling door that faced northwest. It made tones, in layers, and from across the room they sounded close to music.</p>
+      <details><summary data-i="more">Read the full idea</summary><div class="in"><p data-i="i2">A door gap is the mouth of a flute and the room behind it is the body. Instruments are shaped so that their sound fits the way we hear. Wind and rain already make sound. This project asks what happens when a whole building is shaped the same way, so that what the weather plays arrives as harmony.</p>
+      <p data-i="i3">OceanMountain 山海 is the digital version: sound generated from the hour and the season. This is the physical one. Nothing is generated. The weather is the performer.</p></div></details>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="system"><div class="wrap sec">
+  <div data-i="k3">03 · System</div>
+  <div>
+    <h2 data-i="y_h">One held note, eight faces, three elements</h2>
+    <div class="prose">
+      <p class="lead" data-i="y1">A sounds low on every wind face, at 55 and 110 Hz. Each face adds three notes above 290 Hz. As the prevailing wind turns with the seasons, the same A becomes a fifth, a root, a third.</p>
+    </div>
+    <div class="tablewrap"><table>
+      <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="h">震</span><span data-i="f1">East</span></td><td data-i="w1">Spring</td><td class="n">E4 A4 D5 · 330 440 587 Hz</td><td data-i="r1">The fifth of D</td></tr>
+        <tr><td><span class="h">巽</span><span data-i="f2">Southeast</span></td><td data-i="w2">Summer</td><td class="n">E4 A4 B4 · 330 440 494 Hz</td><td data-i="r2">The root, open</td></tr>
+        <tr><td><span class="h">兌</span><span data-i="f3">West</span></td><td data-i="w3">Autumn</td><td class="n">F4 A4 C5 · 349 440 523 Hz</td><td data-i="r3">The third of F</td></tr>
+        <tr><td><span class="h">乾</span><span data-i="f4">Northwest</span></td><td data-i="w4">Winter</td><td class="n">8 · 12 · 14 · 440 660 770 Hz</td><td data-i="r4">The root, with a harmonic seventh</td></tr>
+      </tbody>
+    </table></div>
+    <details><summary data-i="faces8">The other four faces</summary><div class="in"><p class="hint" style="margin:0" data-i="y2">These voicings are placeholders. The other four faces do other work: 離 south takes the sunlight, 坤 southwest is the entrance, 坎 north is the shaded wall where water leaves, 艮 northeast is the silent wall. The trigrams are an organising grammar from tradition, not a claim about nature.</p></div></details>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag" data-i="c1t">Wind</span>
+        <h3 data-i="c1h">The slot lets it speak. The chamber sets the note.</h3>
+        <details><summary data-i="how1">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
+          <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
+          <path d="M104 20H290V60M290 86V130H104" fill="none" stroke="#a3adb5" stroke-width="1.2"/>
+          <line x1="14" y1="73" x2="88" y2="73" stroke="#8ec7b8" stroke-width="2"/><path d="M88 73l-9-5v10z" fill="#8ec7b8"/>
+          <line x1="104" y1="73" x2="132" y2="73" stroke="#dba84a" stroke-width="2"/><path d="M134 73l18-7v14z" fill="none" stroke="#dba84a" stroke-width="2"/>
+          <line x1="292" y1="73" x2="312" y2="73" stroke="#a3adb5" stroke-width="1.2"/>
+          <text x="14" y="60" font-size="11" class="q" data-i="d1a">wind</text>
+          <text x="112" y="44" font-size="11" data-i="d1b">slot + edge</text>
+          <text x="176" y="78" font-size="11" data-i="d1c">tuned chamber</text>
+          <text x="176" y="94" font-size="10" class="q" data-i="d1d">length sets pitch</text>
+        </svg></div>
+        <p data-i="c1p">Wind at 15 to 40 km/h supplies only 10 to 74 Pa of pressure, a fraction of what an organ uses. So the wind voices are large, low and led by their resonators, with shutters to hold them back in storms.</p></div></details>
+      </div>
+      <div class="card">
+        <span class="tag" data-i="c2t">Rain</span>
+        <h3 data-i="c2h">Gather the rain first, then let it fall on glass</h3>
+        <details><summary data-i="how2">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
+          <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
+          <line x1="110" y1="40" x2="110" y2="96" stroke="#8ec7b8" stroke-width="2" stroke-dasharray="2 7"/>
+          <path d="M62 108L160 96L161 101L63 113z" fill="rgba(219,168,74,.2)" stroke="#dba84a" stroke-width="1.6"/>
+          <path d="M52 124V132H172V124" fill="none" stroke="#a3adb5" stroke-width="1.2"/>
+          <text x="196" y="30" font-size="11" data-i="d2a">catchment: tempo</text>
+          <text x="196" y="72" font-size="11" data-i="d2b">fall 1 to 3 m: strength</text>
+          <text x="196" y="108" font-size="11" data-i="d2c">tuned glass: pitch</text>
+          <text x="196" y="134" font-size="11" class="q" data-i="d2d">drain: pitch stays</text>
+        </svg></div>
+        <p data-i="c2p">Rain falling straight onto glass is mostly patter. One gathered drip carries the energy of about fifteen raindrops and lands on one chosen spot. The size of each catchment sets the tempo of its voice.</p></div></details>
+      </div>
+      <div class="card">
+        <span class="tag" data-i="c3t">Light</span>
+        <h3 data-i="c3h">Sunlight is seen, and also heard</h3>
+        <details><summary data-i="how3">How it works</summary><div class="in"><p data-i="c3p">The south face is cut with sealed slits. A 5 mm slit throws a blade of light that crosses a wall five metres away at about 1.3 m an hour. At 35° north, noon light reaches 0.6 m into the room in midsummer and 4.9 m in midwinter.</p>
+        <p data-i="c3q">Sun also warms the air in a chamber and raises its pitch about 3 cents per °C. Two matched pedal chambers, one in sun and one in shade, drift apart and beat slowly by day, then still at dusk.</p></div></details>
+      </div>
+      <div class="card">
+        <span class="tag" data-i="c4t">Harmony</span>
+        <h3 data-i="c4h">Spacing before scale</h3>
+        <details><summary data-i="how4">How it works</summary><div class="in"><p data-i="c4p">The gap that sounds rough is nearly the same number of hertz in every register. Close intervals belong high or short; low voices sit wide. With that met, any scale works above the pedal, microtones included.</p>
+        <div class="bars" aria-label="Smallest smooth gap between two tones, by register">
+          <div class="bar"><span>55 Hz</span><i style="width:36%"></i><em>70 Hz · <span data-i="b1">over an octave</span></em></div>
+          <div class="bar"><span>110 Hz</span><i style="width:38%"></i><em>74 Hz · <span data-i="b2">major sixth</span></em></div>
+          <div class="bar"><span>220 Hz</span><i style="width:42%"></i><em>82 Hz · <span data-i="b3">fourth</span></em></div>
+          <div class="bar"><span>440 Hz</span><i style="width:51%"></i><em>98 Hz · <span data-i="b4">major third</span></em></div>
+          <div class="bar"><span>880 Hz</span><i style="width:67%"></i><em>130 Hz · <span data-i="b5">whole tone</span></em></div>
+          <div class="bar"><span>1760 Hz</span><i style="width:100%"></i><em>193 Hz · <span data-i="b5b">whole tone</span></em></div>
+        </div></div></details>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<section class="block" id="method"><div class="wrap sec">
+  <div data-i="k4">04 · Theory and method</div>
+  <div>
+    <h2 data-i="m_h">Four kinds of statement, kept apart</h2>
+    <div class="prose">
+      <p class="lead" data-i="m1">Every claim in this project carries one label. The labels decide what may be said about it and what would count as it failing.</p>
+    </div>
+    <div class="regs">
+      <div class="reg"><b data-i="g1">Measured</b><span data-i="g1p">Wind pressure, pipe lengths, pitch drift with temperature, roughness scores. Computed from standard acoustics; none yet measured on a built object.</span></div>
+      <div class="reg"><b data-i="g2">Traditional</b><span data-i="g2p">The eight trigrams, yin and yang, 時辰 and 節氣. Used as a living grammar for organising the building, never as physics.</span></div>
+      <div class="reg"><b data-i="g3">Design choice</b><span data-i="g3p">A as the pedal, the voicing of each face, the double wall, the skywell. Owned by the author and open to revision.</span></div>
+      <div class="reg"><b data-i="g4">Hypothesis</b><span data-i="g4p">That the result is good to sit and listen with. Offered, not promised, and testable.</span></div>
+    </div>
+    <details><summary data-i="q_h">Three questions the test panel can answer</summary><div class="in">
+      <ol class="laws">
+        <li data-i="q1"><b>H1.</b> Is tuned pedal-and-colour wind sound judged more pleasant than untuned wind tones?</li>
+        <li data-i="q2"><b>H2.</b> Does the spacing law predict how rough listeners rate a mix?</li>
+        <li data-i="q3"><b>H3.</b> Is the slow sun beat on the pedal heard as calm, or as out of tune?</li>
+      </ol>
+      <p data-i="m2">The roughness figures use the Plomp–Levelt model. It covers one part of hearing and says nothing about musical meaning. A door-sized panel with one wind voice and five glass bars is the next step, with timed listening sessions.</p>
+      </div></details>
+      <details><summary data-i="w_h">Laws</summary><div class="in">
+      <ol class="laws">
+        <li data-i="a1"><b>Silence is shared weather.</b> Still, dry days are silent by design.</li>
+        <li data-i="a2"><b>No health or therapeutic claims.</b> The listener is never sensed or profiled.</li>
+        <li data-i="a3"><b>Nature plays.</b> The building only tunes and listens.</li>
+        <li data-i="a4"><b>One pedal, many colours.</b></li>
+        <li data-i="a5"><b>Spacing before scale.</b></li>
+        <li data-i="a6"><b>An opening does two jobs where it can:</b> sound and light.</li>
+      </ol></div></details>
+  </div>
+</div></section>
+
+<section class="block" id="status"><div class="wrap sec">
+  <div data-i="k5">05 · Status</div>
+  <div>
+    <h2 data-i="st_h">Where it stands</h2>
+    <div class="ledger">
+      <div><span><span data-i="e1">Feasibility audit</span><small data-i="e1s">Wind, rain, glass, precedents, the door physics</small></span><span class="pill done" data-i="p_done">Done</span></div>
+      <div><span><span data-i="e2">Base audit</span><small data-i="e2s">Spacing law, direction tuning, light</small></span><span class="pill done" data-i="p_done2">Done</span></div>
+      <div><span><span data-i="e3">Concept brief v0.1</span><small data-i="e3s">Laws, plan, harmony, voices, sequence</small></span><span class="pill done" data-i="p_done3">Done</span></div>
+      <div><span><span data-i="e4">Sound sketches</span><small data-i="e4s">Computer models on this page</small></span><span class="pill wip" data-i="p_wip">In progress</span></div>
+      <div><span><span data-i="e5">Door-sized test panel</span><small data-i="e5s">One wind voice, five glass bars, first real recordings</small></span><span class="pill" data-i="p_next">Next</span></div>
+      <div><span><span data-i="e6">Architect collaboration</span><small data-i="e6s">Form, structure, a real site</small></span><span class="pill" data-i="p_not">Not yet</span></div>
+    </div>
+    <div class="prose" style="margin-top:16px">
+      <h3 data-i="ab_h" style="font-size:16.5px">About</h3>
+      <p data-i="ab1">Haishan Lai (Toby Hysan) is a pianist, composer and producer working across jazz, film scoring and generative sound. Ultra OMT grows out of OceanMountain 山海, his generative sound ecology shaped by the twelve 時辰 and the twenty-four 節氣.</p>
+    </div>
+  </div>
+</div></section>
+</main>
+
+<footer><div class="wrap"><a href="/">← Haishan Lai</a> · <a href="/omt/">OceanMountain 山海</a> · <span data-i="foot">Beta. This page changes as the work does.</span> © 2026 Haishan Lai</div></footer>
+
+<script>
+(function(){
+"use strict";
+/* ---------- language ---------- */
+var ZH={
+band:"概念階段 · 尚未建造 · 本頁所有聲音皆為電腦模擬",
+n1:"聆聽",n2:"緣起",n3:"系統",n4:"方法",n5:"進度",
+eyebrow:"Ultra OMT · 山海的實體版",h1:"風、雨、光之殿",
+thesis:"一座由風、雨與日光演奏的建築。<b>自然演奏，建築只負責調音與聆聽。</b>",
+play:"播放聲音草圖",stop:"停止",
+s0:"春",s1:"夏",s2:"秋",s3:"冬",
+t1:"四季輪轉",t2:"日照暖持續音",t3:"雨",
+hint:"請用耳機或有低頻的喇叭；持續音位於 55 與 110 Hz。聲音由弱漸入。這是概念的瀏覽器草圖，並非建築的實地錄音。",
+k1:"01 · 聆聽",l_h:"三個聲音草圖：它可能怎樣響",
+l1t:"即時草圖",l1h:"持續音與色彩",l1p:"即頁首的平面圖。一個低音 A 貫穿全年。每季的風打開不同的一面，該面的三個音改變了 A 的意義。",
+l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"構想的起點：冬天的風穿過一扇朝西北的落地門縫。前半段在門邊聽，後半段在房間另一頭聽。",
+l3t:"模擬 · 3 × 32 秒",l3h:"三種調律，同一場天氣",l3p:"陣風與雨滴完全相同，只有音高不同。",
+l3a:"A · 以 A 為基音的泛音列",l3b:"B · 五聲音階",l3c:"C · 鋼琴平均律 A13(♯11)",
+k2:"02 · 緣起",i_h:"一切始於一扇在冬天唱歌的門",
+i1:"紐約的冬天，風擠過一扇朝西北的落地門縫，發出一層一層的音。從房間另一頭聽，幾乎像音樂。",
+i2:"門縫就是笛子的吹口，門後的房間就是琴身。樂器之所以是那個形狀，是為了讓聲音合乎我們的聽覺。風和雨本來就會發聲。這個計畫想問：如果把整座建築也這樣塑形，讓天氣奏出的聲音成為和聲，會怎樣？",
+i3:"山海 OceanMountain 是數位版：聲音由時辰與節氣生成。這裡是實體版，沒有任何聲音是生成的，天氣就是演奏者。",
+k3:"03 · 系統",y_h:"一個持續音、八個面、三種元素",
+y1:"每一個風面都有低音 A，位於 55 與 110 Hz。每面再加三個高於 290 Hz 的音。盛行風隨季節轉向，同一個 A 便成為五度、根音、三度。",
+th1:"面",th2:"季風",th3:"色彩音",th4:"A 成為",
+f1:"東",f2:"東南",f3:"西",f4:"西北",w1:"春",w2:"夏",w3:"秋",w4:"冬",
+r1:"D 的五度",r2:"根音，開放",r3:"F 的三度",r4:"根音，帶自然七度",
+y2:"以上配置為暫定。其餘四面各有職責：離（南）承接日光，坤（西南）為入口，坎（北）是背陰的牆、水由此排出，艮（東北）是靜默之牆。八卦在此是來自傳統的組織語法，並非對自然的斷言。",
+c1t:"風",c1h:"縫讓它發聲，腔體決定音高",d1a:"風",d1b:"縫與刃",d1c:"調音腔體",d1d:"長度決定音高",
+c1p:"時速 15 至 40 公里的風只提供 10 至 74 帕的壓力，遠低於管風琴所用。所以風的聲部要大、要低、以共鳴體為主，並以擋板在風暴時收束。",
+c2t:"雨",c2h:"先把雨收集起來，再讓它落在玻璃上",d2a:"集水面：速度",d2b:"落差 1 至 3 米：力度",d2c:"調音玻璃：音高",d2d:"排水：音高不變",
+c2p:"雨直接打在玻璃上多半只是沙沙聲。一滴匯集的水珠約有十五顆雨滴的能量，並落在選定的一點。每個集水面的大小決定該聲部的速度。",
+c3t:"光",c3h:"日光看得見，也聽得見",
+c3p:"南面開有密封的光縫。一道 5 毫米的縫投出一片光刃，在五米外的牆上每小時移動約 1.3 米。在北緯 35 度，正午的光在夏至伸入室內 0.6 米，冬至則達 4.9 米。",
+c3q:"日照也會加熱腔體內的空氣，每升高 1°C 音高約升 3 音分。兩個相同的持續音腔體，一個向陽、一個背陰，白天逐漸錯開並緩慢拍動，黃昏時歸於平靜。",
+c4t:"和聲",c4h:"先講間距，再講音階",
+c4p:"聽起來粗糙的音距，在每個音區幾乎都是相同的赫茲數。密集的音程應放在高處或短促發聲；低音要拉開。滿足這點，持續音之上任何音階都可行，包括微分音。",
+b1:"超過八度",b2:"大六度",b3:"四度",b4:"大三度",b5:"全音",b5b:"全音",
+k4:"04 · 理論與方法",m_h:"四種陳述，分開對待",
+m1:"本計畫的每一項主張都帶有一個標籤。標籤決定可以怎樣談論它，以及怎樣才算它失敗。",
+g1:"可量測",g1p:"風壓、管長、音高隨溫度的漂移、粗糙度分數。皆由標準聲學公式計算，尚未在實物上量測。",
+g2:"傳統",g2p:"八卦、陰陽、時辰與節氣。作為組織建築的活語法，絕不當作物理。",
+g3:"設計選擇",g3p:"以 A 為持續音、各面的配置、雙層牆、天井。由作者負責，可隨時修訂。",
+g4:"假設",g4p:"成果是否適合靜坐聆聽。這是提出而非承諾，並且可以檢驗。",
+q_h:"測試牆板能回答的三個問題",
+q1:"<b>H1.</b> 經調音的「持續音加色彩」風聲，是否比未調音的風聲更悅耳？",
+q2:"<b>H2.</b> 間距法則能否預測聽者對混合聲的粗糙度評分？",
+q3:"<b>H3.</b> 持續音上緩慢的日照拍音，聽來是平靜，還是走音？",
+m2:"粗糙度數值採用 Plomp–Levelt 模型。它只涵蓋聽覺的一部分，無法說明音樂意義。下一步是一塊門板大小的測試牆：一個風聲部、五根玻璃條，並進行計時聆聽。",
+w_h:"法則",
+a1:"<b>靜默是共享的天氣。</b>無風無雨的日子，按設計就是安靜的。",
+a2:"<b>不作任何健康或療效宣稱。</b>不感測、不側寫聽者。",
+a3:"<b>自然演奏。</b>建築只負責調音與聆聽。",
+a4:"<b>一個持續音，多種色彩。</b>",a5:"<b>先講間距，再講音階。</b>",a6:"<b>一個開口盡量兼顧兩件事：</b>聲音與光。",
+k5:"05 · 進度",st_h:"目前進展",
+e1:"可行性審核",e1s:"風、雨、玻璃、先例、門的物理",e2:"基礎審核",e2s:"間距法則、方位調律、光",
+e3:"概念說明書 v0.1",e3s:"法則、平面、和聲、聲部、動線",e4:"聲音草圖",e4s:"本頁的電腦模擬",
+e5:"門板大小的測試牆",e5s:"一個風聲部、五根玻璃條、第一批實地錄音",e6:"與建築師合作",e6s:"形體、結構、真實基地",
+p_done:"完成",p_done2:"完成",p_done3:"完成",p_wip:"進行中",p_next:"下一步",p_not:"尚未",
+ab_h:"關於",ab1:"賴海山（Toby Hysan）是鋼琴家、作曲家與製作人，創作橫跨爵士、電影配樂與生成聲音。Ultra OMT 源自「山海 OceanMountain」，一個以十二時辰與二十四節氣塑形的生成聲音生態。",
+more:"閱讀完整緣起",faces8:"其餘四個面",how1:"運作方式",how2:"運作方式",how3:"運作方式",how4:"運作方式",
+foot:"測試版。本頁隨作品進展而更新。"
+};
+var EN={},lang="en",els=document.querySelectorAll("[data-i]");
+els.forEach(function(e){EN[e.dataset.i]=e.innerHTML;});
+EN.stop="Stop";
+function T(k){return (lang==="zh"?ZH[k]:EN[k])||EN[k]||"";}
+function applyLang(){
+  document.documentElement.lang=lang==="zh"?"zh-Hant":"en";
+  els.forEach(function(e){var k=e.dataset.i;if(k==="play")return;e.innerHTML=T(k);});
+  document.getElementById("lang").textContent=lang==="zh"?"English":"繁體中文";
+  setPlayLabel();setReadout();
+}
+document.getElementById("lang").addEventListener("click",function(){lang=lang==="en"?"zh":"en";applyLang();});
+
+/* ---------- seasons ---------- */
+var S=[
+ {face:2,notes:[329.63,440,587.33],n:"E4 A4 D5",en:["east","the fifth of D"],zh:["東","D 的五度"],kmh:20,rain:.55},
+ {face:3,notes:[329.63,440,493.88],n:"E4 A4 B4",en:["southeast","the root, open"],zh:["東南","開放的根音"],kmh:18,rain:.9},
+ {face:6,notes:[349.23,440,523.25],n:"F4 A4 C5",en:["west","the third of F"],zh:["西","F 的三度"],kmh:22,rain:.45},
+ {face:7,notes:[440,660,770],n:"8 · 12 · 14",en:["northwest","the root, with a harmonic seventh"],zh:["西北","根音，帶自然七度"],kmh:28,rain:.25}
+];
+var cur=0,chips=document.querySelectorAll(".chip"),turn=document.getElementById("turn"),sunBox=document.getElementById("sun"),rainBox=document.getElementById("rain");
+function setReadout(){
+  var s=S[cur],r=document.getElementById("readout");
+  r.innerHTML=lang==="zh"
+   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h<br>A 成為<b>"+s.zh[1]+"</b> · "+s.n+" · 持續音 A 55 / 110 Hz"
+   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h<br>A becomes <b>"+s.en[1]+"</b> · "+s.n+" over A 55 / 110 Hz";
+}
+function setSeason(i,byUser){
+  cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
+  setReadout();if(audio)audio.season(i);
+  if(byUser){turn.checked=false;}
+}
+chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dataset.s,true);});});
+setInterval(function(){if(turn.checked&&!document.hidden)setSeason((cur+1)%4,false);},14000);
+
+/* ---------- audio ---------- */
+var audio=null,GLASS=[385,440,495,550,660,770,880];
+function Engine(){
+  var AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),t0=ctx.currentTime;
+  var master=ctx.createGain();master.gain.value=0;
+  var lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=9000;
+  var comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=12;comp.attack.value=.005;comp.release.value=.25;
+  master.connect(lp);lp.connect(comp);comp.connect(ctx.destination);
+  master.gain.linearRampToValueAtTime(.85,t0+4);
+  var len=ctx.sampleRate*4,buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);
+  for(var i=0;i<len;i++)d[i]=Math.random()*2-1;
+  var noise=ctx.createBufferSource();noise.buffer=buf;noise.loop=true;noise.start();
+  var gusts=[];
+  function voice(f,level,breath,dest){
+    var g=ctx.createGain();g.gain.value=0;g.connect(dest);
+    var o=ctx.createOscillator();o.type="sine";o.frequency.value=f;var og=ctx.createGain();og.gain.value=1;o.connect(og);og.connect(g);o.start();
+    var o2=ctx.createOscillator();o2.type="sine";o2.frequency.value=f*2;var o2g=ctx.createGain();o2g.gain.value=.18;o2.connect(o2g);o2g.connect(g);o2.start();
+    var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=28;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
+    gusts.push({g:g,level:level,v:.4});return {osc:o,gain:g};
+  }
+  var pedal=ctx.createGain();pedal.gain.value=1;pedal.connect(master);
+  voice(55,.34,6,pedal);voice(110,.2,4,pedal);
+  var sunG=ctx.createGain();sunG.gain.value=sunBox.checked?1:0;sunG.connect(pedal);
+  voice(110*Math.pow(2,29/1200),.17,3,sunG);
+  var groups=S.map(function(s,k){
+    var gg=ctx.createGain();gg.gain.value=k===cur?1:0;gg.connect(master);
+    s.notes.forEach(function(f,j){voice(f,.07-.012*j,2.2,gg);});return gg;
+  });
+  var timer=setInterval(function(){
+    var now=ctx.currentTime;
+    gusts.forEach(function(q){q.v+= (Math.random()-.5)*.5;q.v=Math.max(.08,Math.min(1,q.v));q.g.gain.setTargetAtTime(q.level*q.v*q.v,now,1.1);});
+  },700);
+  this.season=function(i){var now=ctx.currentTime;groups.forEach(function(g,k){g.gain.setTargetAtTime(k===i?1:0,now,k===i?2.2:1.4);});};
+  this.sun=function(on){sunG.gain.setTargetAtTime(on?1:0,ctx.currentTime,.8);};
+  var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=1500;rainBus.Q.value=.4;rainBus.connect(master);
+  this.drip=function(vel){
+    var f=GLASS[Math.floor(Math.random()*GLASS.length)],now=ctx.currentTime;
+    var pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.11*vel;
+    if(pan){pan.pan.value=Math.random()*1.2-.6;out.connect(pan);pan.connect(rainBus);}else out.connect(rainBus);
+    /* soft strike, long quiet ring: main tone, a near-unison for slow shimmer, a faint short overtone */
+    [[1,1,1.9],[1.003,.5,1.9],[2.756,.06,.18]].forEach(function(p){
+      var o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f*p[0];
+      g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(p[1],now+.018);g.gain.setTargetAtTime(0,now+.02,p[2]/3);
+      o.connect(g);g.connect(out);o.start(now);o.stop(now+p[2]*2.4);
+    });
+  };
+  this.stop=function(){
+    clearInterval(timer);var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setTargetAtTime(0,now,.25);
+    setTimeout(function(){ctx.close();},1500);
+  };
+}
+var playBtn=document.getElementById("play");
+function setPlayLabel(){playBtn.textContent=audio?T("stop"):T("play");playBtn.setAttribute("aria-pressed",audio?"true":"false");}
+playBtn.addEventListener("click",function(){
+  if(audio){audio.stop();audio=null;}
+  else{try{audio=new Engine();}catch(e){audio=null;}}
+  setPlayLabel();
+});
+sunBox.addEventListener("change",function(){if(audio)audio.sun(sunBox.checked);});
+
+/* ---------- live plan ---------- */
+var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
+var TRI=["坎","艮","震","巽","離","坤","兌","乾"],WINDF={2:1,3:1,6:1,7:1};
+var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+function pt(deg,r){var a=deg*Math.PI/180;return [C+r*Math.sin(a),C-r*Math.cos(a)];}
+function oct(r){g.beginPath();for(var k=0;k<8;k++){var p=pt(22.5+45*k,r);k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);}g.closePath();}
+var streaks=[],ripples=[],windAng=S[0].face*45,nextDrip=0;
+for(var i=0;i<70;i++)streaks.push({u:Math.random()*2-1,v:Math.random()*2-1,l:.04+Math.random()*.07,s:.5+Math.random()*.8});
+function frame(ms){
+  var t=ms/1000,target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
+  g.clearRect(0,0,W,W);g.fillStyle="#1e2731";g.fillRect(0,0,W,W);
+  /* wind */
+  var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20;
+  g.lineCap="round";g.lineWidth=2;
+  streaks.forEach(function(s){
+    if(!reduce){s.v+=.0045*s.s*sp;if(s.v>1.1){s.v=-1.1;s.u=Math.random()*2-1;}}
+    var x=C+px*s.u*W*.55+dx*s.v*W*.55,y=C+py*s.u*W*.55+dy*s.v*W*.55;
+    g.strokeStyle="rgba(142,199,184,"+(.16+.3*(1-Math.abs(s.v)))+")";
+    g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*s.l*W,y+dy*s.l*W);g.stroke();
+  });
+  /* building */
+  oct(R);g.fillStyle="#161c23";g.fill();g.strokeStyle="rgba(232,229,220,.35)";g.lineWidth=2;g.stroke();
+  /* sun blade from the south face */
+  var day=reduce?.35:(t%50)/50,sa=(-58+116*day)*Math.PI/180,sx=C+R*.12*Math.sin(sa)*-1,sy=C+R*.92;
+  var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.sin(day*Math.PI);
+  g.save();oct(R-3);g.clip();
+  var grd=g.createLinearGradient(sx,sy,ex,ey);grd.addColorStop(0,"rgba(219,168,74,"+(.75*fade)+")");grd.addColorStop(1,"rgba(219,168,74,0)");
+  g.strokeStyle=grd;g.lineWidth=7;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.restore();
+  /* faces */
+  for(var k=0;k<8;k++){
+    var p1=pt(45*k-22.5,R),p2=pt(45*k+22.5,R),active=k===S[cur].face;
+    if(WINDF[k]){g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.32)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();}
+    if(k===4){g.strokeStyle="rgba(219,168,74,.8)";g.lineWidth=5;g.setLineDash([10,12]);g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.setLineDash([]);}
+    var lp=pt(45*k,R+62);
+    g.font=(active?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
+    g.fillStyle=active?"#8ec7b8":(k===4?"#dba84a":"rgba(232,229,220,.55)");g.fillText(TRI[k],lp[0],lp[1]);
+  }
+  /* skywell and rain */
+  g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle="#1e2731";g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
+  if(rainBox.checked&&!reduce&&t>nextDrip){
+    nextDrip=t+.25+(-Math.log(Math.random()+.001))/(S[cur].rain*1.1);
+    var ra=Math.random()*7,rr=Math.random()*R*.22,vel=.4+Math.random()*.6;
+    ripples.push({x:C+Math.cos(ra)*rr,y:C+Math.sin(ra)*rr,t:t,v:vel});
+    if(audio)audio.drip(vel);
+  }
+  if(reduce&&!ripples.length){ripples.push({x:C-20,y:C+14,t:t-.5,v:.8},{x:C+34,y:C-22,t:t-.2,v:.6});}
+  g.save();g.beginPath();g.arc(C,C,R*.3-2,0,7);g.clip();
+  ripples=ripples.filter(function(r){return reduce||t-r.t<1.8;});
+  ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v)+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
+  g.restore();
+  if(!reduce)requestAnimationFrame(frame);
+}
+setReadout();
+if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(reduce)frame(0);});
+requestAnimationFrame(frame);
+})();
+</script>
+</body>
+</html>
