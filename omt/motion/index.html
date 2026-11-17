@@ -127,7 +127,7 @@ body{font-family:var(--f-body),"Noto Sans TC",sans-serif}
 .intro h1{font-size:clamp(22px,2.4vw,28px);font-weight:500;letter-spacing:-.01em}
 .intro h1 i{font-style:normal;font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;color:var(--mute);vertical-align:super;margin-left:6px}
 .intro .sub{font-size:15.5px;color:#cfcac1}
-@media (max-width:560px){.intro{grid-template-columns:1fr}.intro .han{grid-row:auto}}
+@media (max-width:560px){.intro{gap:2px 14px;padding-top:14px}.intro .han{font-size:46px}.under .ctl{margin-left:0}}
 .gate{position:absolute;inset:0;z-index:4;display:grid;place-items:center;align-content:center;gap:14px;padding:22px;text-align:center;background:radial-gradient(ellipse at 50% 45%,#1d1b21 0,#0e0d10 75%)}
 .gate .row{display:flex;flex-wrap:wrap;gap:10px;justify-content:center}
 .gate button{padding:12px 18px;font-size:12.5px}
@@ -138,6 +138,28 @@ body{font-family:var(--f-body),"Noto Sans TC",sans-serif}
 #play,#about,#rig{scroll-margin-top:64px}
 @media (max-width:560px){.site nav a[href="#play"]{display:none}.brand span{display:none}}
 .cam .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);pointer-events:none;transition:opacity 1.5s}
+.sys{display:none!important}
+.intro{padding-top:22px}
+.intro .han{font-size:clamp(52px,6vw,76px)}
+.piece{display:grid;gap:12px}
+.piece .cam{aspect-ratio:16/9;border-radius:12px}
+@media (max-width:620px){.piece .cam{aspect-ratio:4/5}}
+.under{display:flex;flex-wrap:wrap;gap:12px 20px;align-items:center}
+.under .world{gap:12px;min-width:150px}
+.under .glyph{font-size:42px}
+.under .wname{font-size:16px}
+.under .wdesc{display:none}
+.under .btns{margin:0}
+.under .ctl{margin-left:auto;display:flex;gap:8px}
+.how{margin:0;color:var(--mute);font-size:13.5px;letter-spacing:.01em}
+details.read{margin-top:30px;border-top:1px solid var(--line)}
+details.read>summary{cursor:pointer;list-style:none;padding:16px 0;display:flex;gap:14px;align-items:baseline}
+details.read>summary::-webkit-details-marker{display:none}
+details.read>summary::before{content:"+";font-family:var(--f-mono);color:var(--mute);width:1em}
+details.read[open]>summary::before{content:"−"}
+details.read>summary span{font-size:15px;font-weight:500}
+details.read>summary i{font-style:normal;font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;color:var(--mute)}
+details.read .about{margin-top:6px}
 details.rig{border:1px solid var(--line);border-radius:10px;background:color-mix(in srgb,var(--panel) 55%,transparent)}
 details.rig>summary{cursor:pointer;padding:14px 16px;display:flex;gap:12px;align-items:baseline;list-style:none}
 details.rig>summary::-webkit-details-marker{display:none}
@@ -164,7 +186,7 @@ details.rig>summary span{color:var(--mute);font-size:13px}
 .worlds4 .gl{font-family:var(--f-glyph);font-size:34px;line-height:1;color:var(--c)}
 .worlds4 b{display:block;margin-top:8px}
 .worlds4 span{font-size:13.5px;color:var(--mute)}
-.foot{margin-top:46px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;color:var(--mute)}
+.foot{margin-top:24px;padding-top:18px;border-top:1px solid var(--line);display:flex;flex-wrap:wrap;gap:8px 20px;font-family:var(--f-mono);font-size:11.5px;letter-spacing:.06em;color:var(--mute)}
 .foot a{color:var(--mute)}
 body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
 </style>
@@ -172,41 +194,84 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
 <body>
 <header class="site"><div class="in">
   <a class="brand" href="/#omt">山海 · 身境 <span>OMT Motion β</span></a>
-  <nav><a href="#play" data-t="nav_play">Play</a><a href="#about" data-t="nav_about">About</a><a href="/#omt" data-t="nav_omt">OMT ↗</a><button class="lang" id="langBtn" type="button">中文</button></nav>
+  <nav><a href="/#omt" data-t="nav_omt">OMT ↗</a><button class="lang" id="langBtn" type="button">中文</button></nav>
 </div></header>
-<div class="band"><div class="in" data-t="band">Beta 0.20 · work in progress · best in Chrome on a laptop, with speakers or headphones</div></div>
 <div class="wrap">
   <section class="intro">
     <div class="han" aria-hidden="true">身</div>
     <h1>OMT Motion<i>β 0.20</i></h1>
-    <p class="sub" data-t="intro">The body, as instrument. A dancer moves, or you move your hand, and four pure-tone worlds answer: opening, striking, storming, resting. Built for live piano and dance improvisation.</p>
+    <p class="sub" data-t="intro">The body, as instrument.</p>
   </section>
-
-  <div class="rail" id="play">
-    <button id="relBtn" title="A long musical let-go">Release <kbd>Space</kbd></button>
-    <label class="label" for="pset" data-t="notes">Notes</label><select id="pset"><option value="ladder">Harmonic</option><option value="black">Black keys (pentatonic)</option><option value="white">White keys</option><option value="room">Room modes only</option></select>
-    <button id="stopBtn" class="stop">Stop <kbd>Esc</kbd></button>
-    <span class="status" id="status">Not running</span>
-  </div>
-  <p class="sub" id="roomInfo" hidden></p>
   <p class="err" id="err" hidden></p>
   <div class="toast" id="toast" role="status" hidden></div>
 
-  <div class="stage">
-    <div class="left">
+  <section class="piece" id="play">
       <div class="cam" id="cam">
-        <video id="vid" playsinline muted></video>
-        <canvas id="ov"></canvas>
-        <div class="empty" id="camEmpty"></div>
-        <div class="gate" id="gate">
-          <div class="g" aria-hidden="true">土水火空</div>
-          <div class="row"><button id="startTouch" class="primary" data-t="g_touch">Play with touch</button><button id="start" data-t="g_cam">Camera + mic</button></div>
-          <p data-t="g_note">Touch: move your mouse or finger here, no permissions. Camera: a dancer, or you, in front of the lens; the mic listens for a piano. Nothing is recorded or uploaded.</p>
-        </div>
-        <span class="hint" id="hint" hidden></span>
-        <span class="flag" id="flag" hidden></span>
-        <div class="roi" id="roiBox" hidden></div><div class="ring" id="ring" hidden></div>
+      <video id="vid" playsinline muted></video>
+      <canvas id="ov"></canvas>
+      <div class="empty" id="camEmpty"></div>
+      <div class="gate" id="gate">
+        <div class="g" aria-hidden="true">土水火空</div>
+        <div class="row"><button id="startTouch" class="primary" data-t="g_touch">Play with touch</button><button id="start" data-t="g_cam">Camera + mic</button></div>
+        <p data-t="g_note">Move your mouse or finger here. Nothing is recorded.</p>
       </div>
+      <span class="hint" id="hint" hidden></span>
+      <span class="flag" id="flag" hidden></span>
+      <div class="roi" id="roiBox" hidden></div><div class="ring" id="ring" hidden></div>
+    </div>
+    <div class="under">
+      <div class="world"><span class="glyph" id="wGlyph">土</span><div><div class="wname" id="wName">Ground</div><div class="wdesc" id="wDesc"></div></div></div>
+      <div class="btns" id="wBtns"></div>
+      <div class="ctl"><button id="relBtn" title="A long musical let-go">Release <kbd>Space</kbd></button><button id="stopBtn" class="stop">Stop <kbd>Esc</kbd></button></div>
+    </div>
+    <p class="how" data-t="how">Slow, it opens · sudden, it strikes · wild with two or more worlds, it breaks · still, it rests.</p>
+  </section>
+
+  <details class="read" id="about">
+    <summary><span data-t="read">Read</span><i>閱讀 · about · rules · privacy</i></summary>
+    <div class="about">
+    <div>
+      <h2 data-t="a_h1">About</h2>
+      <p class="lead" data-t="a_lead">OMT Motion is the third part of OceanMountain. The Engine (聲境) plays the hour; the Site (殿境) lets weather play a building; Motion (身境) lets a body play the room.</p>
+      <p data-t="a_p1">A camera reads how much she moves, how fast, how high, where, and how still. Those readings never play notes directly. They push a few slow forces (energy, brightness, density, chaos, stillness), and the instrument decides what to say: when to open, when to strike, when to storm, when to rest. That gap between the body and the sound is the point: it is meant to answer like a partner, not follow like a shadow.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h3">Four worlds</h2>
+      <div class="worlds4">
+        <div style="--c:var(--ground)"><span class="gl">土</span><b data-t="w1">Ground</b><span data-t="w1d">Low harmonics, slow, close to the fundamental.</span></div>
+        <div style="--c:var(--water)"><span class="gl">水</span><b data-t="w2">Water</b><span data-t="w2d">Middle partials that drift and beat against each other.</span></div>
+        <div style="--c:var(--fire)"><span class="gl">火</span><b data-t="w3">Fire</b><span data-t="w3d">The 7th, 11th and 13th: bright, unstable, quick to strike.</span></div>
+        <div style="--c:var(--air)"><span class="gl">空</span><b data-t="w4">Air</b><span data-t="w4d">High, thin, far away; the space above the others.</span></div>
+      </div>
+      <p style="margin-top:14px" data-t="a_w">All four are drawn from one harmonic series on A, or from the resonances of your own room if you measure it in the Rig. The four are a design choice, not the Five Phases (五行).</p>
+    </div>
+    <div>
+      <h2 data-t="a_h4">Four registers</h2>
+      <p data-t="a_rp">OceanMountain keeps every claim in one of four registers, so that what is measured is never confused with what is chosen or hoped.</p>
+      <table class="reg">
+        <tr><th data-t="r1">Measured<small>可量測</small></th><td data-t="r1d">Motion, speed, height, position and stillness from the camera; pitch and attacks from the microphone; room resonances from a ten-second test sweep.</td></tr>
+        <tr><th data-t="r2">Traditional-symbolic<small>傳統象徵</small></th><td data-t="r2d">None claimed. The glyphs 土 水 火 空 are names for the worlds, not a cosmological mapping.</td></tr>
+        <tr><th data-t="r3">Design choice<small>藝術設計</small></th><td data-t="r3d">The four worlds and their harmonic ladders; the breath pace (about six a minute); the rule modes; how chaos is earned, spent and gated by layering.</td></tr>
+        <tr><th data-t="r4">Hypothesis<small>實驗假設</small></th><td data-t="r4d">That the quality of movement (flow, time, weight, space), read from a flat image, can shape musical form, not only loudness. Untested.</td></tr>
+      </table>
+      <p style="margin-top:14px" data-t="a_nc">No health or therapeutic claims are made. The breath pace is a musical decision.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h5">Privacy</h2>
+      <p data-t="a_pv">Camera and microphone are processed inside your browser. Nothing is recorded or sent anywhere. A stage area and room tuning, if you set them, are saved only in this browser. Pose tracking, when you turn it on, downloads its model from Google's servers.</p>
+    </div>
+    <div>
+      <h2 data-t="a_h6">Status</h2>
+      <p data-t="a_st">Beta 0.20, made in November 2026 for a live piano and contemporary dance improvisation in Mexico City. Next: a shared generator with the Engine, and a sound engine in Max/RNBO. Touch mode is the gentlest start; camera mode is the real instrument.</p>
+    </div>
+    </div>
+  </details>
+  <footer class="foot"><span>山海 OceanMountain · 身境 OMT Motion β 0.20</span><span>© 2026 Haishan Lai</span><a href="/">oceanmountainlai.art</a></footer>
+
+  <!-- system and rules: kept for the code, shown only in the Mac rehearsal version -->
+  <div class="sys" hidden>
+    <select id="pset"><option value="ladder">Harmonic</option><option value="black">Black keys (pentatonic)</option><option value="white">White keys</option><option value="room">Room modes only</option></select>
+    <span id="status"></span><p id="roomInfo" hidden></p>
       <div class="card meters">
         <div class="m"><span class="label">Motion</span><span class="bar"><i id="mMot"></i></span><span class="num" id="nMot">0</span></div>
         <div class="m"><span class="label">Height</span><span class="bar"><i id="mHi"></i></span><span class="num" id="nHi">0</span></div>
@@ -219,12 +284,6 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
         <div class="m"><span class="label">Space</span><span class="bar"><i id="mDir"></i></span><span class="num" id="nDir">indirect</span></div>
         <div class="m"><span class="label">Weight</span><span class="bar"><i id="mWgt"></i></span><span class="num" id="nWgt">light</span></div>
         <div class="m"><span class="label">Storm</span><span class="bar"><i id="mStm" style="background:var(--fire)"></i></span><span class="num" id="nStm">0</span></div>
-      </div>
-    </div>
-    <div class="side">
-      <div class="card">
-        <div class="world"><span class="glyph" id="wGlyph">土</span><div><div class="wname" id="wName">Ground</div><div class="wdesc" id="wDesc"></div></div></div>
-        <div class="btns" id="wBtns"></div>
       </div>
       <div class="card">
         <div class="archead"><span class="label">Harmony</span><span class="archl" id="archl">Arc 0 · up to 5th</span></div>
@@ -247,10 +306,7 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
           <button id="snap" aria-pressed="false">Snap to A <kbd>T</kbd></button>
         </div>
       </div>
-    </div>
-  </div>
-
-  <div class="card mixcard">
+      <div class="card mixcard">
     <div class="mix" id="mix"></div>
     <details class="adv"><summary class="label">More controls</summary><div class="mix" id="mixAdv"></div></details>
   </div>
@@ -325,53 +381,7 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
     </div>
   </details>
 
-  <section class="about" id="about">
-    <div>
-      <h2 data-t="a_h1">About</h2>
-      <p class="lead" data-t="a_lead">OMT Motion is the third part of OceanMountain. The Engine (聲境) plays the hour; the Site (殿境) lets weather play a building; Motion (身境) lets a body play the room.</p>
-      <p data-t="a_p1">A camera reads how much she moves, how fast, how high, where, and how still. Those readings never play notes directly. They push a few slow forces (energy, brightness, density, chaos, stillness), and the instrument decides what to say: when to open, when to strike, when to storm, when to rest. That gap between the body and the sound is the point: it is meant to answer like a partner, not follow like a shadow.</p>
-    </div>
-    <div>
-      <h2 data-t="a_h2">How to play</h2>
-      <ul>
-        <li data-t="a_l1"><b>Move slowly</b> and the world opens upward, one partial at a time.</li>
-        <li data-t="a_l2"><b>Move suddenly</b> and a single bell is struck.</li>
-        <li data-t="a_l3"><b>Move wildly</b> with two or more worlds layered (keys 1 to 4) and the Edge comes in: glitch, ring and feedback, still tuned to the worlds.</li>
-        <li data-t="a_l4"><b>Hold still</b> and the room swells; the melody slows and rests.</li>
-        <li data-t="a_l5"><b>Space</b> lets the piece go slowly. <b>Esc</b> is the stop. The Rig panel holds the full performance setup.</li>
-      </ul>
-    </div>
-    <div>
-      <h2 data-t="a_h3">Four worlds</h2>
-      <div class="worlds4">
-        <div style="--c:var(--ground)"><span class="gl">土</span><b data-t="w1">Ground</b><span data-t="w1d">Low harmonics, slow, close to the fundamental.</span></div>
-        <div style="--c:var(--water)"><span class="gl">水</span><b data-t="w2">Water</b><span data-t="w2d">Middle partials that drift and beat against each other.</span></div>
-        <div style="--c:var(--fire)"><span class="gl">火</span><b data-t="w3">Fire</b><span data-t="w3d">The 7th, 11th and 13th: bright, unstable, quick to strike.</span></div>
-        <div style="--c:var(--air)"><span class="gl">空</span><b data-t="w4">Air</b><span data-t="w4d">High, thin, far away; the space above the others.</span></div>
-      </div>
-      <p style="margin-top:14px" data-t="a_w">All four are drawn from one harmonic series on A, or from the resonances of your own room if you measure it in the Rig. The four are a design choice, not the Five Phases (五行).</p>
-    </div>
-    <div>
-      <h2 data-t="a_h4">Four registers</h2>
-      <p data-t="a_rp">OceanMountain keeps every claim in one of four registers, so that what is measured is never confused with what is chosen or hoped.</p>
-      <table class="reg">
-        <tr><th data-t="r1">Measured<small>可量測</small></th><td data-t="r1d">Motion, speed, height, position and stillness from the camera; pitch and attacks from the microphone; room resonances from a ten-second test sweep.</td></tr>
-        <tr><th data-t="r2">Traditional-symbolic<small>傳統象徵</small></th><td data-t="r2d">None claimed. The glyphs 土 水 火 空 are names for the worlds, not a cosmological mapping.</td></tr>
-        <tr><th data-t="r3">Design choice<small>藝術設計</small></th><td data-t="r3d">The four worlds and their harmonic ladders; the breath pace (about six a minute); the rule modes; how chaos is earned, spent and gated by layering.</td></tr>
-        <tr><th data-t="r4">Hypothesis<small>實驗假設</small></th><td data-t="r4d">That the quality of movement (flow, time, weight, space), read from a flat image, can shape musical form, not only loudness. Untested.</td></tr>
-      </table>
-      <p style="margin-top:14px" data-t="a_nc">No health or therapeutic claims are made. The breath pace is a musical decision.</p>
-    </div>
-    <div>
-      <h2 data-t="a_h5">Privacy</h2>
-      <p data-t="a_pv">Camera and microphone are processed inside your browser. Nothing is recorded or sent anywhere. A stage area and room tuning, if you set them, are saved only in this browser. Pose tracking, when you turn it on, downloads its model from Google's servers.</p>
-    </div>
-    <div>
-      <h2 data-t="a_h6">Status</h2>
-      <p data-t="a_st">Beta 0.20, made in November 2026 for a live piano and contemporary dance improvisation in Mexico City. Next: a shared generator with the Engine, and a sound engine in Max/RNBO. Touch mode is the gentlest start; camera mode is the real instrument.</p>
-    </div>
-  </section>
-  <footer class="foot"><span>山海 OceanMountain · 身境 OMT Motion β 0.20</span><span>© 2026 Haishan Lai</span><a href="/">oceanmountainlai.art</a></footer>
+  </div>
 </div>
 
 <script>
@@ -1315,9 +1325,9 @@ S.inView=true;try{new IntersectionObserver(es=>{S.inView=es[0].isIntersecting},{
 const ZH={
  nav_play:'演奏',nav_about:'關於',nav_omt:'山海 ↗',
  band:'測試版 0.20 · 進行中 · 建議在筆電上用 Chrome，接喇叭或耳機',
- intro:'身體，即樂器。舞者移動，或你移動手，四個純音世界便回應：展開、敲擊、風暴、休止。為鋼琴與舞蹈的即興現場而做。',
+ intro:'身體，即樂器。',
  notes:'音集',g_touch:'觸控演奏',g_cam:'鏡頭＋麥克風',
- g_note:'觸控：在此移動滑鼠或手指，不需任何權限。鏡頭：舞者或你在鏡頭前；麥克風聆聽鋼琴。不錄音、不上傳。',
+ g_note:'在這裡移動滑鼠或手指。不錄音。',how:'慢，便展開 · 突然，便敲響 · 疊上兩個以上的世界後狂動，便碎裂 · 靜，便休止。',read:'閱讀',
  rig:'演出設定：鏡頭、姿態、舞台範圍、調音、MIDI、踏板、左手鍵位',
  a_h1:'關於',a_lead:'身境是山海的第三部分。聲境演奏時辰；殿境讓天氣演奏建築；身境讓身體演奏空間。',
  a_p1:'鏡頭讀出她動了多少、多快、多高、在哪裡、靜了多久。這些讀數從不直接彈奏音符，只推動幾股緩慢的力（能量、明暗、密度、混沌、靜止），由樂器決定說什麼：何時展開、何時敲擊、何時風暴、何時休止。身體與聲音之間的這段距離正是重點——它應像夥伴一樣回應，而不是像影子一樣跟隨。',
