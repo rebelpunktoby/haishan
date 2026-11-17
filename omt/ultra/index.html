@@ -505,33 +505,32 @@ function Engine(){
   },700);
   this.season=function(i){var now=ctx.currentTime;groups.forEach(function(g,k){g.gain.setTargetAtTime(k===i?1:0,now,k===i?2.2:1.4);});};
   this.sun=function(on){sunG.gain.setTargetAtTime(on?1:0,ctx.currentTime,.8);};
-  /* rain: a soft wet bed, drops that go "plip", and only some drops touch tuned glass */
-  var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=2600;rainBus.Q.value=.5;rainBus.connect(master);
+  /* rain: many tiny tuned taps on glass, trailing off like a delay; a soft wet bed under them */
+  var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=3200;rainBus.Q.value=.5;rainBus.connect(master);
+  [[.23,-.55],[.37,.55]].forEach(function(d){
+    var dl=ctx.createDelay(1),fb=ctx.createGain(),damp=ctx.createBiquadFilter(),wet=ctx.createGain(),pn=ctx.createStereoPanner?ctx.createStereoPanner():null;
+    dl.delayTime.value=d[0];fb.gain.value=.46;damp.type="lowpass";damp.frequency.value=1700;wet.gain.value=.55;
+    rainBus.connect(dl);dl.connect(damp);damp.connect(fb);fb.connect(dl);damp.connect(wet);
+    if(pn){pn.pan.value=d[1];wet.connect(pn);pn.connect(master);}else wet.connect(master);
+  });
   var bedHP=ctx.createBiquadFilter();bedHP.type="highpass";bedHP.frequency.value=260;
   var bedLP=ctx.createBiquadFilter();bedLP.type="lowpass";bedLP.frequency.value=1100;
   var bed=ctx.createGain();bed.gain.value=0;noise.connect(bedHP);bedHP.connect(bedLP);bedLP.connect(bed);bed.connect(master);
-  this.rain=function(on,amt){bed.gain.setTargetAtTime(on?.012+.016*amt:0,ctx.currentTime,1.5);};
+  this.rain=function(on,amt){bed.gain.setTargetAtTime(on?.010+.014*amt:0,ctx.currentTime,1.5);};
   this.drip=function(vel){
-    var now=ctx.currentTime,pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.16*vel;
-    if(pan){pan.pan.value=Math.random()*1.4-.7;out.connect(pan);pan.connect(rainBus);}else out.connect(rainBus);
-    /* 1. the drop: a tiny bubble whose pitch rises, as real water drops do */
-    var b=ctx.createOscillator(),bg=ctx.createGain(),fb=650+Math.random()*700;
-    b.frequency.setValueAtTime(fb,now);b.frequency.exponentialRampToValueAtTime(fb*1.7,now+.035);
-    bg.gain.setValueAtTime(0,now);bg.gain.linearRampToValueAtTime(.32,now+.002);bg.gain.setTargetAtTime(0,now+.004,.016);
-    b.connect(bg);bg.connect(out);b.start(now);b.stop(now+.12);
-    /* 2. the touch: a very short soft tick */
-    var tk=ctx.createBufferSource();tk.buffer=buf;var tf=ctx.createBiquadFilter();tf.type="bandpass";tf.frequency.value=2400;tf.Q.value=.9;
-    var tg=ctx.createGain();tg.gain.setValueAtTime(.18,now);tg.gain.setTargetAtTime(0,now+.001,.003);
+    var now=ctx.currentTime,f=GLASS[Math.floor(Math.random()*GLASS.length)],long=Math.random()<.2;
+    var pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.13*vel;
+    if(pan){pan.pan.value=Math.random()*1.2-.6;out.connect(pan);pan.connect(rainBus);}else out.connect(rainBus);
+    /* the tap: every drop lands on a tuned glass note, short and percussive */
+    [[1,.6,long?.2:.05],[2,.1,.02]].forEach(function(q){
+      var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f*q[0];
+      g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(q[1],now+.002);g.gain.setTargetAtTime(0,now+.003,q[2]);
+      o.connect(g);g.connect(out);o.start(now);o.stop(now+q[2]*7+.05);
+    });
+    /* the wet touch: a very small tick */
+    var tk=ctx.createBufferSource();tk.buffer=buf;var tf=ctx.createBiquadFilter();tf.type="bandpass";tf.frequency.value=2600;tf.Q.value=.9;
+    var tg=ctx.createGain();tg.gain.setValueAtTime(.2,now);tg.gain.setTargetAtTime(0,now+.001,.004);
     tk.connect(tf);tf.connect(tg);tg.connect(out);tk.start(now,Math.random()*3,.03);
-    /* 3. about half the drops land on glass: tuned, warm, short, no metallic overtones */
-    if(Math.random()<.5){
-      var f=GLASS[Math.floor(Math.random()*GLASS.length)];
-      [[1,.55,.24],[2,.07,.06]].forEach(function(q){
-        var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f*q[0];
-        g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(q[1],now+.005);g.gain.setTargetAtTime(0,now+.006,q[2]);
-        o.connect(g);g.connect(out);o.start(now);o.stop(now+q[2]*7);
-      });
-    }
   };
   this.stop=function(){
     clearInterval(timer);var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setTargetAtTime(0,now,.25);
@@ -605,7 +604,7 @@ function frame(ms){
   /* skywell and rain */
   var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+(.10+.05*Math.sin(t*.7))+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
   if(rainBox.checked&&!reduce&&t>nextDrip){
-    nextDrip=t+.12+(-Math.log(Math.random()+.001))/(S[cur].rain*1.8);
+    nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*3.2);
     var ra=Math.random()*7,rr=Math.random()*R*.22,vel=.4+Math.random()*.6;
     ripples.push({x:C+Math.cos(ra)*rr,y:C+Math.sin(ra)*rr,t:t,v:vel});
     if(audio)audio.drip(vel);
