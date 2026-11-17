@@ -16,8 +16,8 @@
    the live eight-faced plan as the only hero image. Brass = sunlight, celadon = wind and water. */
 :root{
   color-scheme: dark;
-  --stone:#161c23; --stone-2:#1e2731; --stone-3:#28333f;
-  --ink:#e8e5dc; --ink-2:#a3adb5; --line:rgba(232,229,220,.14);
+  --stone:#0c1015; --stone-2:#131920; --stone-3:#1b232c;
+  --ink:#ebe7dd; --ink-2:#9aa5ae; --line:rgba(232,229,220,.11);
   --brass:#dba84a; --celadon:#8ec7b8;
   --f-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
   --f-body:"IBM Plex Sans","Noto Sans TC",system-ui,sans-serif;
@@ -122,6 +122,35 @@ summary::before{content:"+";display:inline-block;width:1em;color:var(--brass);fo
 details[open]>summary::before{content:"\2212"}
 details>.in{display:grid;gap:10px;padding-top:10px;max-width:68ch}
 html[lang="zh-Hant"] summary{font-family:var(--f-body);font-size:13.5px}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
+  background:radial-gradient(40% 30% at 78% 18%,rgba(142,199,184,.10),transparent 70%),radial-gradient(35% 28% at 12% 70%,rgba(219,168,74,.07),transparent 70%);
+  animation:drift 40s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-4%,3%,0)}}
+section.block{position:relative;overflow:hidden}
+section.block::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(520px 200px at 8% 0%,var(--glow,rgba(142,199,184,.08)),transparent 72%)}
+section.block>.wrap{position:relative}
+#idea{--glow:rgba(219,168,74,.07)} #method{--glow:rgba(235,231,221,.05)} #status{--glow:rgba(219,168,74,.06)}
+.plan{box-shadow:0 40px 140px -50px rgba(142,199,184,.35),inset 0 1px 0 rgba(255,255,255,.03)}
+.han{text-shadow:0 0 48px rgba(219,168,74,.16)}
+.card{background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0) 60%),var(--stone-2);transition:border-color .3s,box-shadow .3s}
+.card:hover{border-color:rgba(142,199,184,.32);box-shadow:0 0 32px -12px rgba(142,199,184,.3)}
+button.play{box-shadow:0 0 26px -6px rgba(219,168,74,.55)}
+button.play[aria-pressed="true"]{animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 18px -8px rgba(235,231,221,.5)}50%{box-shadow:0 0 36px -4px rgba(235,231,221,.7)}}
+@media (prefers-reduced-motion:reduce){body::before,button.play[aria-pressed="true"]{animation:none}}
+#system .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:1060px){#system .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){#system .grid{grid-template-columns:1fr}}
+.trk{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;margin-top:4px}
+.tp{width:34px;height:34px;border-radius:50%;border:1px solid rgba(142,199,184,.45);background:rgba(142,199,184,.08);color:var(--celadon);cursor:pointer;display:grid;place-items:center;padding:0;transition:box-shadow .3s,background .3s}
+.tp:hover{background:rgba(142,199,184,.16)}
+.tp[aria-pressed="true"]{background:var(--celadon);color:var(--stone);box-shadow:0 0 22px -4px rgba(142,199,184,.8)}
+.tp svg{width:12px;height:12px;fill:currentColor}
+.tbar{height:3px;border-radius:2px;background:rgba(232,229,220,.12);position:relative;overflow:hidden;cursor:pointer}
+.tbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--celadon),var(--brass));box-shadow:0 0 10px rgba(142,199,184,.6)}
+.tt{font:500 11.5px var(--f-mono);color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
+.tracks{gap:10px}
+.tracks .tt{font:500 11.5px var(--f-mono);color:var(--ink-2)}
 footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
 html[lang="zh-Hant"] body{line-height:1.8}
 html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
@@ -167,7 +196,7 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
       <label for="sun"><input type="checkbox" id="sun" checked> <span data-i="t2">Sun warms the pedal</span></label>
       <label for="rain"><input type="checkbox" id="rain" checked> <span data-i="t3">Rain</span></label>
     </div>
-    <p class="hint" data-i="hint">Use headphones or speakers with some low end; the pedal sits at 55 and 110 Hz. It starts softly. This is a browser sketch of the idea, not a recording of a building.</p>
+    <p class="hint" data-i="hint">Headphones help: the low A sits at 55 and 110 Hz. A browser sketch of the idea, not a recording.</p>
   </div>
   <div class="plan">
     <canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced building. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas>
@@ -189,16 +218,16 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
         <span class="tag" data-i="l2t">Model · 44 s</span>
         <h3 data-i="l2h">The door</h3>
         <p data-i="l2p">Where it began: winter wind finding the gap of a northwest door. First at the door, then from across the room, where it turned toward music.</p>
-        <audio controls preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio>
+        <div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:44</span><audio preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio></div>
       </div>
       <div class="card">
         <span class="tag" data-i="l3t">Model · 3 × 32 s</span>
         <h3 data-i="l3h">Same weather, three tunings</h3>
         <p data-i="l3p">The same gusts, the same drops. Only the pitches change.</p>
         <div class="tracks">
-          <div><span data-i="l3a">A · Harmonic series on A</span><audio controls preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div>
-          <div><span data-i="l3b">B · Pentatonic</span><audio controls preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div>
-          <div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><audio controls preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div>
+          <div><span data-i="l3a">A · Harmonic series on A</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div></div>
+          <div><span data-i="l3b">B · Pentatonic</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div></div>
+          <div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div></div>
         </div>
       </div>
     </div>
@@ -295,13 +324,13 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
   <div>
     <h2 data-i="m_h">What is measured, what is inherited, what is chosen, what is hoped</h2>
     <div class="prose">
-      <p class="lead" data-i="m1">Every claim in this project carries one label. The labels decide what may be said about it and what would count as it failing.</p>
+      <p class="lead" data-i="m1">Every claim carries one label. The label decides what may be said about it, and what would count as it failing.</p>
     </div>
     <div class="regs">
-      <div class="reg"><b data-i="g1">Measured</b><span data-i="g1p">Wind pressure, pipe lengths, pitch drift with temperature, roughness scores. Computed from standard acoustics; none yet measured on a built object.</span></div>
-      <div class="reg"><b data-i="g2">Traditional</b><span data-i="g2p">The eight trigrams, yin and yang, 時辰 and 節氣. Used as a living grammar for organising the building, never as physics.</span></div>
-      <div class="reg"><b data-i="g3">Design choice</b><span data-i="g3p">A as the pedal, the voicing of each face, the double wall, the skywell. Owned by the author and open to revision.</span></div>
-      <div class="reg"><b data-i="g4">Hypothesis</b><span data-i="g4p">That the result is good to sit and listen with. Offered, not promised, and testable.</span></div>
+      <div class="reg"><b data-i="g1">Measured</b><span data-i="g1p">Computed from standard acoustics. Nothing yet measured on a built object.</span></div>
+      <div class="reg"><b data-i="g2">Traditional</b><span data-i="g2p">八卦, yin and yang, 時辰, 節氣: a grammar for organising, never physics.</span></div>
+      <div class="reg"><b data-i="g3">Design choice</b><span data-i="g3p">A as the pedal, each face's voicing, the double wall. Revisable.</span></div>
+      <div class="reg"><b data-i="g4">Hypothesis</b><span data-i="g4p">That it is good to sit and listen with. Offered, and testable.</span></div>
     </div>
     <details><summary data-i="q_h">Three questions the test panel can answer</summary><div class="in">
       <ol class="laws">
@@ -357,7 +386,7 @@ thesis:"一座由天氣演奏的建築。風是氣息，雨是觸鍵，日光緩
 play:"播放聲音草圖",stop:"停止",
 s0:"春",s1:"夏",s2:"秋",s3:"冬",
 t1:"四季輪轉",t2:"日照暖持續音",t3:"雨",
-hint:"請用耳機或有低頻的喇叭；持續音位於 55 與 110 Hz。聲音由弱漸入。這是概念的瀏覽器草圖，並非建築的實地錄音。",
+hint:"建議使用耳機：低音 A 位於 55 與 110 Hz。這是概念的瀏覽器草圖，並非錄音。",
 k1:"01 · 聆聽",l_h:"在它存在之前，先聽三次",
 l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"即頁首的平面圖。一個低音 A 貫穿全年。每季的風打開建築的另一面，同一個 A 便換了一種光。",
 l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"一切的起點：冬風找到一扇西北向的門縫。先在門邊聽，再到房間另一頭，在那裡它漸漸成了音樂。",
@@ -384,11 +413,11 @@ c4t:"和聲",c4h:"先講間距，再講音階",
 c4p:"聽起來粗糙的音距，在每個音區幾乎都是相同的赫茲數。密集的音程應放在高處或短促發聲；低音要拉開。滿足這點，持續音之上任何音階都可行，包括微分音。",
 b1:"超過八度",b2:"大六度",b3:"四度",b4:"大三度",b5:"全音",b5b:"全音",
 k4:"04 · 理論與方法",m_h:"量得到的、傳下來的、選擇的、盼望的",
-m1:"本計畫的每一項主張都帶有一個標籤。標籤決定可以怎樣談論它，以及怎樣才算它失敗。",
-g1:"可量測",g1p:"風壓、管長、音高隨溫度的漂移、粗糙度分數。皆由標準聲學公式計算，尚未在實物上量測。",
-g2:"傳統",g2p:"八卦、陰陽、時辰與節氣。作為組織建築的活語法，絕不當作物理。",
-g3:"設計選擇",g3p:"以 A 為持續音、各面的配置、雙層牆、天井。由作者負責，可隨時修訂。",
-g4:"假設",g4p:"成果是否適合靜坐聆聽。這是提出而非承諾，並且可以檢驗。",
+m1:"每一項主張都帶一個標籤。標籤決定能怎樣談論它，以及怎樣才算它失敗。",
+g1:"可量測",g1p:"由標準聲學計算，尚未在實物上量測。",
+g2:"傳統",g2p:"八卦、陰陽、時辰、節氣：組織的語法，絕非物理。",
+g3:"設計選擇",g3p:"以 A 為持續音、各面配置、雙層牆。可隨時修訂。",
+g4:"假設",g4p:"它是否適合靜坐聆聽。提出而非承諾，並可檢驗。",
 q_h:"測試牆板能回答的三個問題",
 q1:"<b>H1.</b> 經調音的「持續音加色彩」風聲，是否比未調音的風聲更悅耳？",
 q2:"<b>H2.</b> 間距法則能否預測聽者對混合聲的粗糙度評分？",
@@ -436,7 +465,7 @@ function setReadout(){
 }
 function setSeason(i,byUser){
   cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
-  setReadout();if(audio)audio.season(i);
+  setReadout();if(audio){audio.season(i);audio.rain(rainBox.checked,S[i].rain);}
   if(byUser){turn.checked=false;}
 }
 chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dataset.s,true);});});
@@ -476,17 +505,33 @@ function Engine(){
   },700);
   this.season=function(i){var now=ctx.currentTime;groups.forEach(function(g,k){g.gain.setTargetAtTime(k===i?1:0,now,k===i?2.2:1.4);});};
   this.sun=function(on){sunG.gain.setTargetAtTime(on?1:0,ctx.currentTime,.8);};
-  var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=1500;rainBus.Q.value=.4;rainBus.connect(master);
+  /* rain: a soft wet bed, drops that go "plip", and only some drops touch tuned glass */
+  var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=2600;rainBus.Q.value=.5;rainBus.connect(master);
+  var bedHP=ctx.createBiquadFilter();bedHP.type="highpass";bedHP.frequency.value=260;
+  var bedLP=ctx.createBiquadFilter();bedLP.type="lowpass";bedLP.frequency.value=1100;
+  var bed=ctx.createGain();bed.gain.value=0;noise.connect(bedHP);bedHP.connect(bedLP);bedLP.connect(bed);bed.connect(master);
+  this.rain=function(on,amt){bed.gain.setTargetAtTime(on?.012+.016*amt:0,ctx.currentTime,1.5);};
   this.drip=function(vel){
-    var f=GLASS[Math.floor(Math.random()*GLASS.length)],now=ctx.currentTime;
-    var pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.11*vel;
-    if(pan){pan.pan.value=Math.random()*1.2-.6;out.connect(pan);pan.connect(rainBus);}else out.connect(rainBus);
-    /* soft strike, long quiet ring: main tone, a near-unison for slow shimmer, a faint short overtone */
-    [[1,1,1.9],[1.003,.5,1.9],[2.756,.06,.18]].forEach(function(p){
-      var o=ctx.createOscillator(),g=ctx.createGain();o.frequency.value=f*p[0];
-      g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(p[1],now+.018);g.gain.setTargetAtTime(0,now+.02,p[2]/3);
-      o.connect(g);g.connect(out);o.start(now);o.stop(now+p[2]*2.4);
-    });
+    var now=ctx.currentTime,pan=ctx.createStereoPanner?ctx.createStereoPanner():null,out=ctx.createGain();out.gain.value=.16*vel;
+    if(pan){pan.pan.value=Math.random()*1.4-.7;out.connect(pan);pan.connect(rainBus);}else out.connect(rainBus);
+    /* 1. the drop: a tiny bubble whose pitch rises, as real water drops do */
+    var b=ctx.createOscillator(),bg=ctx.createGain(),fb=650+Math.random()*700;
+    b.frequency.setValueAtTime(fb,now);b.frequency.exponentialRampToValueAtTime(fb*1.7,now+.035);
+    bg.gain.setValueAtTime(0,now);bg.gain.linearRampToValueAtTime(.32,now+.002);bg.gain.setTargetAtTime(0,now+.004,.016);
+    b.connect(bg);bg.connect(out);b.start(now);b.stop(now+.12);
+    /* 2. the touch: a very short soft tick */
+    var tk=ctx.createBufferSource();tk.buffer=buf;var tf=ctx.createBiquadFilter();tf.type="bandpass";tf.frequency.value=2400;tf.Q.value=.9;
+    var tg=ctx.createGain();tg.gain.setValueAtTime(.18,now);tg.gain.setTargetAtTime(0,now+.001,.003);
+    tk.connect(tf);tf.connect(tg);tg.connect(out);tk.start(now,Math.random()*3,.03);
+    /* 3. about half the drops land on glass: tuned, warm, short, no metallic overtones */
+    if(Math.random()<.5){
+      var f=GLASS[Math.floor(Math.random()*GLASS.length)];
+      [[1,.55,.24],[2,.07,.06]].forEach(function(q){
+        var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f*q[0];
+        g.gain.setValueAtTime(0,now);g.gain.linearRampToValueAtTime(q[1],now+.005);g.gain.setTargetAtTime(0,now+.006,q[2]);
+        o.connect(g);g.connect(out);o.start(now);o.stop(now+q[2]*7);
+      });
+    }
   };
   this.stop=function(){
     clearInterval(timer);var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setTargetAtTime(0,now,.25);
@@ -497,10 +542,28 @@ var playBtn=document.getElementById("play");
 function setPlayLabel(){playBtn.textContent=audio?T("stop"):T("play");playBtn.setAttribute("aria-pressed",audio?"true":"false");}
 playBtn.addEventListener("click",function(){
   if(audio){audio.stop();audio=null;}
-  else{try{audio=new Engine();}catch(e){audio=null;}}
+  else{try{audio=new Engine();audio.rain(rainBox.checked,S[cur].rain);}catch(e){audio=null;}}
   setPlayLabel();
 });
 sunBox.addEventListener("change",function(){if(audio)audio.sun(sunBox.checked);});
+rainBox.addEventListener("change",function(){if(audio)audio.rain(rainBox.checked,S[cur].rain);});
+
+/* ---------- track players ---------- */
+var PLAY='<svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg>',PAUSE='<svg viewBox="0 0 12 12"><path d="M2 1h3v10H2zM7 1h3v10H7z"/></svg>';
+var trks=[].slice.call(document.querySelectorAll(".trk"));
+function fmt(x){x=Math.max(0,Math.round(x||0));return Math.floor(x/60)+":"+("0"+x%60).slice(-2);}
+trks.forEach(function(tr){
+  var b=tr.querySelector(".tp"),a=tr.querySelector("audio"),bar=tr.querySelector(".tbar"),fill=bar.querySelector("i"),tt=tr.querySelector(".tt"),full=tt.textContent;
+  function ui(on){b.setAttribute("aria-pressed",on?"true":"false");b.innerHTML=on?PAUSE:PLAY;b.setAttribute("aria-label",on?"Pause":"Play");}
+  b.addEventListener("click",function(){
+    if(a.paused){trks.forEach(function(o){var oa=o.querySelector("audio");if(oa!==a&&!oa.paused)oa.pause();});var pr=a.play();if(pr&&pr.catch)pr.catch(function(){ui(false);});}
+    else a.pause();
+  });
+  a.addEventListener("play",function(){ui(true);});a.addEventListener("pause",function(){ui(false);});
+  a.addEventListener("ended",function(){ui(false);fill.style.width="0";tt.textContent=full;});
+  a.addEventListener("timeupdate",function(){var d=a.duration||1,p=a.currentTime/d*100;fill.style.width=p+"%";bar.setAttribute("aria-valuenow",Math.round(p));tt.textContent=fmt(a.currentTime);});
+  bar.addEventListener("click",function(e){if(!a.duration)return;var r=bar.getBoundingClientRect();a.currentTime=(e.clientX-r.left)/r.width*a.duration;});
+});
 
 /* ---------- live plan ---------- */
 var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
@@ -512,7 +575,7 @@ var streaks=[],ripples=[],windAng=S[0].face*45,nextDrip=0;
 for(var i=0;i<70;i++)streaks.push({u:Math.random()*2-1,v:Math.random()*2-1,l:.04+Math.random()*.07,s:.5+Math.random()*.8});
 function frame(ms){
   var t=ms/1000,target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
-  g.clearRect(0,0,W,W);g.fillStyle="#1e2731";g.fillRect(0,0,W,W);
+  g.clearRect(0,0,W,W);g.fillStyle="#131920";g.fillRect(0,0,W,W);
   /* wind */
   var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20;
   g.lineCap="round";g.lineWidth=2;
@@ -529,20 +592,20 @@ function frame(ms){
   var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.sin(day*Math.PI);
   g.save();oct(R-3);g.clip();
   var grd=g.createLinearGradient(sx,sy,ex,ey);grd.addColorStop(0,"rgba(219,168,74,"+(.75*fade)+")");grd.addColorStop(1,"rgba(219,168,74,0)");
-  g.strokeStyle=grd;g.lineWidth=7;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.restore();
+  g.shadowColor="rgba(219,168,74,.9)";g.shadowBlur=28*fade;g.strokeStyle=grd;g.lineWidth=7;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.shadowBlur=0;g.restore();
   /* faces */
   for(var k=0;k<8;k++){
     var p1=pt(45*k-22.5,R),p2=pt(45*k+22.5,R),active=k===S[cur].face;
-    if(WINDF[k]){g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.32)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();}
+    if(WINDF[k]){if(active){g.shadowColor="rgba(142,199,184,.95)";g.shadowBlur=22+8*Math.sin(t*1.3);}g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.28)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.shadowBlur=0;}
     if(k===4){g.strokeStyle="rgba(219,168,74,.8)";g.lineWidth=5;g.setLineDash([10,12]);g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.setLineDash([]);}
     var lp=pt(45*k,R+62);
     g.font=(active?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
     g.fillStyle=active?"#8ec7b8":(k===4?"#dba84a":"rgba(232,229,220,.55)");g.fillText(TRI[k],lp[0],lp[1]);
   }
   /* skywell and rain */
-  g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle="#1e2731";g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
+  var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+(.10+.05*Math.sin(t*.7))+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
   if(rainBox.checked&&!reduce&&t>nextDrip){
-    nextDrip=t+.25+(-Math.log(Math.random()+.001))/(S[cur].rain*1.1);
+    nextDrip=t+.12+(-Math.log(Math.random()+.001))/(S[cur].rain*1.8);
     var ra=Math.random()*7,rr=Math.random()*R*.22,vel=.4+Math.random()*.6;
     ripples.push({x:C+Math.cos(ra)*rr,y:C+Math.sin(ra)*rr,t:t,v:vel});
     if(audio)audio.drip(vel);
@@ -550,8 +613,8 @@ function frame(ms){
   if(reduce&&!ripples.length){ripples.push({x:C-20,y:C+14,t:t-.5,v:.8},{x:C+34,y:C-22,t:t-.2,v:.6});}
   g.save();g.beginPath();g.arc(C,C,R*.3-2,0,7);g.clip();
   ripples=ripples.filter(function(r){return reduce||t-r.t<1.8;});
-  ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v)+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
-  g.restore();
+  g.shadowColor="rgba(219,168,74,.8)";g.shadowBlur=10;ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v)+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
+  g.shadowBlur=0;g.restore();
   if(!reduce)requestAnimationFrame(frame);
 }
 setReadout();
