@@ -180,6 +180,20 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 }
 @media (max-width:440px){.chip [data-i]{display:none} .chip .h{margin:0;font-size:15px;color:var(--ink)} .chip{padding:5px 11px}}
 @media (prefers-reduced-motion:reduce){body::before,button.play,.steps li.now::before{animation:none!important}.pass{transition:none}}
+
+@media (min-width:901px){
+ .temple{top:62px;width:var(--tw,100%);max-width:100%;justify-self:center}
+ .scoreS{height:50px;margin-top:6px}
+ .arcm{height:10px;margin:7px 6px 0}
+ .readout{font-size:11.5px;line-height:1.55;min-height:0;padding-top:4px}
+ .ctrl{flex-wrap:nowrap;gap:6px;margin-top:8px}
+ button.play{padding:8px 15px;font-size:13.5px}
+ .chip{padding:6px 10px;font-size:12.5px}
+ .toggles{gap:14px;margin-top:8px;font-size:12px}
+ .hint{font-size:11px;margin-top:5px;opacity:.8}
+ .temple.narrow .chip [data-i]{display:none}
+ .temple.narrow .chip .h{margin:0;font-size:15px}
+}
 </style>
 </head>
 <body class="min">
@@ -812,6 +826,27 @@ function scoreLoop(){scores.forEach(function(s){s.draw();});if(!reduce)requestAn
 if(reduce)setInterval(function(){scores.forEach(function(s){s.draw();});},1000);
 requestAnimationFrame(scoreLoop);
 
+})();
+</script>
+
+<script>
+/* keep the pinned temple inside the window: the plan shrinks before anything is cut off */
+(function(){
+  var t=document.querySelector('.temple'),w=t&&t.querySelector('.cvwrap'),de=document.documentElement;
+  if(!t||!w)return;
+  function fit(){
+    if(window.innerWidth<=900){de.style.removeProperty('--tw');t.classList.remove('narrow');return;}
+    for(var i=0;i<5;i++){
+      var rest=t.offsetHeight-w.offsetHeight,extra=w.offsetHeight-w.offsetWidth;
+      var avail=window.innerHeight-62-26-rest-extra;
+      var tw=Math.max(340,Math.floor(avail));
+      de.style.setProperty('--tw',tw+'px');
+      t.classList.toggle('narrow',Math.min(tw,t.parentNode.clientWidth)<540);
+    }
+  }
+  window.addEventListener('resize',fit);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(fit);
+  fit();setTimeout(fit,400);setTimeout(fit,1500);
 })();
 </script>
 </body>
