@@ -410,7 +410,7 @@ function voiceWind(n,dt,lo,hi){
   var prev=n.w;n.w+=(GU.w-n.w)*(1-Math.exp(-dt/n.tw));
   n.j+=(-n.j*dt/6)+(Math.random()-.5)*.25*Math.sqrt(dt);
   /* breath leads tone: air rises first while the wind is climbing faster than the pipe can follow */
-  n.B=Math.max(.35,Math.min(2.2,.45+2.6*Math.max(0,GU.w-n.w)+.7*GU.G));
+  n.B=Math.max(.4,Math.min(2.8,.55+3.2*Math.max(0,GU.w-n.w)+.95*GU.G));
   n.d=(n.w-.5)*(n.ped?3:9)+n.j*(n.ped?1:3);
 }
 function vmStep(dt){
@@ -451,6 +451,10 @@ function Engine(){
   var lp=ctx.createBiquadFilter();lp.type="lowpass";lp.frequency.value=9000;
   var comp=ctx.createDynamicsCompressor();comp.threshold.value=-14;comp.ratio.value=12;comp.attack.value=.005;comp.release.value=.25;
   master.connect(lp);lp.connect(comp);comp.connect(ctx.destination);
+  /* depth: a long dark room behind every voice (generated impulse, about 5 s) */
+  var verb=ctx.createConvolver(),irL=ctx.sampleRate*5.2,ir=ctx.createBuffer(2,irL,ctx.sampleRate);
+  for(var ch=0;ch<2;ch++){var dd=ir.getChannelData(ch),lpz=0;for(var ii=0;ii<irL;ii++){var tt=ii/ctx.sampleRate;lpz+=( (Math.random()*2-1)-lpz)*(.08+.5*Math.exp(-tt*1.2));dd[ii]=lpz*Math.exp(-tt*1.35)*(ii<ctx.sampleRate*.02?ii/(ctx.sampleRate*.02):1);}}
+  verb.buffer=ir;var verbG=ctx.createGain();verbG.gain.value=.5;master.connect(verb);verb.connect(verbG);verbG.connect(lp);
   master.gain.linearRampToValueAtTime(.85,t0+4);
   var len=ctx.sampleRate*4,buf=ctx.createBuffer(1,len,ctx.sampleRate),d=buf.getChannelData(0);
   for(var i=0;i<len;i++)d[i]=Math.random()*2-1;
@@ -458,7 +462,7 @@ function Engine(){
   /* resonant body: sympathetic strings on the A series, fed by every voice, heard faintly as a pad */
   var bodyIn=ctx.createGain();var bodyOut=ctx.createGain();bodyOut.gain.value=.55;
   var bodyLP=ctx.createBiquadFilter();bodyLP.type="lowpass";bodyLP.frequency.value=2400;bodyOut.connect(bodyLP);bodyLP.connect(master);
-  [[110,4.5],[220,3.4],[330,2.8],[440,2.4],[660,1.8],[880,1.4]].forEach(function(m){
+  [[110,4.5],[165,3.8],[220,3.4],[275,3],[330,2.8],[440,2.4],[550,2],[660,1.8],[770,1.6],[880,1.4]].forEach(function(m){
     var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=m[0];bp.Q.value=Math.PI*m[0]*m[1]/6.91;
     var g=ctx.createGain();g.gain.value=Math.pow(110/m[0],.4);bodyIn.connect(bp);bp.connect(g);g.connect(bodyOut);
   });
@@ -468,19 +472,27 @@ function Engine(){
   var air=ctx.createGain();air.gain.value=0;var airPn=ctx.createStereoPanner?ctx.createStereoPanner():null;
   noise.connect(airBP);airBP.connect(airLP);airLP.connect(air);if(airPn){air.connect(airPn);airPn.connect(master);}else air.connect(master);
   var voices=[];
-  function voice(f,level,breath,src){
-    var g=ctx.createGain();g.gain.value=0;g.connect(master);g.connect(bodyIn);
+  var vix=0;
+  function voice(f,level,breath,src,ped){
+    var g=ctx.createGain();g.gain.value=0;var pn=ctx.createStereoPanner?ctx.createStereoPanner():null;
+    var pos=ped?0:((vix++%5)-2)*.22;if(pn){pn.pan.value=pos;g.connect(pn);pn.connect(master);}else g.connect(master);g.connect(bodyIn);
     var o=ctx.createOscillator();o.type="sine";o.frequency.value=f;o.connect(g);o.start();
-    var o2=ctx.createOscillator();o2.type="sine";o2.frequency.value=f*2;var o2g=ctx.createGain();o2g.gain.value=.12;o2.connect(o2g);o2g.connect(g);o2.start();
-    var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=26;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
-    voices.push({g:g,level:level,src:src,bg:bg,br:breath,o:o,o2:o2});
+    /* partials: an open pipe for the pedal (all harmonics), a stopped chamber for colour (odd ones stronger) */
+    var P=ped?[[2,.16],[3,.07],[4,.035]]:[[2,.07],[3,.09],[5,.025]],os=[o];
+    P.forEach(function(q){var oo=ctx.createOscillator();oo.type="sine";oo.frequency.value=f*q[0];var og=ctx.createGain();og.gain.value=q[1];oo.connect(og);og.connect(g);oo.start();os.push(oo);});
+    /* a twin a few cents away: slow beating, so the note has width */
+    var tw=ctx.createOscillator();tw.type="sine";tw.frequency.value=f;tw.detune.value=ped?1.6:3.5;var twg=ctx.createGain();twg.gain.value=ped?.35:.5;tw.connect(twg);twg.connect(g);tw.start();os.push(tw);
+    var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=20;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
+    /* a second, higher breath: the edge of the slot */
+    var bp2=ctx.createBiquadFilter();bp2.type="bandpass";bp2.frequency.value=Math.min(5200,f*(ped?9:5));bp2.Q.value=6;var bg2=ctx.createGain();bg2.gain.value=0;noise.connect(bp2);bp2.connect(bg2);bg2.connect(g);
+    voices.push({g:g,level:level,src:src,bg:bg,bg2:bg2,br:breath,os:os,tw:ped?1.6:3.5});
   }
-  voice(55,.34,6,VM.ped[0]);voice(110,.2,4,VM.ped[1]);
+  voice(55,.3,8.5,VM.ped[0],1);voice(110,.18,5.5,VM.ped[1],1);
   var sunSrc={L:sunBox.checked?.75:0};voice(110*Math.pow(2,29/1200),.15,3,sunSrc);
-  VM.col.forEach(function(arr){arr.forEach(function(n,j){voice(n.f,n.sh?.06:(.062-.01*j),2.4,n);});});
+  VM.col.forEach(function(arr){arr.forEach(function(n,j){voice(n.f,n.sh?.05:(.054-.009*j),3.6,n);});});
   /* the voice model sets every level; release is slow, so wind lets go gradually */
   var timer=setInterval(function(){
-    var now=ctx.currentTime;voices.forEach(function(q){q.g.gain.setTargetAtTime(q.level*q.src.L,now,.25);if(q.src.B!==undefined){q.bg.gain.setTargetAtTime(q.br*q.src.B,now,.35);q.o.detune.setTargetAtTime(q.src.d,now,.5);q.o2.detune.setTargetAtTime(q.src.d,now,.5);}});air.gain.setTargetAtTime(.0035+.03*GU.G*GU.w,now,.6);airBP.frequency.setTargetAtTime(380+520*GU.w,now,.8);if(airPn)airPn.pan.setTargetAtTime(.5*Math.sin(now/7.3),now,1);
+    var now=ctx.currentTime;voices.forEach(function(q){q.g.gain.setTargetAtTime(q.level*q.src.L,now,.25);if(q.src.B!==undefined){q.bg.gain.setTargetAtTime(q.br*q.src.B,now,.35);q.os.forEach(function(oo,ix){oo.detune.setTargetAtTime(q.src.d+(ix===q.os.length-1?q.tw:0),now,.5);});q.bg2.gain.setTargetAtTime(q.br*.05*Math.max(0,q.src.B-.6),now,.3);}});air.gain.setTargetAtTime(.005+.045*GU.G*GU.w,now,.6);airBP.frequency.setTargetAtTime(380+520*GU.w,now,.8);if(airPn)airPn.pan.setTargetAtTime(.5*Math.sin(now/7.3),now,1);
     if(rainBox.checked)bed.gain.setTargetAtTime((.004+.02*rainArc())*(.6+.6*S[cur].rain),now,2.5);
   },200);
   this.season=function(){};
@@ -580,6 +592,7 @@ function door(ms){
 }
 setInterval(function(){if(!document.hidden)setReadout();},2000);
 
+var SCOL=["rgba(150,206,170,","rgba(150,190,232,","rgba(226,168,96,","rgba(236,182,150,"];
 /* ---------- the temple: pinned plan that turns toward the passage being read ---------- */
 var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
 var TRI=["坎","艮","震","巽","離","坤","兌","乾"],WINDF={2:1,3:1,6:1,7:1};
@@ -629,13 +642,13 @@ function frame(ms){
   var target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
   g.clearRect(0,0,W,W);g.fillStyle="#131920";g.fillRect(0,0,W,W);
   /* wind */
-  var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20,wa=reduce?.6:windArc(),spd=sp*(.35+1.1*wa);
+  var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20,wa=reduce?.6:windArc(),gw=reduce?.5:(typeof GU!=='undefined'?GU.w:wa),gg=reduce?.3:(typeof GU!=='undefined'?GU.G:0),spd=sp*(.3+1.4*gw);
   g.lineCap="round";g.lineWidth=2;
   streaks.forEach(function(s){
     if(!reduce){s.v+=.0045*s.s*spd;if(s.v>1.1){s.v=-1.1;s.u=Math.random()*2-1;}}
     var x=C+px*s.u*W*.55+dx*s.v*W*.55,y=C+py*s.u*W*.55+dy*s.v*W*.55;
-    g.strokeStyle="rgba(142,199,184,"+(((.05+.42*wa)*(1-Math.abs(s.v))+.04)*E.w)+")";
-    g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*s.l*W,y+dy*s.l*W);g.stroke();
+    g.strokeStyle="rgba(142,199,184,"+(((.05+.5*gw)*(1-Math.abs(s.v))+.04)*E.w)+")";g.lineWidth=1.4+1.6*gg*s.s;
+    var ll=s.l*(.7+.9*gw);g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*ll*W,y+dy*ll*W);g.stroke();
   });
   /* rain across the plan */
   var rav=rainBox.checked?(reduce?.4:Math.max(rainArc(),.75*E.rb)):0,nv=Math.floor(drops.length*rav);
@@ -644,6 +657,7 @@ function frame(ms){
     g.beginPath();g.moveTo(dp.x,dp.y);g.lineTo(dp.x-dx*8,dp.y-16);g.stroke();}
   /* building */
   oct(R);g.fillStyle="#0f141a";g.fill();g.strokeStyle="rgba(232,229,220,"+(.2+.15*E.f)+")";g.lineWidth=2;g.stroke();
+  oct(R*.9);g.setLineDash([3,9]);g.strokeStyle="rgba(232,229,220,"+(.07+.06*E.f)+")";g.lineWidth=1.2;g.stroke();g.setLineDash([]);
   /* sun blade from the south face */
   var day=reduce?.35:(t%50)/50,sa=(-58+116*day)*Math.PI/180,sx=C+R*.12*Math.sin(sa)*-1,sy=C+R*.92;
   var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.max(Math.sin(day*Math.PI),.55*E.lb);
@@ -665,14 +679,20 @@ function frame(ms){
   }
   /* sound rings and the pedal ring */
   var fm=pt(45*S[cur].face,R*Math.cos(Math.PI/8));
-  if(!reduce&&t>nextRing){nextRing=t+2.6-1.4*wa;rings.push(t);}
+  if(!reduce&&t>nextRing){nextRing=t+2.8-2.2*gg;rings.push(t);}
   rings=rings.filter(function(r0){return t-r0<4;});
   g.save();oct(R-3);g.clip();
-  rings.forEach(function(r0){var q=(t-r0)/4;g.strokeStyle="rgba(142,199,184,"+((1-q)*(.12+.4*wa)*E.w)+")";g.lineWidth=2;g.beginPath();g.arc(fm[0],fm[1],q*R*1.5,0,7);g.stroke();});
-  var pr=R*.42+4*Math.sin(t*.9);
-  if(E.pb>.05){g.shadowColor="rgba(142,199,184,.9)";g.shadowBlur=26*E.pb;}
-  g.strokeStyle="rgba(142,199,184,"+((.10+.08*Math.sin(t*1.7))*E.p+.6*E.pb)+")";g.lineWidth=1.5+3*E.pb;g.beginPath();g.arc(C,C,pr,0,7);g.stroke();
-  if(E.pb>.05){g.lineWidth=1+1.5*E.pb;g.strokeStyle="rgba(142,199,184,"+(.35*E.pb)+")";g.beginPath();g.arc(C,C,pr*1.32+3*Math.sin(t*.9+1),0,7);g.stroke();}
+  var bg=g.createRadialGradient(fm[0],fm[1],0,fm[0],fm[1],R*(.55+.35*gg));bg.addColorStop(0,"rgba(142,199,184,"+((.05+.22*gg)*E.w)+")");bg.addColorStop(1,"rgba(142,199,184,0)");g.fillStyle=bg;g.fillRect(0,0,W,W);
+  rings.forEach(function(r0){var q=(t-r0)/4;g.strokeStyle="rgba(142,199,184,"+((1-q)*(.1+.45*gg)*E.w)+")";g.lineWidth=2;g.beginPath();g.arc(fm[0],fm[1],q*R*1.5,0,7);g.stroke();});
+  /* the chord inside the walls: each sounding note a ring; radius by pitch, lobes by its place in the A series, width by level */
+  function ringR(f){return R*(.36+.5*Math.log(f/55)/Math.log(16));}
+  function chordRing(f,L,col,al,glow,ph){
+    if(L<.01)return;var r0=ringR(f),lob=Math.max(2,Math.round(f/55)),amp=(2+11*L)*(.6+.8*gg),sp3=reduce?0:t*(.25+.06*lob)+ph;
+    g.beginPath();for(var i3=0;i3<=180;i3++){var th=i3/180*Math.PI*2,rr=r0+amp*Math.sin(lob*th+sp3)*Math.sin(t*(.7+.05*lob)+ph);var xx=C+rr*Math.cos(th),yy=C+rr*Math.sin(th);i3?g.lineTo(xx,yy):g.moveTo(xx,yy);}
+    g.closePath();if(glow>.05){g.shadowColor=col+".9)";g.shadowBlur=22*glow;}
+    g.strokeStyle=col+Math.min(1,(.08+.7*L)*al)+")";g.lineWidth=1.2+2.6*L;g.stroke();g.shadowBlur=0;}
+  VM.ped.forEach(function(p,j){chordRing(p.f,Math.min(1,p.L*.8),"rgba(142,199,184,",E.p+.5*E.pb,E.pb,j*1.7);});
+  VM.col.forEach(function(arr,k){arr.forEach(function(n,j){chordRing(n.f,Math.min(1,n.L*1.6),SCOL[k],.35+.65*E.f,(k===cur?.4*E.f:0),k+j*2.1);});});
   g.shadowBlur=0;g.restore();
   /* skywell and rain on glass */
   var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+((.10+.05*Math.sin(t*.7))*(.4+.6*E.r)+.12*E.rb)+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,"+(.15+.15*E.r+.3*E.rb)+")";g.lineWidth=2;g.stroke();
@@ -736,7 +756,7 @@ setView(sv);
 var lw=0;window.addEventListener("resize",function(){var el=document.getElementById("ladder");if(!el)return;var w=el.clientWidth<600;if(w!==lw){lw=w;drawLadder();}});
 
 /* ---------- the score: every sounding string as a line, every drop as a mark; time drifts left ---------- */
-var SCOL=["rgba(150,206,170,","rgba(150,190,232,","rgba(226,168,96,","rgba(236,182,150,"];
+
 function Score(id,span,big){
   var c=document.getElementById(id);if(!c)return null;var x=c.getContext("2d"),dpr=Math.min(2,window.devicePixelRatio||1),W2=0,H2=0;
   function size(){var r=c.getBoundingClientRect();if(!r.width)return;W2=Math.round(r.width*dpr);H2=Math.round(r.height*dpr);if(c.width!==W2)c.width=W2;if(c.height!==H2)c.height=H2;}
