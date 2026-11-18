@@ -3,233 +3,177 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>OMT Site 殿境 — 風雨光殿</title>
-<meta name="description" content="風雨光殿 OMT Site — a concept for a building that wind, rain and sunlight play as an instrument. The physical OceanMountain. Work in progress by Haishan Lai.">
+<title>OMT Site 殿境 — 風雨殿</title>
+<meta name="description" content="風雨殿 OMT Site — a concept for a building that wind, rain and sunlight play as an instrument. The physical OceanMountain. Work in progress by Haishan Lai.">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
-<meta property="og:title" content="OMT Site 殿境 — 風雨光殿">
+<meta property="og:title" content="OMT Site 殿境 — 風雨殿">
 <meta property="og:description" content="A building that wind, rain and sunlight play as an instrument. Concept stage; all sounds are computer models.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@500;700&display=swap" rel="stylesheet">
 <style>
-/* Layout idea: one dark "wet stone at dusk" world. Left-aligned editorial column,
-   the live eight-faced plan as the only hero image. Brass = sunlight, celadon = wind and water. */
+/* Layout idea: one dark "wet stone at dusk" world. The temple plan stays pinned beside the reading;
+   each passage turns the plan to what it describes. Brass = sunlight, celadon = wind and water. */
 :root{
-  color-scheme: dark;
-  --stone:#0c1015; --stone-2:#131920; --stone-3:#1b232c;
-  --ink:#ebe7dd; --ink-2:#9aa5ae; --line:rgba(232,229,220,.11);
-  --brass:#dba84a; --celadon:#8ec7b8;
+  color-scheme:dark;
+  --stone:#0c1015;--stone-2:#131920;--stone-3:#1b232c;
+  --ink:#ebe7dd;--ink-2:#9aa5ae;--line:rgba(232,229,220,.11);
+  --brass:#dba84a;--celadon:#8ec7b8;
   --f-display:"Bricolage Grotesque","Noto Sans TC",system-ui,sans-serif;
   --f-body:"IBM Plex Sans","Noto Sans TC",system-ui,sans-serif;
   --f-mono:"IBM Plex Mono",ui-monospace,monospace;
   --f-han:"Noto Serif TC","Songti TC",serif;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth}
-body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
-.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+body{margin:0;background:var(--stone);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.6;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;background:radial-gradient(40% 30% at 78% 18%,rgba(142,199,184,.10),transparent 70%),radial-gradient(35% 28% at 12% 70%,rgba(219,168,74,.07),transparent 70%);animation:drift 40s ease-in-out infinite alternate}
+@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-4%,3%,0)}}
+body::after{content:"";position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.07;mix-blend-mode:overlay;background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
 a{color:var(--celadon)}
 :focus-visible{outline:2px solid var(--brass);outline-offset:3px;border-radius:4px}
-h1,h2,h3{font-family:var(--f-display);text-wrap:balance;margin:0;font-weight:600;letter-spacing:-.01em}
+h1,h2{font-family:var(--f-display);font-weight:600;letter-spacing:-.01em;text-wrap:balance;margin:0}
 p{margin:0}
-.mono{font-family:var(--f-mono);font-size:.82em;letter-spacing:.01em}
-
-.band{background:var(--brass);color:#1a1408;font-family:var(--f-mono);font-size:12.5px;padding:7px 0;text-align:left}
-header{position:sticky;top:0;z-index:5;background:rgba(22,28,35,.88);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
-header .wrap{display:flex;align-items:center;gap:20px;min-height:56px;flex-wrap:wrap}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.band{background:var(--brass);color:#1a1408;font-family:var(--f-mono);font-size:12.5px;padding:7px 0}
+header{position:sticky;top:0;z-index:20;background:rgba(12,16,21,.86);backdrop-filter:blur(10px);border-bottom:1px solid var(--line)}
+header .wrap{display:flex;align-items:center;gap:16px;min-height:52px}
 .brand{font-family:var(--f-han);font-weight:700;font-size:19px;color:var(--ink);text-decoration:none;display:flex;gap:10px;align-items:baseline}
 .brand span{font-family:var(--f-mono);font-size:12px;color:var(--ink-2);font-weight:400}
-nav{display:flex;gap:18px;margin-left:auto;flex-wrap:wrap}
-nav a{color:var(--ink-2);text-decoration:none;font-size:14.5px}
-nav a:hover{color:var(--ink)}
-.lang{font:500 13px var(--f-mono);background:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
-.lang:hover{border-color:var(--ink-2)}
+.lang{margin-left:auto;font:500 13px var(--f-mono);background:none;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:5px 12px;cursor:pointer}
 
-.hero{padding:32px 0 28px}
-.hero .wrap{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:36px;align-items:center}
+.hero{padding:40px 0 10px}
 .eyebrow{font-family:var(--f-mono);font-size:12.5px;color:var(--celadon);text-transform:uppercase;letter-spacing:.12em}
-.han{font-family:var(--f-han);font-weight:700;font-size:clamp(46px,7vw,80px);line-height:1.05;margin:10px 0 4px;letter-spacing:.04em}
-.hero h1{font-size:clamp(22px,2.6vw,30px);color:var(--ink-2);font-weight:400}
-.thesis{font-size:clamp(17px,1.7vw,20px);line-height:1.45;margin-top:14px;max-width:30em}
+.han{font-family:var(--f-han);font-weight:700;font-size:clamp(56px,9vw,104px);line-height:1;margin:12px 0 4px;letter-spacing:.08em;text-shadow:0 0 52px rgba(219,168,74,.18)}
+.hero h1{font-size:clamp(20px,2.2vw,26px);color:var(--ink-2);font-weight:400}
+.thesis{font-size:clamp(17px,1.7vw,20px);line-height:1.5;margin-top:14px;max-width:34em}
 .thesis b{color:var(--brass);font-weight:500}
-.plan{position:relative;background:var(--stone-2);border:1px solid var(--line);border-radius:14px;padding:14px}
-canvas{display:block;width:100%;aspect-ratio:1/1;border-radius:8px}
-.readout{font-family:var(--f-mono);font-size:13px;color:var(--ink-2);padding:10px 4px 2px;min-height:3.4em}
+.cue{margin-top:12px;font-size:13.5px;color:var(--ink-2)}
+
+.stage{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.05fr);gap:48px;align-items:start;padding-top:22px;padding-bottom:40px}
+.temple{position:sticky;top:68px}
+.cvwrap{position:relative;background:var(--stone-2);border:1px solid var(--line);border-radius:16px;padding:10px;box-shadow:0 40px 140px -50px rgba(142,199,184,.35),inset 0 1px 0 rgba(255,255,255,.03)}
+canvas#cv{display:block;width:100%;aspect-ratio:1/1;border-radius:10px}
+.arcm{position:relative;height:14px;margin:10px 6px 0}
+.arcm i{position:absolute;left:0;height:2px;border-radius:2px;transition:width 1.2s linear}
+#arcw{top:2px;background:var(--celadon);box-shadow:0 0 10px rgba(142,199,184,.7)}
+#arcr{top:9px;background:var(--brass);box-shadow:0 0 10px rgba(219,168,74,.6)}
+.readout{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);padding:6px 6px 0;min-height:3.2em}
 .readout b{color:var(--celadon);font-weight:500}
-.controls{display:flex;flex-wrap:wrap;gap:8px;margin-top:18px;align-items:center}
-button.play{font:600 16px var(--f-display);background:var(--brass);color:#1a1408;border:0;border-radius:999px;padding:12px 22px;cursor:pointer}
-button.play[aria-pressed="true"]{background:var(--ink);}
-.chip{font:500 14px var(--f-body);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
-.chip .h{font-family:var(--f-han);margin-right:6px;color:var(--ink-2)}
+.ctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-top:12px}
+button.play{font:600 15px var(--f-display);background:var(--brass);color:#1a1408;border:0;border-radius:999px;padding:10px 18px;cursor:pointer;box-shadow:0 0 26px -6px rgba(219,168,74,.55)}
+button.play[aria-pressed="true"]{background:var(--ink);animation:breathe 9s ease-in-out infinite}
+@keyframes breathe{0%,100%{box-shadow:0 0 18px -8px rgba(235,231,221,.5)}50%{box-shadow:0 0 36px -4px rgba(235,231,221,.7)}}
+.chip{font:500 13.5px var(--f-body);background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:999px;padding:7px 12px;cursor:pointer}
+.chip .h{font-family:var(--f-han);margin-right:5px;color:var(--ink-2)}
 .chip[aria-pressed="true"]{border-color:var(--celadon);background:rgba(142,199,184,.14)}
 .chip[aria-pressed="true"] .h{color:var(--celadon)}
-.toggles{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px;font-size:14.5px;color:var(--ink-2)}
-.toggles label{display:flex;gap:8px;align-items:center;cursor:pointer}
-.toggles input{accent-color:var(--brass);width:16px;height:16px}
-.hint{font-size:13.5px;color:var(--ink-2);margin-top:14px;max-width:38em}
+.toggles{display:flex;gap:16px;flex-wrap:wrap;margin-top:10px;font-size:13.5px;color:var(--ink-2)}
+.toggles label{display:flex;gap:7px;align-items:center;cursor:pointer}
+.toggles input{accent-color:var(--brass);width:15px;height:15px}
+.hint{font-size:12.5px;color:var(--ink-2);margin-top:8px}
 
-section.block{padding:34px 0;border-top:1px solid var(--line)}
-.sec{display:grid;grid-template-columns:132px minmax(0,1fr);gap:24px}
-.sec>div{min-width:0}
-.sec>div:first-child{font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2);text-transform:uppercase;letter-spacing:.12em;padding-top:10px}
-.sec h2{font-size:clamp(23px,2.5vw,30px);line-height:1.15;margin-bottom:12px;max-width:22em}
-.prose{display:grid;gap:10px;max-width:68ch}
-.prose p{color:var(--ink)}
-.prose .lead{font-size:17.5px}
-.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:14px;align-items:start}
-.card{background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:14px 16px;display:grid;gap:6px;align-content:start}
-.card h3{font-size:16.5px;line-height:1.3}
-.card p{font-size:14.5px;color:var(--ink-2)}
-.card .tag{font-family:var(--f-mono);font-size:11.5px;color:var(--brass);text-transform:uppercase;letter-spacing:.1em}
-audio{width:100%;margin-top:2px;height:34px}
-.tracks{display:grid;gap:12px}
-.tracks div{display:grid;gap:2px}
-.tracks span{font-size:14px;color:var(--ink)}
-.tablewrap{overflow-x:auto;margin-top:8px}
-table{border-collapse:collapse;width:100%;min-width:520px;font-size:15px}
-th,td{text-align:left;padding:6px 12px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
-th{font:500 12px var(--f-mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.08em}
-td .h{font-family:var(--f-han);font-size:20px;color:var(--celadon);margin-right:8px}
-td.n{font-family:var(--f-mono);font-size:13.5px;font-variant-numeric:tabular-nums;white-space:nowrap}
-.dia{background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:16px}
-.dia svg{display:block;width:100%;height:auto}
-.dia text{font-family:var(--f-body);fill:var(--ink)}
-.dia .q{fill:var(--ink-2)}
-.bars{display:grid;gap:8px;margin-top:6px}
-.bar{display:grid;grid-template-columns:74px 1fr 150px;gap:10px;align-items:center;font-family:var(--f-mono);font-size:12.5px;color:var(--ink-2)}
-.bar i{display:block;height:10px;border-radius:2px;background:var(--celadon)}
-.bar em{font-style:normal;color:var(--ink)}
-.regs{display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:12px;margin-top:12px}
-.reg{border-left:3px solid var(--celadon);padding:4px 0 4px 14px}
-.reg:nth-child(2){border-color:var(--brass)}
-.reg:nth-child(3){border-color:var(--ink)}
-.reg:nth-child(4){border-color:var(--ink-2);border-left-style:dashed}
-.reg b{display:block;font-family:var(--f-display);font-size:17px}
-.reg span{font-size:13.5px;color:var(--ink-2);line-height:1.45;display:block}
-ol.laws{margin:8px 0 0;padding-left:1.3em;display:grid;gap:6px;font-size:15.5px;color:var(--ink-2);max-width:66ch}
-ol.laws b{color:var(--ink);font-weight:500}
-.ledger{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));column-gap:28px;margin-top:4px}
-.ledger div{display:flex;justify-content:space-between;gap:16px;padding:8px 0;border-bottom:1px solid var(--line);align-items:baseline}
-.ledger small{display:block;color:var(--ink-2);font-size:14px}
-.pill{font:500 11.5px var(--f-mono);text-transform:uppercase;letter-spacing:.08em;border-radius:999px;padding:4px 10px;white-space:nowrap;border:1px solid var(--line);color:var(--ink-2)}
-.pill.done{background:rgba(142,199,184,.16);color:var(--celadon);border-color:transparent}
-.pill.wip{background:rgba(219,168,74,.16);color:var(--brass);border-color:transparent}
-details{border-top:1px solid var(--line);margin-top:10px;padding-top:8px}
-.card details{margin-top:4px}
-summary{cursor:pointer;font:500 12.5px var(--f-mono);color:var(--celadon);letter-spacing:.04em;list-style:none;display:inline-flex;gap:8px;align-items:center;padding:2px 0}
+.story{position:relative;padding-left:30px}
+.story::before{content:"";position:absolute;left:6px;top:8px;bottom:8px;width:1px;background:linear-gradient(180deg,transparent,var(--line) 6%,var(--line) 94%,transparent)}
+.pass{position:relative;min-height:52vh;padding:30px 0 34px;display:flex;flex-direction:column;justify-content:center;gap:10px;opacity:.42;transition:opacity .6s}
+.pass.on{opacity:1}
+.pass::before{content:"";position:absolute;left:-29px;top:calc(50% - 6px);width:11px;height:11px;border-radius:50%;background:var(--stone);border:1px solid var(--ink-2);transition:all .5s}
+.pass.on::before{background:var(--celadon);border-color:var(--celadon);box-shadow:0 0 14px rgba(142,199,184,.8)}
+.kick{font-family:var(--f-mono);font-size:12px;color:var(--brass);text-transform:uppercase;letter-spacing:.14em}
+.pass h2{font-size:clamp(24px,2.6vw,32px);line-height:1.15}
+.pass .body{font-size:17px;line-height:1.65;max-width:34em}
+.pass .body b{color:var(--ink);font-weight:600}
+details{border-top:1px solid var(--line);padding-top:6px;max-width:40em}
+summary{cursor:pointer;font:500 12.5px var(--f-mono);color:var(--celadon);letter-spacing:.04em;list-style:none;display:inline-flex;gap:8px;align-items:center;padding:3px 0}
 summary::-webkit-details-marker{display:none}
 summary::before{content:"+";display:inline-block;width:1em;color:var(--brass);font-size:15px}
 details[open]>summary::before{content:"\2212"}
-details>.in{display:grid;gap:10px;padding-top:10px;max-width:68ch}
-html[lang="zh-Hant"] summary{font-family:var(--f-body);font-size:13.5px}
-body::before{content:"";position:fixed;inset:-20%;z-index:-1;pointer-events:none;
-  background:radial-gradient(40% 30% at 78% 18%,rgba(142,199,184,.10),transparent 70%),radial-gradient(35% 28% at 12% 70%,rgba(219,168,74,.07),transparent 70%);
-  animation:drift 40s ease-in-out infinite alternate}
-@keyframes drift{from{transform:translate3d(0,0,0)}to{transform:translate3d(-4%,3%,0)}}
-section.block{position:relative;overflow:hidden}
-section.block::before{content:"";position:absolute;inset:0;pointer-events:none;background:radial-gradient(520px 200px at 8% 0%,var(--glow,rgba(142,199,184,.08)),transparent 72%)}
-section.block>.wrap{position:relative}
-#idea{--glow:rgba(219,168,74,.07)} #method{--glow:rgba(235,231,221,.05)} #status{--glow:rgba(219,168,74,.06)}
-.plan{box-shadow:0 40px 140px -50px rgba(142,199,184,.35),inset 0 1px 0 rgba(255,255,255,.03)}
-.han{text-shadow:0 0 48px rgba(219,168,74,.16)}
-.card{background:linear-gradient(180deg,rgba(255,255,255,.028),rgba(255,255,255,0) 60%),var(--stone-2);transition:border-color .3s,box-shadow .3s}
-.card:hover{border-color:rgba(142,199,184,.32);box-shadow:0 0 32px -12px rgba(142,199,184,.3)}
-button.play{box-shadow:0 0 26px -6px rgba(219,168,74,.55)}
-button.play[aria-pressed="true"]{animation:breathe 9s ease-in-out infinite}
-@keyframes breathe{0%,100%{box-shadow:0 0 18px -8px rgba(235,231,221,.5)}50%{box-shadow:0 0 36px -4px rgba(235,231,221,.7)}}
-@media (prefers-reduced-motion:reduce){body::before,button.play[aria-pressed="true"]{animation:none}}
-#system .grid{grid-template-columns:repeat(4,minmax(0,1fr))}
-@media (max-width:1060px){#system .grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){#system .grid{grid-template-columns:1fr}}
-.trk{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center;margin-top:4px}
-.tp{width:34px;height:34px;border-radius:50%;border:1px solid rgba(142,199,184,.45);background:rgba(142,199,184,.08);color:var(--celadon);cursor:pointer;display:grid;place-items:center;padding:0;transition:box-shadow .3s,background .3s}
-.tp:hover{background:rgba(142,199,184,.16)}
+details>.in{display:grid;gap:10px;padding:10px 0 6px;color:var(--ink-2);font-size:15px}
+.fine{font-size:13.5px}
+.dia{background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:14px}
+.dia svg{display:block;width:100%;height:auto}
+.dia text{font-family:var(--f-body);fill:var(--ink)}
+.dia .q{fill:var(--ink-2)}
+.door{margin:6px 0 0;max-width:420px}
+.door canvas{display:block;width:100%;aspect-ratio:5/3;border-radius:10px;background:var(--stone-2);border:1px solid var(--line)}
+.door figcaption{font-size:12.5px;color:var(--ink-2);padding:6px 2px 0}
+.ladder{margin:6px 0 2px;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px}
+.ladder svg{display:block;width:100%;height:auto;font-family:var(--f-body)}
+.tablewrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:14px}
+th,td{text-align:left;padding:6px 10px 6px 0;border-bottom:1px solid var(--line);vertical-align:top}
+th{font:500 11.5px var(--f-mono);color:var(--ink-2);text-transform:uppercase;letter-spacing:.06em}
+td .h{font-family:var(--f-han);font-size:18px;color:var(--celadon);margin-right:6px}
+td.n{font-family:var(--f-mono);font-size:12.5px;white-space:nowrap}
+.bars{display:grid;gap:7px}
+.bar{display:grid;grid-template-columns:64px 1fr 140px;gap:10px;align-items:center;font-family:var(--f-mono);font-size:12px}
+.bar i{display:block;height:8px;border-radius:2px;background:var(--celadon)}
+.bar em{font-style:normal;color:var(--ink)}
+.tracks{display:grid;gap:12px;max-width:30em;margin-top:4px}
+.tracks>div{display:grid;gap:2px}
+.tracks>div>span{font-size:14px}
+.trk{display:grid;grid-template-columns:34px 1fr auto;gap:10px;align-items:center}
+.tp{width:34px;height:34px;border-radius:50%;border:1px solid rgba(142,199,184,.45);background:rgba(142,199,184,.08);color:var(--celadon);cursor:pointer;display:grid;place-items:center;padding:0}
 .tp[aria-pressed="true"]{background:var(--celadon);color:var(--stone);box-shadow:0 0 22px -4px rgba(142,199,184,.8)}
 .tp svg{width:12px;height:12px;fill:currentColor}
 .tbar{height:3px;border-radius:2px;background:rgba(232,229,220,.12);position:relative;overflow:hidden;cursor:pointer}
 .tbar i{position:absolute;left:0;top:0;bottom:0;width:0;background:linear-gradient(90deg,var(--celadon),var(--brass));box-shadow:0 0 10px rgba(142,199,184,.6)}
-.tt{font:500 11.5px var(--f-mono);color:var(--ink-2);font-variant-numeric:tabular-nums;min-width:3.2em;text-align:right}
-.tracks{gap:10px}
-.tracks .tt{font:500 11.5px var(--f-mono);color:var(--ink-2)}
-.arcm{position:relative;height:16px;margin:10px 4px 0}
-.arcm i{position:absolute;left:0;height:2px;border-radius:2px;transition:width 1.2s linear}
-#arcw{top:3px;background:var(--celadon);box-shadow:0 0 10px rgba(142,199,184,.7)}
-#arcr{top:10px;background:var(--brass);box-shadow:0 0 10px rgba(219,168,74,.6)}
-.steps{list-style:none;margin:18px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0;position:relative;max-width:820px}
+.tt{font:500 11.5px var(--f-mono);color:var(--ink-2);min-width:3.2em;text-align:right}
+ol.laws{margin:0;padding-left:1.3em;display:grid;gap:5px;font-size:14.5px}
+ol.laws b{color:var(--ink);font-weight:500}
+.steps{list-style:none;margin:8px 0 0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));position:relative;max-width:560px}
 .steps::before{content:"";position:absolute;left:6px;right:6px;top:6px;height:1px;background:linear-gradient(90deg,var(--celadon),rgba(219,168,74,.5),transparent)}
-.steps li{position:relative;padding:22px 16px 0 0;display:grid;gap:2px}
+.steps li{position:relative;padding:22px 12px 0 0;display:grid;gap:2px}
 .steps li::before{content:"";position:absolute;left:0;top:0;width:13px;height:13px;border-radius:50%;background:var(--stone);border:1px solid var(--ink-2)}
-.steps li.now::before{background:var(--celadon);border-color:var(--celadon);box-shadow:0 0 0 0 rgba(142,199,184,.6);animation:pulse 3.5s ease-out infinite}
+.steps li.now::before{background:var(--celadon);border-color:var(--celadon);animation:pulse 3.5s ease-out infinite}
 @keyframes pulse{0%{box-shadow:0 0 0 0 rgba(142,199,184,.55)}100%{box-shadow:0 0 0 14px rgba(142,199,184,0)}}
-.steps b{font-family:var(--f-display);font-weight:600;font-size:16px}
-.steps span{font-size:13.5px;color:var(--ink-2)}
-@media (max-width:560px){.steps{grid-template-columns:1fr;gap:14px}.steps::before{left:6px;right:auto;top:6px;bottom:6px;width:1px;height:auto;background:linear-gradient(180deg,var(--celadon),transparent)}.steps li{padding:0 0 0 26px}}
-@media (prefers-reduced-motion:reduce){.steps li.now::before{animation:none}}
-#status .lead{max-width:62ch}
+.steps b{font-family:var(--f-display);font-weight:600;font-size:15px}
+.steps span{font-size:13px;color:var(--ink-2)}
+.about{margin-top:22px;font-size:14px;color:var(--ink-2);max-width:36em}
+footer{border-top:1px solid var(--line);padding:24px 0 44px;color:var(--ink-2);font-size:13.5px}
 footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
-footer a:hover{color:var(--ink)}
-@media (max-width:560px){#system th:nth-child(3),#system td:nth-child(3){display:none}#system table{min-width:0}}
-body::after{content:"";position:fixed;inset:0;z-index:50;pointer-events:none;opacity:.07;mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>")}
-.duo{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,320px);gap:28px;align-items:start}
-.door{margin:0;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:10px;box-shadow:0 30px 90px -50px rgba(219,168,74,.35)}
-.door canvas{aspect-ratio:3/2;border-radius:8px}
-.door figcaption{font-size:12.5px;color:var(--ink-2);padding:8px 4px 2px}
-.ladder{margin:14px 0 4px;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:12px 14px 6px;box-shadow:0 30px 100px -60px rgba(142,199,184,.35)}
-.ladder svg{display:block;width:100%;height:auto;font-family:var(--f-body)}
-.ladder .col{transition:opacity .8s}
-.glyph{height:46px;margin:-2px 0 4px;display:block;width:100%;overflow:visible}
-.glyph .flow{stroke-dasharray:6 10;animation:flow 1.6s linear infinite}
-@keyframes flow{to{stroke-dashoffset:-32}}
-.glyph .drop{animation:fall 2.4s cubic-bezier(.5,0,1,1) infinite}
-@keyframes fall{0%{transform:translateY(-16px);opacity:0}15%{opacity:1}55%{transform:translateY(20px);opacity:1}60%{opacity:0}100%{opacity:0}}
-.glyph .ring{transform-box:fill-box;transform-origin:center;animation:ring 2.4s ease-out infinite}
-@keyframes ring{0%,55%{transform:scale(.2);opacity:0}60%{opacity:.9}100%{transform:scale(2.6);opacity:0}}
-.glyph .blade{transform-origin:20px 40px;animation:sweep 9s ease-in-out infinite alternate}
-@keyframes sweep{from{transform:rotate(-28deg)}to{transform:rotate(28deg)}}
-.glyph .bar{transform-box:fill-box;transform-origin:left center;animation:swell 6s ease-in-out infinite alternate}
-@keyframes swell{from{transform:scaleX(.82)}to{transform:scaleX(1)}}
-@media (max-width:860px){.duo{grid-template-columns:1fr}}
-@media (prefers-reduced-motion:reduce){.glyph *{animation:none!important}}
-footer{border-top:1px solid var(--line);padding:28px 0 48px;color:var(--ink-2);font-size:14px}
 html[lang="zh-Hant"] body{line-height:1.8}
-html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lang="zh-Hant"] th,html[lang="zh-Hant"] .pill,html[lang="zh-Hant"] .card .tag{letter-spacing:.04em;font-family:var(--f-body)}
-@media (max-width:860px){
-  .hero .wrap{grid-template-columns:1fr;gap:28px}
-  .sec{grid-template-columns:minmax(0,1fr);gap:10px}
-  nav{display:none}
-  .lang{margin-left:auto}
-  section.block{padding:26px 0}
-  .bar{grid-template-columns:60px 1fr 120px}
+html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .eyebrow{font-family:var(--f-body);letter-spacing:.06em}
+@media (max-width:900px){
+  .stage{grid-template-columns:minmax(0,1fr);gap:8px}
+  .temple{top:52px;z-index:10;background:var(--stone);padding:8px 0 6px;margin:0 -24px;padding-left:24px;padding-right:24px;border-bottom:1px solid var(--line)}
+  .cvwrap{width:min(100%,30vh);margin:0 auto;padding:5px}
+  .readout,.toggles,.hint,.arcm{display:none}
+  .ctrl{justify-content:center;margin-top:8px;gap:6px}
+  .chip{padding:5px 8px;font-size:12px} .chip .h{margin-right:3px} button.play{padding:7px 12px;font-size:13px} .ctrl{flex-wrap:nowrap} .ctrl .ctrl{gap:4px} .chip,button.play{white-space:nowrap}
+  .story{padding-left:22px} .pass::before{left:-21px} .story::before{left:4px}
+  .pass{min-height:0;padding:26px 0}
+  .steps{grid-template-columns:1fr;gap:14px}.steps::before{left:6px;right:auto;top:6px;bottom:6px;width:1px;height:auto;background:linear-gradient(180deg,var(--celadon),transparent)}.steps li{padding:0 0 0 26px}
+  .bar{grid-template-columns:52px 1fr 110px}
+  #f-seasons th:nth-child(3),#f-seasons td:nth-child(3){display:none}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+@media (max-width:440px){.chip [data-i]{display:none} .chip .h{margin:0;font-size:15px;color:var(--ink)} .chip{padding:5px 11px}}
+@media (prefers-reduced-motion:reduce){body::before,button.play,.steps li.now::before{animation:none!important}.pass{transition:none}}
 </style>
 </head>
 <body>
 <div class="band"><div class="wrap" data-i="band">Concept · nothing built yet · every sound here is a model</div></div>
-<header><div class="wrap">
-  <a class="brand" href="#listen">風雨光殿 <span>OMT Site</span></a>
-  <nav aria-label="Sections">
-    <a href="#sounds" data-i="n1">Listen</a><a href="#idea" data-i="n2">Idea</a><a href="#system" data-i="n3">System</a><a href="#method" data-i="n4">Method</a><a href="#status" data-i="n5">Next</a>
-  </nav>
-  <button class="lang" id="lang" type="button" aria-label="Switch language">繁體中文</button>
-</div></header>
-
-<main>
-<section class="hero" id="listen"><div class="wrap">
-  <div>
-    <p class="eyebrow" data-i="eyebrow">OMT Site · 殿境 · OceanMountain, given a body</p>
-    <div class="han" aria-hidden="true">風雨光殿</div>
-    <h1 data-i="h1">Wind-Rain-Light Temple</h1>
-    <p class="thesis" data-i="thesis">A building the weather plays. Wind breathes through it, rain touches it, sunlight slowly bends its pitch. <b>Nature plays; the building listens.</b></p>
-    <div class="controls">
+<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><button class="lang" id="lang" type="button" aria-label="Switch language">繁體中文</button></div></header>
+<main id="top">
+<section class="hero"><div class="wrap">
+  <p class="eyebrow" data-i="eyebrow">OMT Site · 殿境 · OceanMountain, given a body</p>
+  <div class="han" aria-hidden="true">風雨殿</div>
+  <h1 data-i="h1">Temple of Wind and Rain</h1>
+  <p class="thesis" data-i="thesis">A building the weather plays. Wind breathes through its walls, rain touches its glass, sunlight slowly bends its pitch. <b>Nature plays; the building listens.</b></p>
+  <p class="cue" data-i="cue">Read on, and the temple turns to show what you are reading.</p>
+</div></section>
+<div class="wrap stage">
+  <div class="temple">
+    <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas></div>
+    <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
+    <p class="readout" id="readout" aria-live="polite"></p>
+    <div class="ctrl">
       <button class="play" id="play" type="button" aria-pressed="false" data-i="play">Play the sketch</button>
-    </div>
-    <div class="controls" role="group" aria-label="Season" style="margin-top:14px">
-      <button class="chip" type="button" data-s="0" aria-pressed="true"><span class="h">震</span><span data-i="s0">Spring</span></button>
-      <button class="chip" type="button" data-s="1" aria-pressed="false"><span class="h">巽</span><span data-i="s1">Summer</span></button>
-      <button class="chip" type="button" data-s="2" aria-pressed="false"><span class="h">兌</span><span data-i="s2">Autumn</span></button>
-      <button class="chip" type="button" data-s="3" aria-pressed="false"><span class="h">乾</span><span data-i="s3">Winter</span></button>
+      <div class="ctrl" role="group" aria-label="Season" style="margin:0">
+        <button class="chip" type="button" data-s="0" aria-pressed="true"><span class="h">震</span><span data-i="s0">Spring</span></button>
+        <button class="chip" type="button" data-s="1" aria-pressed="false"><span class="h">巽</span><span data-i="s1">Summer</span></button>
+        <button class="chip" type="button" data-s="2" aria-pressed="false"><span class="h">兌</span><span data-i="s2">Autumn</span></button>
+        <button class="chip" type="button" data-s="3" aria-pressed="false"><span class="h">乾</span><span data-i="s3">Winter</span></button>
+      </div>
     </div>
     <div class="toggles">
       <label for="turn"><input type="checkbox" id="turn" checked> <span data-i="t1">Turn the year</span></label>
@@ -238,81 +182,18 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
     </div>
     <p class="hint" data-i="hint">Best with headphones. A sketch in the browser, not a recording.</p>
   </div>
-  <div class="plan">
-    <canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced building. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas>
-    <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
-    <p class="readout" id="readout" aria-live="polite"></p>
-  </div>
-</div></section>
-
-<section class="block" id="sounds"><div class="wrap sec">
-  <div data-i="k1">01 · Listen</div>
-  <div>
-    <h2 data-i="l_h">Before it stands, listen</h2>
-    <div class="grid">
-      <div class="card">
-        <span class="tag" data-i="l1t">Live sketch</span>
-        <h3 data-i="l1h">One note, four seasons</h3>
-        <p data-i="l1p">One low A holds all year. Each season's wind opens another face, and the A changes colour. The weather swells and settles in long arcs; rain follows the wind.</p>
-      </div>
-      <div class="card">
-        <span class="tag" data-i="l2t">Model · 44 s</span>
-        <h3 data-i="l2h">The door</h3>
-        <p data-i="l2p">Where it began: winter wind through the gap of a northwest door, heard close, then from across the room.</p>
-        <div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:44</span><audio preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio></div>
-      </div>
-      <div class="card">
-        <span class="tag" data-i="l3t">Model · 3 × 32 s</span>
-        <h3 data-i="l3h">Same weather, three tunings</h3>
-        <p data-i="l3p">Same gusts, same drops. Only the tuning changes.</p>
-        <div class="tracks">
-          <div><span data-i="l3a">A · Harmonic series on A</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div></div>
-          <div><span data-i="l3b">B · Pentatonic</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div></div>
-          <div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div></div>
-        </div>
-      </div>
-    </div>
-  </div>
-</div></section>
-
-<section class="block" id="idea"><div class="wrap sec">
-  <div data-i="k2">02 · Origin</div>
-  <div>
-    <h2 data-i="i_h">A door that sang in winter</h2>
-    <div class="duo"><div class="prose">
-      <p class="lead" data-i="i1">New York, winter. Wind pressed through the gap of a northwest door and came out as tones, layered, almost music from across the room.</p>
-      <details><summary data-i="more">Read on</summary><div class="in"><p data-i="i2">The gap was a mouth, the room a body. Instruments are shaped so that sound meets the ear. This work shapes a building the same way, so that what the weather plays arrives as harmony.</p>
-      <p data-i="i3">OceanMountain 山海 draws its sound from the hour and the season. This is its body. Nothing here is generated: the weather performs, and silence is part of the weather.</p></div></details>
-    </div>
-      <figure class="door"><canvas id="doorcv" width="600" height="400" aria-label="Wind lines enter a narrow door gap and leave as layered waves"></canvas><figcaption data-i="dcap">Wind in, tones out. The gap is a mouth; the room, a body.</figcaption></figure>
-    </div></div>
-  </div>
-</div></section>
-
-<section class="block" id="system"><div class="wrap sec">
-  <div data-i="k3">03 · System</div>
-  <div>
-    <h2 data-i="y_h">One held note, eight faces</h2>
-    <div class="prose">
-      <p class="lead" data-i="y1">A low A sounds on every wind face. Above it, each face holds three notes. As the wind turns through the year, the same A becomes a fifth, a root, a third.</p>
-    </div>
-    <div class="ladder" id="ladder"></div>
-    <details><summary data-i="tabsum">Notes in hertz</summary><div class="in" style="max-width:none"><div class="tablewrap"><table>
-      <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
-      <tbody>
-        <tr><td><span class="h">震</span><span data-i="f1">East</span></td><td data-i="w1">Spring</td><td class="n">E4 A4 D5 · 330 440 587 Hz</td><td data-i="r1">The fifth of D</td></tr>
-        <tr><td><span class="h">巽</span><span data-i="f2">Southeast</span></td><td data-i="w2">Summer</td><td class="n">E4 A4 B4 · 330 440 494 Hz</td><td data-i="r2">The root, open</td></tr>
-        <tr><td><span class="h">兌</span><span data-i="f3">West</span></td><td data-i="w3">Autumn</td><td class="n">F4 A4 C5 · 349 440 523 Hz</td><td data-i="r3">The third of F</td></tr>
-        <tr><td><span class="h">乾</span><span data-i="f4">Northwest</span></td><td data-i="w4">Winter</td><td class="n">8 · 12 · 14 · 440 660 770 Hz</td><td data-i="r4">The root, with a harmonic seventh</td></tr>
-      </tbody>
-    </table></div></div></details>
-    <details><summary data-i="faces8">The other four faces</summary><div class="in"><p class="hint" style="margin:0" data-i="y2">Placeholder voicings. 離 south gathers light, 坤 southwest receives you, 坎 north lets water go, 艮 northeast keeps the silence. The trigrams give the building its order; they make no claim about nature.</p></div></details>
-
-    <div class="grid">
-      <div class="card">
-        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><g fill="none" stroke="#8ec7b8" stroke-width="1.6" stroke-linecap="round"><path class="flow" d="M4 14H120"/><path class="flow" d="M4 23H120" style="animation-delay:-.5s"/><path class="flow" d="M4 32H120" style="animation-delay:-1s"/></g><rect x="122" y="6" width="5" height="13" fill="#9aa5ae"/><rect x="122" y="27" width="5" height="13" fill="#9aa5ae"/><path d="M130 23c8-10 16 10 24 0s16 10 24 0 16 10 24 0" fill="none" stroke="#dba84a" stroke-width="1.6" class="flow" style="stroke-dasharray:none"/></svg><span class="tag" data-i="c1t">Wind</span>
-        <h3 data-i="c1h">The slot speaks; the chamber sings</h3>
-        <details><summary data-i="how1">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
+  <div class="story">
+    <article class="pass" data-focus="origin" id="f-origin">
+      <p class="kick" data-i="p1k">i · Origin</p>
+      <h2 data-i="p1t">A door that sang in winter</h2>
+      <p class="body" data-i="p1b">New York, winter. Wind pressed through the gap of a northwest door and came out as tones, layered, almost music from across the room. The gap was a mouth; the room, a body.</p>
+      <figure class="door"><canvas id="doorcv" width="600" height="360" aria-label="Wind lines enter a narrow door gap and leave as layered waves"></canvas><figcaption data-i="dcap">Wind in, tones out.</figcaption></figure>
+    </article>
+    <article class="pass" data-focus="wall" id="f-wall">
+      <p class="kick" data-i="p2k">ii · The wall</p>
+      <h2 data-i="p2t">The wall is the instrument</h2>
+      <p class="body" data-i="p2b">Wind is weak air, a breath of what an organ needs. So the voices are low and large: a slot lets the wind speak, a tuned chamber behind it chooses the note, a shutter holds it back in a storm.</p>
+      <details><summary data-i="m2s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
           <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
           <path d="M104 20H290V60M290 86V130H104" fill="none" stroke="#a3adb5" stroke-width="1.2"/>
           <line x1="14" y1="73" x2="88" y2="73" stroke="#8ec7b8" stroke-width="2"/><path d="M88 73l-9-5v10z" fill="#8ec7b8"/>
@@ -322,13 +203,40 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
           <text x="112" y="44" font-size="11" data-i="d1b">slot + edge</text>
           <text x="176" y="78" font-size="11" data-i="d1c">tuned chamber</text>
           <text x="176" y="94" font-size="10" class="q" data-i="d1d">length sets pitch</text>
-        </svg></div>
-        <p data-i="c1p">Wind at 15 to 40 km/h supplies only 10 to 74 Pa of pressure, a fraction of what an organ uses. So the wind voices are large, low and led by their resonators, with shutters to hold them back in storms.</p></div></details>
-      </div>
-      <div class="card">
-        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><path class="drop" d="M110 6c4 6 6 9 6 12a6 6 0 0 1-12 0c0-3 2-6 6-12z" fill="#8ec7b8"/><ellipse class="ring" cx="110" cy="40" rx="9" ry="2.2" fill="none" stroke="#dba84a" stroke-width="1.4"/><path d="M60 42H160" stroke="rgba(235,231,221,.25)" stroke-width="1"/></svg><span class="tag" data-i="c2t">Rain</span>
-        <h3 data-i="c2h">Rain gathered to a drop, falling on glass</h3>
-        <details><summary data-i="how2">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
+        </svg></div><p data-i="m2p">Wind at 15 to 40 km/h supplies only 10 to 74 Pa of pressure. Pipes and chambers set pitch by length and volume. An open pipe overblows to its octave, a stopped pipe to its twelfth, so even a gust stays inside the chord.</p></div></details>
+    </article>
+    <article class="pass" data-focus="pedal" id="f-pedal">
+      <p class="kick" data-i="p3k">iii · The pedal</p>
+      <h2 data-i="p3t">One held note</h2>
+      <p class="body" data-i="p3b">Behind every wind face sounds the same low A, at 55 and 110 Hz. It never leaves. Everything else is colour above it.</p>
+      <details><summary data-i="m3s">The sun in the pedal</summary><div class="in"><p data-i="m3p">Two matched chambers hold the high A, one in sun and one in shade. Warmth raises pitch about 3 cents per °C, so by day they drift apart and beat slowly, then still at dusk.</p></div></details>
+    </article>
+    <article class="pass" data-focus="seasons" id="f-seasons">
+      <p class="kick" data-i="p4k">iv · The seasons</p>
+      <h2 data-i="p4t">Eight faces, four winds</h2>
+      <p class="body" data-i="p4b">Eight faces, one for each trigram. As the wind turns through the year it opens 震 in spring, 巽 in summer, 兌 in autumn, 乾 in winter, and the same A becomes a fifth, a root, a third.</p>
+      <div class="ladder" id="ladder"></div><details><summary data-i="m4a">The other four faces</summary><div class="in"><p data-i="m4ap">離 south gathers light, 坤 southwest receives you, 坎 north lets water go, 艮 northeast keeps the silence. The voicings above are placeholders.</p></div></details><details><summary data-i="m4b">Notes in hertz</summary><div class="in" style="max-width:none"><div class="tablewrap"><table>
+      <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
+      <tbody>
+        <tr><td><span class="h">震</span><span data-i="f1">East</span></td><td data-i="w1">Spring</td><td class="n">E4 A4 D5 · 330 440 587 Hz</td><td data-i="r1">The fifth of D</td></tr>
+        <tr><td><span class="h">巽</span><span data-i="f2">Southeast</span></td><td data-i="w2">Summer</td><td class="n">E4 A4 B4 · 330 440 494 Hz</td><td data-i="r2">The root, open</td></tr>
+        <tr><td><span class="h">兌</span><span data-i="f3">West</span></td><td data-i="w3">Autumn</td><td class="n">F4 A4 C5 · 349 440 523 Hz</td><td data-i="r3">The third of F</td></tr>
+        <tr><td><span class="h">乾</span><span data-i="f4">Northwest</span></td><td data-i="w4">Winter</td><td class="n">8 · 12 · 14 · 440 660 770 Hz</td><td data-i="r4">The root, with a harmonic seventh</td></tr>
+      </tbody>
+    </table></div></div></details><details><summary data-i="m4c">Why it stays in tune</summary><div class="in"><p data-i="m4cp">The gap that sounds rough is nearly the same number of hertz in every register. Close intervals belong high or short; low voices sit wide. With that kept, any scale works above the pedal, microtones included.</p><div class="bars" aria-label="Smallest smooth gap between two tones, by register">
+          <div class="bar"><span>55 Hz</span><i style="width:36%"></i><em>70 Hz · <span data-i="b1">over an octave</span></em></div>
+          <div class="bar"><span>110 Hz</span><i style="width:38%"></i><em>74 Hz · <span data-i="b2">major sixth</span></em></div>
+          <div class="bar"><span>220 Hz</span><i style="width:42%"></i><em>82 Hz · <span data-i="b3">fourth</span></em></div>
+          <div class="bar"><span>440 Hz</span><i style="width:51%"></i><em>98 Hz · <span data-i="b4">major third</span></em></div>
+          <div class="bar"><span>880 Hz</span><i style="width:67%"></i><em>130 Hz · <span data-i="b5">whole tone</span></em></div>
+          <div class="bar"><span>1760 Hz</span><i style="width:100%"></i><em>193 Hz · <span data-i="b5b">whole tone</span></em></div>
+        </div></div></details>
+    </article>
+    <article class="pass" data-focus="rain" id="f-rain">
+      <p class="kick" data-i="p5k">v · Rain</p>
+      <h2 data-i="p5t">Rain, gathered to a drop</h2>
+      <p class="body" data-i="p5b">Rain on glass alone is only patter. Gathered first and let fall from a height, each drop strikes a tuned bar in the open skywell, and the shower becomes a slow rhythm that quickens with the storm.</p>
+      <details><summary data-i="m5s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
           <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
           <line x1="110" y1="40" x2="110" y2="96" stroke="#8ec7b8" stroke-width="2" stroke-dasharray="2 7"/>
           <path d="M62 108L160 96L161 101L63 113z" fill="rgba(219,168,74,.2)" stroke="#dba84a" stroke-width="1.6"/>
@@ -337,153 +245,49 @@ html[lang="zh-Hant"] .sec>div:first-child,html[lang="zh-Hant"] .eyebrow,html[lan
           <text x="196" y="72" font-size="11" data-i="d2b">fall 1 to 3 m: strength</text>
           <text x="196" y="108" font-size="11" data-i="d2c">tuned glass: pitch</text>
           <text x="196" y="134" font-size="11" class="q" data-i="d2d">drain: pitch stays</text>
-        </svg></div>
-        <p data-i="c2p">Rain falling straight onto glass is mostly patter. One gathered drip carries the energy of about fifteen raindrops and lands on one chosen spot. The size of each catchment sets the tempo of its voice.</p></div></details>
-      </div>
-      <div class="card">
-        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><path d="M8 42H212" stroke="rgba(235,231,221,.2)"/><g transform="translate(90,0)"><path class="blade" d="M20 40L20 2" stroke="#dba84a" stroke-width="3" stroke-linecap="round" style="filter:drop-shadow(0 0 6px rgba(219,168,74,.8))"/></g><circle cx="110" cy="40" r="3" fill="#dba84a"/></svg><span class="tag" data-i="c3t">Light</span>
-        <h3 data-i="c3h">Light, seen and heard</h3>
-        <details><summary data-i="how3">How it works</summary><div class="in"><p data-i="c3p">The south face is cut with sealed slits. A 5 mm slit throws a blade of light that crosses a wall five metres away at about 1.3 m an hour. At 35° north, noon light reaches 0.6 m into the room in midsummer and 4.9 m in midwinter.</p>
-        <p data-i="c3q">Sun also warms the air in a chamber and raises its pitch about 3 cents per °C. Two matched pedal chambers, one in sun and one in shade, drift apart and beat slowly by day, then still at dusk.</p></div></details>
-      </div>
-      <div class="card">
-        <svg class="glyph" viewBox="0 0 220 46" aria-hidden="true"><g fill="#8ec7b8"><rect class="bar" x="4" y="4" width="64" height="4" rx="2"/><rect class="bar" x="4" y="12" width="68" height="4" rx="2" style="animation-delay:-1s"/><rect class="bar" x="4" y="20" width="76" height="4" rx="2" style="animation-delay:-2s"/><rect class="bar" x="4" y="28" width="92" height="4" rx="2" style="animation-delay:-3s"/><rect class="bar" x="4" y="36" width="120" height="4" rx="2" style="animation-delay:-4s"/></g></svg><span class="tag" data-i="c4t">Harmony</span>
-        <h3 data-i="c4h">Spacing before scale</h3>
-        <details><summary data-i="how4">How it works</summary><div class="in"><p data-i="c4p">The gap that sounds rough is nearly the same number of hertz in every register. Close intervals belong high or short; low voices sit wide. With that met, any scale works above the pedal, microtones included.</p>
-        <div class="bars" aria-label="Smallest smooth gap between two tones, by register">
-          <div class="bar"><span>55 Hz</span><i style="width:36%"></i><em>70 Hz · <span data-i="b1">over an octave</span></em></div>
-          <div class="bar"><span>110 Hz</span><i style="width:38%"></i><em>74 Hz · <span data-i="b2">major sixth</span></em></div>
-          <div class="bar"><span>220 Hz</span><i style="width:42%"></i><em>82 Hz · <span data-i="b3">fourth</span></em></div>
-          <div class="bar"><span>440 Hz</span><i style="width:51%"></i><em>98 Hz · <span data-i="b4">major third</span></em></div>
-          <div class="bar"><span>880 Hz</span><i style="width:67%"></i><em>130 Hz · <span data-i="b5">whole tone</span></em></div>
-          <div class="bar"><span>1760 Hz</span><i style="width:100%"></i><em>193 Hz · <span data-i="b5b">whole tone</span></em></div>
-        </div></div></details>
-      </div>
-    </div>
+        </svg></div><p data-i="m5p">One gathered drip carries the energy of about fifteen raindrops and lands on one chosen spot. The size of each catchment sets the tempo of its voice; drains keep the glass in tune.</p></div></details>
+    </article>
+    <article class="pass" data-focus="light" id="f-light">
+      <p class="kick" data-i="p6k">vi · Light</p>
+      <h2 data-i="p6t">Light, seen and heard</h2>
+      <p class="body" data-i="p6b">The south face is cut with sealed slits. A blade of sun crosses the wall at the pace of the hour, and at noon its reach across the floor marks the season. Its warmth bends the low A, so the sun is also heard.</p>
+      <details><summary data-i="m6s">The numbers</summary><div class="in"><p data-i="m6p">A 5 mm slit throws a blade that crosses a wall five metres away at about 1.3 m an hour. At 35° north, noon light reaches 0.6 m into the room in midsummer and 4.9 m in midwinter.</p></div></details>
+    </article>
+    <article class="pass" data-focus="silence" id="f-silence">
+      <p class="kick" data-i="p7k">vii · Silence</p>
+      <h2 data-i="p7t">Silence is weather too</h2>
+      <p class="body" data-i="p7b">On still, dry days the temple is quiet. That is by design. Silence is shared weather, and the building waits with you.</p>
+      
+    </article>
+    <article class="pass" data-focus="listen" id="f-listen">
+      <p class="kick" data-i="p8k">viii · Listen</p>
+      <h2 data-i="p8t">Before it stands, listen</h2>
+      <p class="body" data-i="p8b">Nothing here is built yet. These are models: the door that began it, and the same weather in three tunings.</p>
+      <div class="tracks"><div><span data-i="l2h">The door · 44 s</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:44</span><audio preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio></div></div><div><span data-i="l3a">A · Harmonic series on A</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div></div><div><span data-i="l3b">B · Pentatonic</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div></div><div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div></div></div>
+    </article>
+    <article class="pass" data-focus="method" id="f-method">
+      <p class="kick" data-i="p9k">ix · Method</p>
+      <h2 data-i="p9t">Measured, inherited, chosen, hoped</h2>
+      <p class="body" data-i="p9b">Every claim here wears one label: <b>measured</b> from acoustics, <b>inherited</b> from tradition, <b>chosen</b> by design, or <b>hoped</b>, and testable. The trigrams give the building its order; they make no claim about nature.</p>
+      <details><summary data-i="m9a">Three questions the test wall can answer</summary><div class="in"><ol class="laws"><li data-i="q1"><b>H1.</b> Is tuned pedal-and-colour wind sound judged more pleasant than untuned wind tones?</li><li data-i="q2"><b>H2.</b> Does the spacing law predict how rough listeners rate a mix?</li><li data-i="q3"><b>H3.</b> Is the slow sun beat on the pedal heard as calm, or as out of tune?</li></ol><p class="fine" data-i="m2">Roughness figures use the Plomp–Levelt model, which covers one part of hearing and says nothing about musical meaning.</p></div></details><details><summary data-i="w_h">Laws</summary><div class="in"><ol class="laws"><li data-i="a1"><b>Silence is shared weather.</b></li><li data-i="a2"><b>No health or therapeutic claims.</b> The listener is never sensed or profiled.</li><li data-i="a3"><b>Nature plays.</b> The building only tunes and listens.</li><li data-i="a4"><b>One pedal, many colours.</b></li><li data-i="a5"><b>Spacing before scale.</b></li><li data-i="a6"><b>An opening does two jobs where it can:</b> sound and light.</li></ol></div></details>
+    </article>
+    <article class="pass" data-focus="next" id="f-next">
+      <p class="kick" data-i="p10k">x · Next</p>
+      <h2 data-i="p10t">More is coming</h2>
+      <p class="body" data-i="p10b">This page grows with the work. Next comes a door-sized test wall, the first real recordings of wind and rain, then an architect and a piece of ground. Return in another season.</p>
+      <ol class="steps"><li class="now"><b data-i="x1">Test wall</b><span data-i="x1s">one wind voice, five glass bars</span></li><li><b data-i="x2">First recordings</b><span data-i="x2s">wind and rain, heard for real</span></li><li><b data-i="x3">Architect and site</b><span data-i="x3s">form, ground, a real wind</span></li></ol><p class="about" data-i="ab1">Haishan Lai (Toby Hysan) is a pianist, composer and producer working across jazz, film scoring and generative sound. This is the body of OceanMountain 山海, his sound ecology of the twelve 時辰 and the twenty-four 節氣.</p>
+    </article>
   </div>
-</div></section>
-
-<section class="block" id="method"><div class="wrap sec">
-  <div data-i="k4">04 · Method</div>
-  <div>
-    <h2 data-i="m_h">Measured, inherited, chosen, hoped</h2>
-    <div class="prose">
-      <p class="lead" data-i="m1">Each claim wears one label, so the work stays honest about what it knows.</p>
-    </div>
-    <div class="regs">
-      <div class="reg"><b data-i="g1">Measured</b><span data-i="g1p">Computed from standard acoustics. Nothing yet measured on a built object.</span></div>
-      <div class="reg"><b data-i="g2">Traditional</b><span data-i="g2p">八卦, yin and yang, 時辰, 節氣: a grammar for organising, never physics.</span></div>
-      <div class="reg"><b data-i="g3">Design choice</b><span data-i="g3p">A as the pedal, each face's voicing, the double wall. Revisable.</span></div>
-      <div class="reg"><b data-i="g4">Hypothesis</b><span data-i="g4p">That it is good to sit and listen with. Offered, and testable.</span></div>
-    </div>
-    <details><summary data-i="q_h">Three questions the test panel can answer</summary><div class="in">
-      <ol class="laws">
-        <li data-i="q1"><b>H1.</b> Is tuned pedal-and-colour wind sound judged more pleasant than untuned wind tones?</li>
-        <li data-i="q2"><b>H2.</b> Does the spacing law predict how rough listeners rate a mix?</li>
-        <li data-i="q3"><b>H3.</b> Is the slow sun beat on the pedal heard as calm, or as out of tune?</li>
-      </ol>
-      <p data-i="m2">The roughness figures use the Plomp–Levelt model. It covers one part of hearing and says nothing about musical meaning. A door-sized panel with one wind voice and five glass bars is the next step, with timed listening sessions.</p>
-      </div></details>
-      <details><summary data-i="w_h">Laws</summary><div class="in">
-      <ol class="laws">
-        <li data-i="a1"><b>Silence is shared weather.</b> Still, dry days are silent by design.</li>
-        <li data-i="a2"><b>No health or therapeutic claims.</b> The listener is never sensed or profiled.</li>
-        <li data-i="a3"><b>Nature plays.</b> The building only tunes and listens.</li>
-        <li data-i="a4"><b>One pedal, many colours.</b></li>
-        <li data-i="a5"><b>Spacing before scale.</b></li>
-        <li data-i="a6"><b>An opening does two jobs where it can:</b> sound and light.</li>
-      </ol></div></details>
-  </div>
-</div></section>
-
-<section class="block" id="status"><div class="wrap sec">
-  <div data-i="k5">05 · Next</div>
-  <div>
-    <h2 data-i="st_h">More is coming</h2>
-    <p class="lead" data-i="nx1">This page grows with the work. Next comes a door-sized test wall, the first real recordings of wind and rain, then an architect and a piece of ground. Return in another season.</p>
-    <ol class="steps">
-      <li class="now"><b data-i="x1">Test wall</b><span data-i="x1s">one wind voice, five glass bars</span></li>
-      <li><b data-i="x2">First recordings</b><span data-i="x2s">wind and rain, heard for real</span></li>
-      <li><b data-i="x3">Architect and site</b><span data-i="x3s">form, ground, a real wind</span></li>
-    </ol>
-    <div class="prose" style="margin-top:34px">
-      <h3 data-i="ab_h" style="font-size:16.5px">About</h3>
-      <p data-i="ab1">Haishan Lai (Toby Hysan) is a pianist, composer and producer working across jazz, film scoring and generative sound. OMT Site gives a body to OceanMountain 山海, his generative sound ecology shaped by the twelve 時辰 and the twenty-four 節氣.</p>
-    </div>
-  </div>
-</div></section>
+</div>
 </main>
-
 <footer><div class="wrap"><a href="/">← OceanMountain / Toby Hysan</a> · <a href="/omt/">山海 OMT</a> · © 2026 Toby Hysan</div></footer>
-
 <script>
 (function(){
 "use strict";
-/* ---------- language ---------- */
-var ZH={
-band:"概念階段 · 尚未建造 · 此處聲音皆為模擬",
-n1:"聆聽",n2:"緣起",n3:"系統",n4:"方法",n5:"下一步",
-eyebrow:"OMT Site · 殿境 · 山海的身體",h1:"風、雨、光之殿",
-thesis:"一座由天氣演奏的建築。風穿過它呼吸，雨輕觸它，日光緩緩彎轉它的音高。<b>自然演奏；建築聆聽。</b>",
-play:"播放聲音草圖",stop:"停止",
-s0:"春",s1:"夏",s2:"秋",s3:"冬",
-t1:"四季輪轉",t2:"日照暖持續音",t3:"雨",
-hint:"建議戴耳機。這是瀏覽器裡的草圖，並非錄音。",
-k1:"01 · 聆聽",l_h:"未建之前，先聽",
-l1t:"即時草圖",l1h:"一個音，四個季節",l1p:"一個低音 A 終年不散。每季的風打開另一面，A 便換了顏色。天氣以長弧起落，雨隨風後。",
-l2t:"模擬 · 44 秒",l2h:"那扇門",l2p:"起點：冬風穿過西北向的門縫。先在近處聽，再從房間另一頭聽。",
-l3t:"模擬 · 3 × 32 秒",l3h:"同一場天氣，三種調律",l3p:"同樣的風，同樣的雨滴，只有調律不同。",
-l3a:"A · 以 A 為基音的泛音列",l3b:"B · 五聲音階",l3c:"C · 鋼琴平均律 A13(♯11)",
-k2:"02 · 緣起",i_h:"冬天會唱歌的門",
-i1:"紐約，冬天。風擠過西北向的門縫，化成一層層的音；從房間另一頭聽，幾乎就是音樂。",
-i2:"門縫是吹口，房間是琴身。樂器為了讓聲音遇見耳朵而成形；這件作品以同樣的方式塑造一座建築，讓天氣所奏化為和聲。",
-i3:"山海 OceanMountain 從時辰與節氣取聲。這裡是它的身體。此處沒有任何聲音被生成：天氣演奏，靜默也是天氣。",
-k3:"03 · 系統",y_h:"一個持續音，八個面",
-y1:"每個風面都有一個低音 A。其上，每面各有三個音。風隨四季轉向，同一個 A 便成為五度、根音、三度。",
-th1:"面",th2:"季風",th3:"色彩音",th4:"A 成為",
-f1:"東",f2:"東南",f3:"西",f4:"西北",w1:"春",w2:"夏",w3:"秋",w4:"冬",
-r1:"D 的五度",r2:"根音，開放",r3:"F 的三度",r4:"根音，帶自然七度",
-y2:"以上配置為暫定。離（南）納光，坤（西南）迎人，坎（北）送水，艮（東北）守靜。八卦為建築排序，不對自然作斷言。",
-c1t:"風",c1h:"縫發聲，腔體成音",d1a:"風",d1b:"縫與刃",d1c:"調音腔體",d1d:"長度決定音高",
-c1p:"時速 15 至 40 公里的風只提供 10 至 74 帕的壓力，遠低於管風琴所用。所以風的聲部要大、要低、以共鳴體為主，並以擋板在風暴時收束。",
-c2t:"雨",c2h:"雨聚成一滴，落在玻璃上",d2a:"集水面：速度",d2b:"落差 1 至 3 米：力度",d2c:"調音玻璃：音高",d2d:"排水：音高不變",
-c2p:"雨直接打在玻璃上多半只是沙沙聲。一滴匯集的水珠約有十五顆雨滴的能量，並落在選定的一點。每個集水面的大小決定該聲部的速度。",
-c3t:"光",c3h:"光，看得見也聽得見",
-c3p:"南面開有密封的光縫。一道 5 毫米的縫投出一片光刃，在五米外的牆上每小時移動約 1.3 米。在北緯 35 度，正午的光在夏至伸入室內 0.6 米，冬至則達 4.9 米。",
-c3q:"日照也會加熱腔體內的空氣，每升高 1°C 音高約升 3 音分。兩個相同的持續音腔體，一個向陽、一個背陰，白天逐漸錯開並緩慢拍動，黃昏時歸於平靜。",
-c4t:"和聲",c4h:"先講間距，再講音階",
-c4p:"聽起來粗糙的音距，在每個音區幾乎都是相同的赫茲數。密集的音程應放在高處或短促發聲；低音要拉開。滿足這點，持續音之上任何音階都可行，包括微分音。",
-b1:"超過八度",b2:"大六度",b3:"四度",b4:"大三度",b5:"全音",b5b:"全音",
-k4:"04 · 方法",m_h:"量得的、承襲的、選擇的、盼望的",
-m1:"每項主張只帶一個標籤，讓作品誠實面對自己知道什麼。",
-g1:"可量測",g1p:"由標準聲學計算，尚未在實物上量測。",
-g2:"傳統",g2p:"八卦、陰陽、時辰、節氣：組織的語法，絕非物理。",
-g3:"設計選擇",g3p:"以 A 為持續音、各面配置、雙層牆。可隨時修訂。",
-g4:"假設",g4p:"它是否適合靜坐聆聽。提出而非承諾，並可檢驗。",
-q_h:"測試牆板能回答的三個問題",
-q1:"<b>H1.</b> 經調音的「持續音加色彩」風聲，是否比未調音的風聲更悅耳？",
-q2:"<b>H2.</b> 間距法則能否預測聽者對混合聲的粗糙度評分？",
-q3:"<b>H3.</b> 持續音上緩慢的日照拍音，聽來是平靜，還是走音？",
-m2:"粗糙度數值採用 Plomp–Levelt 模型。它只涵蓋聽覺的一部分，無法說明音樂意義。下一步是一塊門板大小的測試牆：一個風聲部、五根玻璃條，並進行計時聆聽。",
-w_h:"法則",
-a1:"<b>靜默是共享的天氣。</b>無風無雨的日子，按設計就是安靜的。",
-a2:"<b>不作任何健康或療效宣稱。</b>不感測、不側寫聽者。",
-a3:"<b>自然演奏。</b>建築只負責調音與聆聽。",
-a4:"<b>一個持續音，多種色彩。</b>",a5:"<b>先講間距，再講音階。</b>",a6:"<b>一個開口盡量兼顧兩件事：</b>聲音與光。",
-k5:"05 · 下一步",st_h:"陸續而來",
-e1:"可行性審核",e1s:"風、雨、玻璃、先例、門的物理",e2:"基礎審核",e2s:"間距法則、方位調律、光",
-e3:"概念說明書 v0.1",e3s:"法則、平面、和聲、聲部、動線",e4:"聲音草圖",e4s:"本頁的電腦模擬",
-e5:"門板大小的測試牆",e5s:"一個風聲部、五根玻璃條、第一批實地錄音",e6:"與建築師合作",e6s:"形體、結構、真實基地",
-p_done:"完成",p_done2:"完成",p_done3:"完成",p_wip:"進行中",p_next:"下一步",p_not:"尚未",
-ab_h:"關於",ab1:"賴海山（Toby Hysan）是鋼琴家、作曲家與製作人，創作橫跨爵士、電影配樂與生成聲音。OMT Site 是「山海 OceanMountain」的身體；山海是他以十二時辰與二十四節氣塑形的生成聲音生態。",
-more:"繼續閱讀",faces8:"其餘四個面",how1:"運作方式",how2:"運作方式",how3:"運作方式",how4:"運作方式",
-nx1:"此頁隨作品生長。下一步是一面門板大小的測試牆，第一批真實的風與雨的錄音，然後是建築師與一片基地。換季時，再回來聽。",x1:"測試牆",x1s:"一個風聲部，五根玻璃",x2:"第一批錄音",x2s:"真實的風與雨",x3:"建築師與基地",x3s:"形體、土地、真實的風",
-dcap:"風進，音出。門縫是吹口，房間是琴身。",tabsum:"以赫茲列出的音",
-foot:"測試版。本頁隨作品進展而更新。"
-};
+var ZH={"p1k": "i · 緣起", "p1t": "冬天會唱歌的門", "p1b": "紐約，冬天。風擠過西北向的門縫，化成一層層的音；從房間另一頭聽，幾乎就是音樂。門縫是吹口，房間是琴身。", "p2k": "ii · 牆", "p2t": "牆就是樂器", "p2b": "風是微弱的氣，只及管風琴所需的一息。所以聲部要低、要大：一道縫讓風發聲，縫後調好音的腔體選定音高，風暴時擋板將它收住。", "p3k": "iii · 持續音", "p3t": "一個持續的音", "p3b": "每個風面之後，都是同一個低音 A，在 55 與 110 Hz。它從不離開。其餘一切，都是它之上的顏色。", "p4k": "iv · 四季", "p4t": "八個面，四季的風", "p4b": "八個面，各對一卦。風隨一年轉向，春開震、夏開巽、秋開兌、冬開乾；同一個 A，便成為五度、根音、三度。", "p5k": "v · 雨", "p5t": "雨，聚成一滴", "p5b": "雨直接落在玻璃上，只是沙沙聲。先把雨收集起來，再從高處落下，每一滴都敲在天井中調好音的玻璃上；陣雨便成了緩慢的節奏，隨風暴漸急。", "p6k": "vi · 光", "p6t": "光，看得見也聽得見", "p6b": "南面開有密封的光縫。一片日光以時辰的速度橫過牆面，正午時它落在地上的深淺，標出節氣。日光的溫度也微微彎轉低音 A，所以太陽也聽得見。", "p7k": "vii · 靜", "p7t": "靜默也是天氣", "p7b": "無風無雨的日子，殿是安靜的。這是設計，不是缺陷。靜默是共享的天氣，建築與你一同等待。", "p8k": "viii · 聆聽", "p8t": "未建之前，先聽", "p8b": "這裡尚未建造任何東西。以下是模擬：起點那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得的、承襲的、選擇的、盼望的", "p9b": "此處每項主張只帶一個標籤：由聲學<b>量得</b>、自傳統<b>承襲</b>、因設計而<b>選擇</b>，或<b>盼望</b>而可檢驗。八卦為建築排序，不對自然作斷言。", "p10k": "x · 下一步", "p10t": "陸續而來", "p10b": "此頁隨作品生長。下一步是一面門板大小的測試牆，第一批真實的風與雨的錄音，然後是建築師與一片基地。換季時，再回來聽。", "dcap": "風進，音出。", "m2s": "運作方式", "m2p": "時速 15 至 40 公里的風只提供 10 至 74 帕的壓力。管與腔以長度與容積決定音高。開管超吹到八度，閉管到十二度，所以就連陣風也留在和弦之內。", "m3s": "持續音裡的太陽", "m3p": "兩個相同的腔體承載高音 A，一個向陽、一個背陰。溫度每升 1°C，音高約升 3 音分；白天它們漸漸錯開並緩慢拍動，黃昏時歸於平靜。", "m4a": "其餘四個面", "m4ap": "離（南）納光，坤（西南）迎人，坎（北）送水，艮（東北）守靜。上方配置為暫定。", "m4b": "以赫茲列出的音", "m4c": "為何不會走音", "m4cp": "聽起來粗糙的音距，在每個音區幾乎都是相同的赫茲數。密集音程放在高處或短促發聲；低音要拉開。守住這點，持續音之上任何音階都可行，包括微分音。", "m5s": "運作方式", "m5p": "一滴匯集的水珠約有十五顆雨滴的能量，並落在選定的一點。每個集水面的大小決定該聲部的速度；排水讓玻璃保持音準。", "m6s": "數字", "m6p": "一道 5 毫米的縫投出一片光刃，在五米外的牆上每小時移動約 1.3 米。在北緯 35 度，正午的光在夏至伸入室內 0.6 米，冬至則達 4.9 米。", "l2h": "那扇門 · 44 秒", "m9a": "測試牆能回答的三個問題", "m2": "粗糙度數值採用 Plomp–Levelt 模型，只涵蓋聽覺的一部分，無法說明音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan）是鋼琴家、作曲家與製作人，創作橫跨爵士、電影配樂與生成聲音。這是「山海 OceanMountain」的身體；山海是他以十二時辰與二十四節氣塑形的聲音生態。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的「持續音加色彩」風聲，是否比未調音的風聲更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對混合聲的粗糙度評分？", "q3": "<b>H3.</b> 持續音上緩慢的日照拍音，聽來是平靜，還是走音？", "w_h": "法則", "a2": "<b>不作任何健康或療效宣稱。</b>不感測、不側寫聽者。", "a3": "<b>自然演奏。</b>建築只負責調音與聆聽。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>先講間距，再講音階。</b>", "a6": "<b>一個開口盡量兼顧兩件事：</b>聲音與光。", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃", "x2": "第一批錄音", "x2s": "真實的風與雨", "x3": "建築師與基地", "x3s": "形體、土地、真實的風", "th1": "面", "th2": "季風", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度", "f2": "東南", "w2": "夏", "r2": "根音，開放", "f3": "西", "w3": "秋", "r3": "F 的三度", "f4": "西北", "w4": "冬", "r4": "根音，帶自然七度", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段 · 尚未建造 · 此處聲音皆為模擬", "eyebrow": "OMT Site · 殿境 · 山海的身體", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風穿過牆呼吸，雨輕觸玻璃，日光緩緩彎轉音高。<b>自然演奏；建築聆聽。</b>", "cue": "往下讀，殿會轉向你正讀到的地方。", "hint": "建議戴耳機。這是瀏覽器裡的草圖，並非錄音。", "play": "播放聲音草圖", "stop": "停止"};
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
 els.forEach(function(e){EN[e.dataset.i]=e.innerHTML;});
-EN.stop="Stop";
+EN.stop="Stop";EN.play="Play the sketch";
 function T(k){return (lang==="zh"?ZH[k]:EN[k])||EN[k]||"";}
 function applyLang(){
   document.documentElement.lang=lang==="zh"?"zh-Hant":"en";
@@ -492,8 +296,6 @@ function applyLang(){
   setPlayLabel();setReadout();drawLadder();
 }
 document.getElementById("lang").addEventListener("click",function(){lang=lang==="en"?"zh":"en";applyLang();});
-
-/* ---------- seasons ---------- */
 var S=[
  {face:2,notes:[329.63,440,587.33],n:"E4 A4 D5",en:["east","the fifth of D"],zh:["東","D 的五度"],kmh:20,rain:.55},
  {face:3,notes:[329.63,440,493.88],n:"E4 A4 B4",en:["southeast","the root, open"],zh:["東南","開放的根音"],kmh:18,rain:.9},
@@ -504,8 +306,8 @@ var cur=0,chips=document.querySelectorAll(".chip"),turn=document.getElementById(
 function setReadout(){
   var s=S[cur],r=document.getElementById("readout"),ph=phase();
   r.innerHTML=lang==="zh"
-   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h<br>A 成為<b>"+s.zh[1]+"</b> · "+s.n+" · 持續音 A 55 / 110 Hz<br>天氣：<b>"+PH.zh[ph]+"</b> · 風青、雨金"
-   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h<br>A becomes <b>"+s.en[1]+"</b> · "+s.n+" over A 55 / 110 Hz<br>Weather: <b>"+PH.en[ph]+"</b> · wind green, rain gold";
+   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h · A 成為<b>"+s.zh[1]+"</b><br>"+s.n+" · 持續音 A 55 / 110 Hz · 天氣：<b>"+PH.zh[ph]+"</b>"
+   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h · A becomes <b>"+s.en[1]+"</b><br>"+s.n+" over A 55 / 110 Hz · weather: <b>"+PH.en[ph]+"</b>";
 }
 function setSeason(i,byUser){
   cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
@@ -514,7 +316,6 @@ function setSeason(i,byUser){
 }
 chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dataset.s,true);});});
 setInterval(function(){if(turn.checked&&!document.hidden)setSeason((cur+1)%4,false);},40000);
-
 /* ---------- weather arc: long swells, about 80 s, wind leads and rain follows ---------- */
 function arc(sec,lag){var x=sec-(lag||0);
   var w=.5-.5*Math.cos(2*Math.PI*x/80)+.12*Math.sin(2*Math.PI*x/31+1.3);
@@ -621,7 +422,7 @@ trks.forEach(function(tr){
 /* ---------- harmony ladder ---------- */
 function drawLadder(){
   var el=document.getElementById("ladder");if(!el)return;
-  var sm=(el.clientWidth||760)<520,W=sm?400:760,H=sm?270:250,top=34,bot=sm?246:226,lo=Math.log(48),hi=Math.log(900),x0=sm?50:86,cw=(W-x0-10)/4;
+  var sm=(el.clientWidth||760)<600,W=sm?400:760,H=sm?270:250,top=34,bot=sm?246:226,lo=Math.log(48),hi=Math.log(900),x0=sm?50:86,cw=(W-x0-10)/4;
   function Y(f){return bot-(Math.log(f)-lo)/(hi-lo)*(bot-top);}
   var o='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="'+(lang==="zh"?"四季的音":"Notes of the four seasons")+'">';
   [55,110,220,440,880].forEach(function(f){var y=Y(f).toFixed(1),ped=f<=110;
@@ -654,17 +455,54 @@ function door(ms){
     dg.strokeStyle="rgba(219,168,74,"+(.75/k)+")";dg.lineWidth=2.2/k+.4;dg.shadowColor="rgba(219,168,74,.7)";dg.shadowBlur=k===1?10:0;dg.stroke();dg.shadowBlur=0;}
   if(!reduce)requestAnimationFrame(door);
 }
-/* ---------- live plan ---------- */
+
+/* ---------- the temple: pinned plan that turns toward the passage being read ---------- */
 var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
 var TRI=["坎","艮","震","巽","離","坤","兌","乾"],WINDF={2:1,3:1,6:1,7:1};
 var reduce=window.matchMedia&&window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 function pt(deg,r){var a=deg*Math.PI/180;return [C+r*Math.sin(a),C-r*Math.cos(a)];}
 function oct(r){g.beginPath();for(var k=0;k<8;k++){var p=pt(22.5+45*k,r);k?g.lineTo(p[0],p[1]):g.moveTo(p[0],p[1]);}g.closePath();}
-var streaks=[],ripples=[],windAng=S[0].face*45,nextDrip=0;
-var drops=[],rings=[],nextRing=0;for(var di=0;di<110;di++)drops.push({x:Math.random()*W,y:Math.random()*W,s:.6+Math.random()*.7});
+/* what each passage brings forward: w wind, r rain, l light, p pedal, f faces; aw all wind faces, pb pedal glow, rb rain boost, lb light glow */
+var FOC={
+ top:    {w:1,  r:1,  l:1,  p:.7, f:.8,aw:0,pb:0,rb:0,lb:0},
+ origin: {w:.7, r:.2, l:.25,p:.3, f:.45,aw:0,pb:0,rb:0,lb:0,hi:7},
+ wall:   {w:1,  r:.25,l:.25,p:.35,f:.7,aw:1,pb:0,rb:0,lb:0},
+ pedal:  {w:.3, r:.25,l:.3, p:1,  f:.35,aw:0,pb:1,rb:0,lb:0},
+ seasons:{w:.9, r:.25,l:.3, p:.6, f:1,  aw:.3,pb:0,rb:0,lb:0},
+ rain:   {w:.3, r:1,  l:.25,p:.3, f:.35,aw:0,pb:0,rb:1,lb:0},
+ light:  {w:.25,r:.2, l:1,  p:.35,f:.4, aw:0,pb:0,rb:0,lb:1},
+ silence:{w:.1, r:.08,l:.15,p:.25,f:.3, aw:0,pb:0,rb:0,lb:0},
+ listen: {w:1,  r:1,  l:1,  p:.8, f:.8, aw:0,pb:0,rb:0,lb:0},
+ method: {w:.6, r:.6, l:.6, p:.6, f:1,  aw:0,pb:0,rb:0,lb:0},
+ next:   {w:.7, r:.7, l:.7, p:.6, f:.7, aw:0,pb:0,rb:0,lb:0}
+};
+var ANN={
+ origin:{en:"a winter door, northwest",zh:"冬天的門，西北"},
+ wall:{en:"slot · chamber · note",zh:"縫 · 腔 · 音"},
+ pedal:{en:"A · 55 · 110 Hz",zh:"A · 55 · 110 Hz"},
+ rain:{en:"drop · glass · ring",zh:"滴 · 玻璃 · 鳴"},
+ light:{en:"a blade of sun, 1.3 m an hour",zh:"一道日光，每小時 1.3 米"},
+ silence:{en:"still",zh:"靜"}
+};
+var focus="top",E={},annA=0,annKey="";
+for(var key in FOC.top)E[key]=FOC.top[key];E.hi=-1;
+var streaks=[],ripples=[],windAng=S[0].face*45,nextDrip=0,drops=[],rings=[],nextRing=0;
+for(var di=0;di<110;di++)drops.push({x:Math.random()*W,y:Math.random()*W,s:.6+Math.random()*.7});
 for(var i=0;i<70;i++)streaks.push({u:Math.random()*2-1,v:Math.random()*2-1,l:.04+Math.random()*.07,s:.5+Math.random()*.8});
+function label(txt,x,y,align,a,col){
+  var fz=Math.max(25,Math.round(10.5*W/Math.max(cv.clientWidth,1)));
+  g.font="500 "+fz+"px 'IBM Plex Mono',monospace";g.textAlign=align;g.textBaseline="middle";
+  var w=g.measureText(txt).width,bx=align==="center"?x-w/2:(align==="right"?x-w:x);
+  if(align==="left"&&bx+w>W-12){bx=W-12-w;x=bx;}if(align==="center"){bx=Math.max(12,Math.min(W-12-w,bx));x=bx+w/2;}
+  g.fillStyle="rgba(12,16,21,"+(.82*a)+")";g.fillRect(bx-10,y-fz*.78,w+20,fz*1.56);
+  g.fillStyle=(col||"rgba(235,231,221,")+a+")";g.fillText(txt,x,y);
+}
 function frame(ms){
-  var t=ms/1000,target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
+  var t=ms/1000,F=FOC[focus]||FOC.top,sp2=reduce?1:.06;
+  for(var k2 in F){if(k2!=="hi")E[k2]+=(F[k2]-E[k2])*sp2;}
+  E.hi=F.hi===undefined?-1:F.hi;
+  var wantAnn=ANN[focus]?focus:"";if(wantAnn!==annKey){annA-= reduce?1:.08;if(annA<=0){annA=0;annKey=wantAnn;}}else annA=Math.min(1,annA+(reduce?1:.05));
+  var target=S[cur].face*45,diff=((target-windAng+540)%360)-180;windAng+=diff*.03;
   g.clearRect(0,0,W,W);g.fillStyle="#131920";g.fillRect(0,0,W,W);
   /* wind */
   var a=windAng*Math.PI/180,dx=-Math.sin(a),dy=Math.cos(a),px=Math.cos(a),py=Math.sin(a),sp=S[cur].kmh/20,wa=reduce?.6:windArc(),spd=sp*(.35+1.1*wa);
@@ -672,43 +510,50 @@ function frame(ms){
   streaks.forEach(function(s){
     if(!reduce){s.v+=.0045*s.s*spd;if(s.v>1.1){s.v=-1.1;s.u=Math.random()*2-1;}}
     var x=C+px*s.u*W*.55+dx*s.v*W*.55,y=C+py*s.u*W*.55+dy*s.v*W*.55;
-    g.strokeStyle="rgba(142,199,184,"+((.05+.42*wa)*(1-Math.abs(s.v))+.04)+")";
+    g.strokeStyle="rgba(142,199,184,"+(((.05+.42*wa)*(1-Math.abs(s.v))+.04)*E.w)+")";
     g.beginPath();g.moveTo(x,y);g.lineTo(x+dx*s.l*W,y+dy*s.l*W);g.stroke();
   });
-  /* rain falling across the plan, slanted by the wind, density from the rain arc */
-  var rav=rainBox.checked?(reduce?.4:rainArc()):0,nv=Math.floor(drops.length*rav);
-  g.strokeStyle="rgba(235,231,221,.22)";g.lineWidth=1.4;
+  /* rain across the plan */
+  var rav=rainBox.checked?(reduce?.4:Math.max(rainArc(),.75*E.rb)):0,nv=Math.floor(drops.length*rav);
+  g.strokeStyle="rgba(235,231,221,"+(.22*E.r)+")";g.lineWidth=1.4;
   for(var di=0;di<nv;di++){var dp=drops[di];if(!reduce){dp.y+=dp.s*9;dp.x+=dx*dp.s*3;if(dp.y>W+20){dp.y=-20;dp.x=Math.random()*W;}if(dp.x<-20)dp.x=W+10;if(dp.x>W+20)dp.x=-10;}
     g.beginPath();g.moveTo(dp.x,dp.y);g.lineTo(dp.x-dx*8,dp.y-16);g.stroke();}
   /* building */
-  oct(R);g.fillStyle="#0f141a";g.fill();g.strokeStyle="rgba(232,229,220,.35)";g.lineWidth=2;g.stroke();
+  oct(R);g.fillStyle="#0f141a";g.fill();g.strokeStyle="rgba(232,229,220,"+(.2+.15*E.f)+")";g.lineWidth=2;g.stroke();
   /* sun blade from the south face */
   var day=reduce?.35:(t%50)/50,sa=(-58+116*day)*Math.PI/180,sx=C+R*.12*Math.sin(sa)*-1,sy=C+R*.92;
-  var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.sin(day*Math.PI);
+  var ex=C-Math.sin(sa)*R*.95,ey=C+R*.92-Math.cos(sa)*R*1.25,fade=Math.max(Math.sin(day*Math.PI),.55*E.lb);
   g.save();oct(R-3);g.clip();
-  var grd=g.createLinearGradient(sx,sy,ex,ey);grd.addColorStop(0,"rgba(219,168,74,"+(.75*fade)+")");grd.addColorStop(1,"rgba(219,168,74,0)");
-  g.shadowColor="rgba(219,168,74,.9)";g.shadowBlur=28*fade;g.strokeStyle=grd;g.lineWidth=7;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.shadowBlur=0;g.restore();
+  var grd=g.createLinearGradient(sx,sy,ex,ey);grd.addColorStop(0,"rgba(219,168,74,"+(.75*fade*E.l)+")");grd.addColorStop(1,"rgba(219,168,74,0)");
+  g.shadowColor="rgba(219,168,74,.9)";g.shadowBlur=(28+30*E.lb)*fade*E.l;g.strokeStyle=grd;g.lineWidth=7+5*E.lb;g.beginPath();g.moveTo(sx,sy);g.lineTo(ex,ey);g.stroke();g.shadowBlur=0;g.restore();
   /* faces */
   for(var k=0;k<8;k++){
-    var p1=pt(45*k-22.5,R),p2=pt(45*k+22.5,R),active=k===S[cur].face;
-    if(WINDF[k]){if(active){g.shadowColor="rgba(142,199,184,.95)";g.shadowBlur=8+30*wa;}g.strokeStyle=active?"#8ec7b8":"rgba(142,199,184,.28)";g.lineWidth=active?10:5;g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.shadowBlur=0;}
-    if(k===4){g.strokeStyle="rgba(219,168,74,.8)";g.lineWidth=5;g.setLineDash([10,12]);g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.setLineDash([]);}
+    var p1=pt(45*k-22.5,R),p2=pt(45*k+22.5,R),active=k===S[cur].face,hi=k===E.hi;
+    if(WINDF[k]){
+      var on=active||hi,al=on?1:(.28+.5*E.aw);
+      if(on){g.shadowColor=hi?"rgba(219,168,74,.95)":"rgba(142,199,184,.95)";g.shadowBlur=(8+30*wa)*Math.max(E.w,.5);}
+      g.strokeStyle=hi?"rgba(219,168,74,"+al+")":"rgba(142,199,184,"+(al*Math.max(E.w,.35))+")";g.lineWidth=on?10:(5+3*E.aw);
+      g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.shadowBlur=0;}
+    if(k===4){g.strokeStyle="rgba(219,168,74,"+(.8*Math.max(E.l,.3))+")";g.lineWidth=5+3*E.lb;if(E.lb>.05){g.shadowColor="rgba(219,168,74,.9)";g.shadowBlur=24*E.lb;}g.setLineDash([10,12]);g.beginPath();g.moveTo(p1[0],p1[1]);g.lineTo(p2[0],p2[1]);g.stroke();g.setLineDash([]);g.shadowBlur=0;}
     var lp=pt(45*k,R+62);
-    g.font=(active?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
-    g.fillStyle=active?"#8ec7b8":(k===4?"#dba84a":"rgba(232,229,220,.55)");g.fillText(TRI[k],lp[0],lp[1]);
+    g.font=((active||hi)?"700 ":"500 ")+"46px 'Noto Serif TC',serif";g.textAlign="center";g.textBaseline="middle";
+    g.fillStyle=hi?"#dba84a":active?"rgba(142,199,184,"+Math.max(E.f,.6)+")":(k===4?"rgba(219,168,74,"+Math.max(E.l,.4)+")":"rgba(232,229,220,"+(.55*E.f)+")");g.fillText(TRI[k],lp[0],lp[1]);
   }
-  /* sound rings: the active face breathes into the room */
+  /* sound rings and the pedal ring */
   var fm=pt(45*S[cur].face,R*Math.cos(Math.PI/8));
   if(!reduce&&t>nextRing){nextRing=t+2.6-1.4*wa;rings.push(t);}
   rings=rings.filter(function(r0){return t-r0<4;});
   g.save();oct(R-3);g.clip();
-  rings.forEach(function(r0){var q=(t-r0)/4;g.strokeStyle="rgba(142,199,184,"+((1-q)*(.12+.4*wa))+")";g.lineWidth=2;g.beginPath();g.arc(fm[0],fm[1],q*R*1.5,0,7);g.stroke();});
-  g.strokeStyle="rgba(142,199,184,"+(.10+.08*Math.sin(t*1.7))+")";g.lineWidth=1.5;g.beginPath();g.arc(C,C,R*.42+4*Math.sin(t*.9),0,7);g.stroke();
-  g.restore();
-  /* skywell and rain */
-  var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+(.10+.05*Math.sin(t*.7))+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,.3)";g.lineWidth=2;g.stroke();
+  rings.forEach(function(r0){var q=(t-r0)/4;g.strokeStyle="rgba(142,199,184,"+((1-q)*(.12+.4*wa)*E.w)+")";g.lineWidth=2;g.beginPath();g.arc(fm[0],fm[1],q*R*1.5,0,7);g.stroke();});
+  var pr=R*.42+4*Math.sin(t*.9);
+  if(E.pb>.05){g.shadowColor="rgba(142,199,184,.9)";g.shadowBlur=26*E.pb;}
+  g.strokeStyle="rgba(142,199,184,"+((.10+.08*Math.sin(t*1.7))*E.p+.6*E.pb)+")";g.lineWidth=1.5+3*E.pb;g.beginPath();g.arc(C,C,pr,0,7);g.stroke();
+  if(E.pb>.05){g.lineWidth=1+1.5*E.pb;g.strokeStyle="rgba(142,199,184,"+(.35*E.pb)+")";g.beginPath();g.arc(C,C,pr*1.32+3*Math.sin(t*.9+1),0,7);g.stroke();}
+  g.shadowBlur=0;g.restore();
+  /* skywell and rain on glass */
+  var sw=g.createRadialGradient(C,C,0,C,C,R*.3);sw.addColorStop(0,"rgba(142,199,184,"+((.10+.05*Math.sin(t*.7))*(.4+.6*E.r)+.12*E.rb)+")");sw.addColorStop(1,"#131920");g.beginPath();g.arc(C,C,R*.3,0,7);g.fillStyle=sw;g.fill();g.strokeStyle="rgba(232,229,220,"+(.15+.15*E.r+.3*E.rb)+")";g.lineWidth=2;g.stroke();
   if(rainBox.checked&&!reduce&&t>nextDrip){
-    var ra=rainArc();nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*(.12+3.6*ra*ra));
+    var ra=Math.max(rainArc(),.7*E.rb);nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*(.12+3.6*ra*ra));
     var an=Math.random()*7,rr=Math.random()*R*.22,vel=(.35+Math.random()*.45)*(.55+.6*ra);
     ripples.push({x:C+Math.cos(an)*rr,y:C+Math.sin(an)*rr,t:t,v:Math.min(1,vel*1.3)});
     if(audio)audio.drip(vel);
@@ -716,20 +561,43 @@ function frame(ms){
   if(reduce&&!ripples.length){ripples.push({x:C-20,y:C+14,t:t-.5,v:.8},{x:C+34,y:C-22,t:t-.2,v:.6});}
   g.save();g.beginPath();g.arc(C,C,R*.3-2,0,7);g.clip();
   ripples=ripples.filter(function(r){return reduce||t-r.t<1.8;});
-  g.shadowColor="rgba(219,168,74,.8)";g.shadowBlur=10;ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v)+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
+  g.shadowColor="rgba(219,168,74,.8)";g.shadowBlur=10;ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v*Math.max(E.r,.3))+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
   g.shadowBlur=0;g.restore();
+  /* annotation for the passage being read */
+  if(annKey&&annA>0){
+    var tx=ANN[annKey][lang==="zh"?"zh":"en"];
+    if(annKey==="origin"){var q7=pt(315,R+8);label(tx,q7[0]+6,q7[1]+70,"left",annA,"rgba(219,168,74,");}
+    else if(annKey==="wall"){var fa=pt(45*S[cur].face,R*.62);label(tx,fa[0],fa[1],"center",annA);}
+    else if(annKey==="pedal"){label(tx,C,C+R*.58,"center",annA,"rgba(142,199,184,");}
+    else if(annKey==="rain"){label(tx,C,C-R*.42,"center",annA,"rgba(219,168,74,");}
+    else if(annKey==="light"){label(tx,C,C+R*.66,"center",annA,"rgba(219,168,74,");}
+    else if(annKey==="silence"){label(tx,C,C-R*.5,"center",annA);}
+  }
+  if(focus==="seasons"&&annA>=0){var fb=pt(45*S[cur].face,R*.6);label(S[cur].n,fb[0],fb[1],"center",Math.min(1,E.f),"rgba(219,168,74,");}
   if(!reduce)requestAnimationFrame(frame);
 }
+/* which passage is being read */
+var passes=[].slice.call(document.querySelectorAll(".pass"));
+function pick(){
+  var mid=window.innerHeight*(window.innerWidth<=900?.62:.5),best=null,bd=1e9;
+  passes.forEach(function(p){var r=p.getBoundingClientRect();var c=(r.top+r.bottom)/2,d=Math.abs(c-mid);if(r.bottom>0&&r.top<window.innerHeight&&d<bd){bd=d;best=p;}});
+  var first=passes[0].getBoundingClientRect().top>window.innerHeight*.75;
+  var f=first||!best?"top":best.dataset.focus;
+  if(f!==focus){focus=f;passes.forEach(function(p){p.classList.toggle("on",p===best&&!first);});}
+}
+window.addEventListener("scroll",pick,{passive:true});window.addEventListener("resize",pick);
 var lastPh=-1;setInterval(function(){
   document.getElementById("arcw").style.width=(windArc()*100).toFixed(1)+"%";
   document.getElementById("arcr").style.width=(rainArc()*100).toFixed(1)+"%";
   var ph=phase();if(ph!==lastPh){lastPh=ph;setReadout();}
 },1000);
-setReadout();
+setReadout();pick();
+if(reduce){passes.forEach(function(p){p.classList.add("on");});}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(reduce)frame(0);});
 requestAnimationFrame(frame);
 drawLadder();requestAnimationFrame(door);
-var lw=0;window.addEventListener('resize',function(){var w=document.getElementById('ladder').clientWidth<520;if(w!==lw){lw=w;drawLadder();}});
+var lw=0;window.addEventListener("resize",function(){var el=document.getElementById("ladder");if(!el)return;var w=el.clientWidth<600;if(w!==lw){lw=w;drawLadder();}});
+
 })();
 </script>
 </body>

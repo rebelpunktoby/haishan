@@ -1,7 +1,7 @@
-# 風雨光殿 · Ultra OMT
+# 風雨殿 · OMT Site 殿境
 
-**Wind-Rain-Light Temple — the physical OceanMountain.**
-**風、雨、光之殿 —— 山海的實體版。**
+**Temple of Wind and Rain — the physical OceanMountain.**
+**風雨之殿 —— 山海的實體版。**
 
 Concept stage. Nothing is built yet. Every sound here is a computer model.
 概念階段。尚未建造。所有聲音皆為電腦模擬。
