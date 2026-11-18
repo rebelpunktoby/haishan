@@ -217,6 +217,7 @@
   body.settled .dial label output{opacity:0}
   .ab-more{display:inline-block;margin:.4rem 0 1rem;font-family:var(--mono);font-size:.6rem;letter-spacing:.22em;text-transform:uppercase;color:var(--haze);border-bottom:1px solid var(--line-2);padding-bottom:.2rem;text-decoration:none}
   .ab-more:hover{color:var(--lumen);border-color:var(--lumen)}
+  body:not(.lang-zh) .ab-zh,body:not(.lang-zh) .ab-rule{display:none}
   body.lang-zh .ab-en{display:none}body.lang-zh .ab-rule{display:none}body.lang-zh .ab-zh{color:var(--mist);font-size:clamp(1rem,1.7vw,1.15rem)}
 
   .sysmsg{position:absolute;z-index:4;top:1.2rem;left:50%;transform:translateX(-50%);font-family:var(--mono);font-size:.64rem;letter-spacing:.18em;color:var(--haze);max-width:84vw;text-align:center}
@@ -282,8 +283,8 @@
       <div class="dial"><input class="vh" type="range" id="room" min="0" max="100" step="1" value="40" data-default="40"><div class="knob" data-for="room" aria-hidden="true"></div><label for="room"><span data-i18n="c_room">Room</span><output id="roomOut">40</output></label></div>
     </div>
     <div class="row2">
-      <button class="quiet sw" id="modeBtn" type="button" aria-pressed="false"><span class="a" data-i18n="m_phones">Headphones</span> · <span class="b" data-i18n="m_speakers">Speakers</span></button>
-      <button class="quiet sw" id="timeBtn" type="button" aria-pressed="false"><span class="a" data-i18n="t_std">Clock</span> · <span class="b" data-i18n="t_iching">時辰</span></button>
+      <button class="quiet sw" id="modeBtn" type="button" aria-pressed="true"><span class="a" data-i18n="m_phones">Headphones</span> · <span class="b" data-i18n="m_speakers">Speakers</span></button>
+      <button class="quiet sw" id="timeBtn" type="button" aria-pressed="true"><span class="a" data-i18n="t_std">Clock</span> · <span class="b" data-i18n="t_iching">時辰</span></button>
     </div>
     <div class="row2">
       <button class="pill" id="powerBtn" type="button" aria-label="Pause the sound"><span data-i18n="pause">Pause</span></button>
@@ -296,20 +297,20 @@
   <aside class="about" id="about" aria-hidden="true" aria-labelledby="aboutTitle">
     <div class="about-inner">
       <p class="ab-k" id="aboutTitle">山海 · OceanMountain</p>
-      <p class="ab-en">A generative sound work,<br>shaped by the hour and the season.<br>The solar terms form its ground;<br>the double&#8209;hours, its tide.<br>Nothing is composed in advance.<br>It proceeds one step at a time,<br>retaining only what has truly sounded.</p>
+      <p class="ab-en">A generative sound work,<br>shaped by the hour and the season.<br>Nothing is composed in advance —<br>only what has truly sounded remains.</p>
       <span class="ab-rule" aria-hidden="true"></span>
-      <p class="ab-zh">一件隨時辰與節氣而生的聲音作品。<br>以二十四節氣為地，<br>以十二時辰為潮。<br>無預先寫定之樂譜，<br>音樂一步一步而行，<br>唯留真正響起之聲。</p>
+      <p class="ab-zh">一件隨時辰與節氣而生的聲音作品。<br>以節氣為地，以時辰為潮。<br>無預先寫定之樂譜，<br>唯留真正響起之聲。</p>
       <div class="reading">
         <p class="ab-k" data-i18n="r_k">How it listens</p>
         <svg id="wheel" viewBox="-172 -172 344 344" role="img" aria-label="The twelve double-hours, the solar terms, the sun and the moon, and the tide of pitch through the day"></svg>
-        <div class="rings">
+        <details class="more">
+          <summary><span data-i18n="s_more">Read more</span></summary>
+          <div class="rings">
           <p data-i18n="g1">The outer ring is the year: twenty-four solar terms, the sun walking them. The term sets the ground — low in winter, high in summer.</p>
           <p data-i18n="g2">The inner ring is the day: twelve double-hours. Each one leans the pitch and the light — rising toward 午, sinking toward 子.</p>
           <p data-i18n="g3">Between them, the band of daylight from real sunrise to sunset; the room opens with it and closes after dark.</p>
           <p data-i18n="g4">At the centre, the tide: the day's shape of pitch, drawn from the piece's own hour table. The moon is shown, and does not enter the sound.</p>
         </div>
-        <details class="more">
-          <summary><span data-i18n="s_more">Detail</span></summary>
           <dl class="sky">
             <div><dt data-i18n="s_now">Now</dt><dd id="skyNow"></dd></div>
             <div><dt data-i18n="s_sun">Sun</dt><dd id="skySun"></dd></div>
@@ -332,6 +333,6 @@
   <span data-i18n="colophon">breath · tide · hour · season</span>
 </footer>
 
-<script type="module" src="app_v4.js?v=2"></script>
+<script type="module" src="app_v4.js?v=3"></script>
 </body>
 </html>

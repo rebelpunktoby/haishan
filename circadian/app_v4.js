@@ -41,7 +41,7 @@ const VIZ_POINTS = 128;
 const vizCurve = new Float32Array(VIZ_POINTS);
 let rmsGlow = 0, visualPower = 0, rafStarted = false;
 let clockTimer = null, suspendTimer = null;
-let solarMode = true, speakers = false, playing = false, lang = "en";   // 時辰 (true sun + 節氣) is the default; Clock is the other
+let solarMode = true, speakers = true, playing = false, lang = "en";   // 時辰 (true sun + 節氣) is the default; Clock is the other
 let place = placeFromClock();
 const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -140,7 +140,7 @@ const I18N = {
   g3:{en:"Between them, the band of daylight from real sunrise to sunset; the room opens with it and closes after dark.",zh:"兩圈之間是晝。自日出至日落，室隨之開，入夜漸閉。"},
   g4:{en:"At the centre, the tide: the day's shape of pitch, drawn from the piece's own hour table. The moon is shown, and does not enter the sound.",zh:"中心是潮——音高一日之形，出自本曲時辰之表。月在其位，不入聲。"},
   s_sun:{en:"Sun",zh:"日"}, s_moon:{en:"Moon",zh:"月"}, s_day:{en:"Day",zh:"晝"}, s_sector:{en:"sector",zh:"宮"},
-  s_more:{en:"Detail",zh:"細節"}, s_now:{en:"Now",zh:"此刻"}, s_sounding:{en:"Sounding",zh:"正在響"},
+  s_more:{en:"Read more",zh:"細讀"}, s_now:{en:"Now",zh:"此刻"}, s_sounding:{en:"Sounding",zh:"正在響"},
   s_loc:{en:"use my location",zh:"用我的位置"}, s_mine:{en:"your location",zh:"你的位置"}, s_locno:{en:"location unavailable",zh:"無法取得位置"}, r_more:{en:"Read the ten articles ↗",zh:"閱讀十條憲章 ↗"},
   r1t:{en:"Ground · 節氣",zh:"地 · 節氣"}, r1:{en:"The solar term sets the register — low in winter, high in summer.",zh:"節氣定音域——冬低，夏高。"},
   r2t:{en:"Tide · 時辰",zh:"潮 · 時辰"}, r2:{en:"Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.",zh:"每個時辰推動音高與明暗：向午而升，向子而沉。輪上的形狀，就是這道潮。"},
@@ -192,7 +192,7 @@ async function initialize() {
     airAnalyser = audioCtx.createAnalyser(); airAnalyser.fftSize = 512; airAnalyser.smoothingTimeConstant = 0.9; engine.air.connect(airAnalyser);
     wetData = new Float32Array(wetAnalyser.fftSize); wetCurve = new Float32Array(VIZ_POINTS); airBins = new Float32Array(airAnalyser.frequencyBinCount);
 
-    setMode(false);
+    setMode(speakers);
     pushClock();
     readDials(true);
     engine.start();
