@@ -129,6 +129,29 @@ ol.laws b{color:var(--ink);font-weight:500}
 .steps b{font-family:var(--f-display);font-weight:600;font-size:15px}
 .steps span{font-size:13px;color:var(--ink-2)}
 .about{margin-top:22px;font-size:14px;color:var(--ink-2);max-width:36em}
+
+/* view: minimal shows one line per passage; open shows everything */
+.view{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px;margin-left:auto}
+.view button{font:500 12px var(--f-mono);background:none;border:0;color:var(--ink-2);padding:4px 10px;border-radius:999px;cursor:pointer}
+.view button[aria-pressed="true"]{background:rgba(142,199,184,.16);color:var(--ink)}
+.lang{margin-left:8px}
+.short{display:none;font-size:15.5px;line-height:1.6;color:rgba(235,231,221,.82);max-width:30em}
+.opn{display:none;align-self:flex-start;font:500 11.5px var(--f-mono);letter-spacing:.06em;color:rgba(142,199,184,.9);background:none;border:0;padding:2px 0;cursor:pointer}
+.opn::before{content:"+ "}
+body.min .short,body.min .opn{display:block}
+body.min .pass>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks){display:none}
+body.min .pass{min-height:26vh;gap:6px;padding:18px 0}
+body.min .pass.open>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks){display:revert}
+.story{padding-bottom:22vh}
+body.min .pass.open>.short{display:none}
+body.min .pass.open>.opn::before{content:"− "}
+body.min .pass.open>.opn{display:block}
+.pass h2{font-size:clamp(20px,1.9vw,25px)}
+.pass .body{font-size:15.5px}
+.han{font-size:clamp(48px,7vw,84px)}
+.thesis{font-size:clamp(16px,1.5vw,18px)}
+@media (max-width:900px){body.min .pass{min-height:0;padding:16px 0}.view button{padding:4px 8px}}
+@media (max-width:480px){.brand span{display:none}.brand{white-space:nowrap}.lang{padding:5px 10px}.view{margin-left:auto}}
 footer{border-top:1px solid var(--line);padding:24px 0 44px;color:var(--ink-2);font-size:13.5px}
 footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
 html[lang="zh-Hant"] body{line-height:1.85}
@@ -152,9 +175,9 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 @media (prefers-reduced-motion:reduce){body::before,button.play,.steps li.now::before{animation:none!important}.pass{transition:none}}
 </style>
 </head>
-<body>
+<body class="min">
 <div class="band"><div class="wrap" data-i="band">Concept stage. Nothing is built. All sound on this page is modelled.</div></div>
-<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><button class="lang" id="lang" type="button" aria-label="Switch language">繁體中文</button></div></header>
+<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div><button class="lang" id="lang" type="button" aria-label="Switch language">中文</button></div></header>
 <main id="top">
 <section class="hero"><div class="wrap">
   <p class="eyebrow" data-i="eyebrow">OMT Site 殿境 · a study for a building</p>
@@ -188,12 +211,15 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
     <article class="pass" data-focus="origin" id="f-origin">
       <p class="kick" data-i="p1k">i · Origin</p>
       <h2 data-i="p1t">A door in winter</h2>
+      <p class="short" data-i="p1s">A northwest door that sounded in the wind.</p>
       <p class="body" data-i="p1b">New York. A northwest door, a narrow gap, a hard wind. The gap sounded. From across the room it was close to music.</p>
       <figure class="door"><canvas id="doorcv" width="600" height="360" aria-label="Wind lines enter a narrow door gap and leave as layered waves"></canvas><figcaption data-i="dcap">Wind in. Tone out.</figcaption></figure>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="wall" id="f-wall">
       <p class="kick" data-i="p2k">ii · Wall</p>
       <h2 data-i="p2t">The wall as instrument</h2>
+      <p class="short" data-i="p2s">A slot lets the wind speak. A chamber sets the pitch.</p>
       <p class="body" data-i="p2b">Wind carries little pressure, so the voices are large and low. A slot lets the air speak. A tuned chamber behind it fixes the pitch. Shutters close in a storm.</p>
       <details><summary data-i="m2s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
           <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
@@ -206,16 +232,20 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
           <text x="176" y="78" font-size="11" data-i="d1c">tuned chamber</text>
           <text x="176" y="94" font-size="10" class="q" data-i="d1d">length sets pitch</text>
         </svg></div><p data-i="m2p">At 15–40 km/h, wind supplies 10–74 Pa. Length and volume set pitch. An open pipe overblows to the octave, a stopped pipe to the twelfth, so gusts stay within the chord.</p></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="pedal" id="f-pedal">
       <p class="kick" data-i="p3k">iii · Pedal</p>
       <h2 data-i="p3t">One held note</h2>
+      <p class="short" data-i="p3s">One low A beneath everything.</p>
       <p class="body" data-i="p3b">Every wind face shares a low A, at 55 and 110 Hz. It does not change. All other pitches are colour above it.</p>
       <details><summary data-i="m3s">Sun in the pedal</summary><div class="in"><p data-i="m3p">The high A sounds from two matched chambers, one sunlit, one shaded. Warmth raises pitch about 3 cents per °C. By day the pair drifts and beats slowly. At dusk it settles.</p></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="seasons" id="f-seasons">
       <p class="kick" data-i="p4k">iv · Faces</p>
       <h2 data-i="p4t">Eight faces</h2>
+      <p class="short" data-i="p4s">Each season's wind opens a different face.</p>
       <p class="body" data-i="p4b">One face for each trigram. The prevailing wind turns with the year: 震 in spring, 巽 in summer, 兌 in autumn, 乾 in winter. Over the same A, each face sounds its own chord.</p>
       <div class="ladder" id="ladder"></div><details><summary data-i="m4a">The other four faces</summary><div class="in"><p data-i="m4ap">離, south: light. 坤, southwest: entrance. 坎, north: water out. 艮, northeast: silence. Voicings shown are provisional.</p></div></details><details><summary data-i="m4b">Notes in hertz</summary><div class="in" style="max-width:none"><div class="tablewrap"><table>
       <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
@@ -233,10 +263,12 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
           <div class="bar"><span>880 Hz</span><i style="width:67%"></i><em>130 Hz · <span data-i="b5">whole tone</span></em></div>
           <div class="bar"><span>1760 Hz</span><i style="width:100%"></i><em>193 Hz · <span data-i="b5b">whole tone</span></em></div>
         </div></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="rain" id="f-rain">
       <p class="kick" data-i="p5k">v · Rain</p>
       <h2 data-i="p5t">Rain, gathered</h2>
+      <p class="short" data-i="p5s">Rain gathered into drops, falling on tuned glass.</p>
       <p class="body" data-i="p5b">Rain alone on glass is noise. Collected, then released as single drops from a height, it strikes tuned glass in the open skywell. The rhythm follows the storm.</p>
       <details><summary data-i="m5s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
           <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
@@ -248,36 +280,47 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
           <text x="196" y="108" font-size="11" data-i="d2c">tuned glass: pitch</text>
           <text x="196" y="134" font-size="11" class="q" data-i="d2d">drain: pitch stays</text>
         </svg></div><p data-i="m5p">A gathered drop carries the energy of roughly fifteen raindrops. Catchment size sets each voice's tempo. Drainage keeps the glass at pitch.</p></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="light" id="f-light">
       <p class="kick" data-i="p6k">vi · Light</p>
       <h2 data-i="p6t">Light</h2>
+      <p class="short" data-i="p6s">A blade of sun marks the hour and bends the pitch.</p>
       <p class="body" data-i="p6b">Sealed slits on the south face. A blade of sun moves across the wall with the hour, and at noon its reach marks the season. Its heat bends the pedal, so the sun is also heard.</p>
       <details><summary data-i="m6s">Figures</summary><div class="in"><p data-i="m6p">A 5 mm slit casts a blade that travels about 1.3 m per hour across a wall 5 m away. At 35° N, noon light reaches 0.6 m into the room at midsummer, 4.9 m at midwinter.</p></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="silence" id="f-silence">
       <p class="kick" data-i="p7k">vii · Stillness</p>
       <h2 data-i="p7t">Stillness</h2>
+      <p class="short" data-i="p7s">Windless days are silent.</p>
       <p class="body" data-i="p7b">On windless, dry days the building is silent. Silence belongs to the weather.</p>
       
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="listen" id="f-listen">
       <p class="kick" data-i="p8k">viii · Listen</p>
       <h2 data-i="p8t">Listen</h2>
+      <p class="short" data-i="p8s">Four models to hear.</p>
       <p class="body" data-i="p8b">Four models. The door where it began, and one weather in three tunings.</p>
       <div class="tracks"><div><span data-i="l2h">The door · 0:44</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:44</span><audio preload="none" src="audio/door_simulation_slot_plus_room.mp3"></audio></div></div><div><span data-i="l3a">A · Harmonic series on A</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_A_harmonic.mp3"></audio></div></div><div><span data-i="l3b">B · Pentatonic</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_B_pentatonic.mp3"></audio></div></div><div><span data-i="l3c">C · Piano-tuned A13(♯11)</span><div class="trk"><button class="tp" type="button" aria-pressed="false" aria-label="Play"><svg viewBox="0 0 12 12"><path d="M2 1l9 5-9 5z"/></svg></button><div class="tbar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"><i></i></div><span class="tt">0:32</span><audio preload="none" src="audio/tuning_C_equal_A13s11.mp3"></audio></div></div></div>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="method" id="f-method">
       <p class="kick" data-i="p9k">ix · Method</p>
       <h2 data-i="p9t">Measured, inherited, chosen, hoped</h2>
+      <p class="short" data-i="p9s">Every claim carries one label.</p>
       <p class="body" data-i="p9b">Each claim carries one label: measured, inherited, chosen, or hoped. The trigrams give the building its order. They make no claim about nature.</p>
       <details><summary data-i="m9a">Open questions</summary><div class="in"><ol class="laws"><li data-i="q1"><b>H1.</b> Is tuned wind heard as more pleasant than untuned wind?</li><li data-i="q2"><b>H2.</b> Does the spacing rule predict how rough a mix sounds?</li><li data-i="q3"><b>H3.</b> Is the slow sun beat heard as calm, or as out of tune?</li></ol><p class="fine" data-i="m2">Roughness follows the Plomp–Levelt model. It measures one aspect of hearing, not musical meaning.</p></div></details><details><summary data-i="w_h">Principles</summary><div class="in"><ol class="laws"><li data-i="a1"><b>Silence is shared weather.</b></li><li data-i="a2"><b>No health or therapeutic claims.</b> Listeners are never sensed.</li><li data-i="a3"><b>Nature plays.</b> The building tunes.</li><li data-i="a4"><b>One pedal, many colours.</b></li><li data-i="a5"><b>Spacing before scale.</b></li><li data-i="a6"><b>Each opening serves sound and light</b> where it can.</li></ol></div></details>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="next" id="f-next">
       <p class="kick" data-i="p10k">x · Next</p>
       <h2 data-i="p10t">In progress</h2>
+      <p class="short" data-i="p10s">A test wall comes next.</p>
       <p class="body" data-i="p10b">Next: a door-sized test wall, first recordings of real wind and rain, then an architect and a site. This page changes with the work.</p>
       <ol class="steps"><li class="now"><b data-i="x1">Test wall</b><span data-i="x1s">one wind voice, five glass bars</span></li><li><b data-i="x2">Recordings</b><span data-i="x2s">wind and rain, measured</span></li><li><b data-i="x3">Architect, site</b><span data-i="x3s">form and ground</span></li></ol><p class="about" data-i="ab1">Haishan Lai (Toby Hysan) is a pianist, composer and producer working in jazz, film and generative sound. 風雨殿 is the architectural counterpart to OceanMountain 山海, his sound work on the twelve 時辰 and twenty-four 節氣.</p>
+      <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
   </div>
 </div>
@@ -286,16 +329,17 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 <script>
 (function(){
 "use strict";
-var ZH={"p1k": "i · 緣起", "p1t": "冬天的門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處一滴一滴落下，敲在天井中調好音的玻璃上。節奏隨風暴而變。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也彎轉持續音，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "運作方式", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "持續音中的日光", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分。白天兩者漂移，緩慢拍動；黃昏時歸於一致。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。所示配置為暫定。", "m4b": "音高（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "運作方式", "m5p": "一滴匯集的水約有十五顆雨滴的能量。集水面大小決定各聲部的速度。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan），鋼琴家、作曲家、製作人，創作涵蓋爵士、電影配樂與生成聲音。風雨殿是「山海 OceanMountain」的建築對應；山海以十二時辰與二十四節氣為本。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "季風", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度", "f2": "東南", "w2": "夏", "r2": "根音，開放", "f3": "西", "w3": "秋", "r3": "F 的三度", "f4": "西北", "w4": "冬", "r4": "根音，帶自然七度", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "平面隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止"};
+var ZH={"p1k": "i · 緣起", "p1t": "冬天的門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處一滴一滴落下，敲在天井中調好音的玻璃上。節奏隨風暴而變。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也彎轉持續音，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "運作方式", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "持續音中的日光", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分。白天兩者漂移，緩慢拍動；黃昏時歸於一致。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。所示配置為暫定。", "m4b": "音高（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "運作方式", "m5p": "一滴匯集的水約有十五顆雨滴的能量。集水面大小決定各聲部的速度。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan），鋼琴家、作曲家、製作人，創作涵蓋爵士、電影配樂與生成聲音。風雨殿是「山海 OceanMountain」的建築對應；山海以十二時辰與二十四節氣為本。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "季風", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度", "f2": "東南", "w2": "夏", "r2": "根音，開放", "f3": "西", "w3": "秋", "r3": "F 的三度", "f4": "西北", "w4": "冬", "r4": "根音，帶自然七度", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "平面隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止", "p1s": "一扇在風中發聲的西北門。", "p2s": "縫讓風發聲，腔定下音高。", "p3s": "一個低音 A，貫穿一切。", "p4s": "每季的風，打開不同的一面。", "p5s": "雨聚成滴，落在調音的玻璃上。", "p6s": "一道日光，標出時辰，彎轉音高。", "p7s": "無風之日，無聲。", "p8s": "四段可聽的模擬。", "p9s": "每項陳述，只帶一個標籤。", "p10s": "下一步：測試牆。", "vmin": "簡", "vopen": "全", "opn": "展開", "cls": "收起"};
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
 els.forEach(function(e){EN[e.dataset.i]=e.innerHTML;});
-EN.stop="Stop";EN.play="Play the sketch";
+EN.stop="Stop";EN.cls="Close";EN.play="Play the sketch";
 function T(k){return (lang==="zh"?ZH[k]:EN[k])||EN[k]||"";}
 function applyLang(){
   document.documentElement.lang=lang==="zh"?"zh-Hant":"en";
   els.forEach(function(e){var k=e.dataset.i;if(k==="play")return;e.innerHTML=T(k);});
-  document.getElementById("lang").textContent=lang==="zh"?"English":"繁體中文";
+  document.getElementById("lang").textContent=lang==="zh"?"EN":"中文";
   setPlayLabel();setReadout();drawLadder();
+  [].slice.call(document.querySelectorAll(".pass.open .opn")).forEach(function(b){b.textContent=T("cls");});
 }
 document.getElementById("lang").addEventListener("click",function(){lang=lang==="en"?"zh":"en";applyLang();});
 var S=[
@@ -598,6 +642,18 @@ if(reduce){passes.forEach(function(p){p.classList.add("on");});}
 if(document.fonts&&document.fonts.ready)document.fonts.ready.then(function(){if(reduce)frame(0);});
 requestAnimationFrame(frame);
 drawLadder();requestAnimationFrame(door);
+/* ---------- view ---------- */
+var vb=[].slice.call(document.querySelectorAll(".view button"));
+function setView(v){document.body.classList.toggle("min",v==="min");vb.forEach(function(b){b.setAttribute("aria-pressed",b.dataset.v===v?"true":"false");});
+  if(v!=="min")passes.forEach(function(p){p.classList.remove("open");});
+  try{localStorage.setItem("omtsite-view",v);}catch(e){}
+  setTimeout(function(){pick();drawLadder();},60);}
+vb.forEach(function(b){b.addEventListener("click",function(){setView(b.dataset.v);});});
+[].slice.call(document.querySelectorAll(".opn")).forEach(function(b){b.addEventListener("click",function(){
+  var p=b.closest(".pass"),o=!p.classList.contains("open");p.classList.toggle("open",o);b.textContent=T(o?"cls":"opn");b.setAttribute("aria-expanded",o?"true":"false");
+  if(o){drawLadder();}setTimeout(pick,60);});});
+var sv="min";try{sv=localStorage.getItem("omtsite-view")||"min";}catch(e){}
+setView(sv);
 var lw=0;window.addEventListener("resize",function(){var el=document.getElementById("ladder");if(!el)return;var w=el.clientWidth<600;if(w!==lw){lw=w;drawLadder();}});
 
 })();
