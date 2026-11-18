@@ -131,10 +131,10 @@ ol.laws b{color:var(--ink);font-weight:500}
 .about{margin-top:22px;font-size:14px;color:var(--ink-2);max-width:36em}
 
 /* view: minimal shows one line per passage; open shows everything */
-.view{display:flex;border:1px solid var(--line);border-radius:999px;padding:2px;margin-left:auto}
+.view{position:absolute;top:18px;right:18px;z-index:2;display:flex;border:1px solid rgba(232,229,220,.16);border-radius:999px;padding:2px;background:rgba(12,16,21,.72);backdrop-filter:blur(6px)}
 .view button{font:500 12px var(--f-mono);background:none;border:0;color:var(--ink-2);padding:4px 10px;border-radius:999px;cursor:pointer}
 .view button[aria-pressed="true"]{background:rgba(142,199,184,.16);color:var(--ink)}
-.lang{margin-left:8px}
+
 .short{display:none;font-size:15.5px;line-height:1.6;color:rgba(235,231,221,.82);max-width:30em}
 .opn{display:none;align-self:flex-start;font:500 11.5px var(--f-mono);letter-spacing:.06em;color:rgba(142,199,184,.9);background:none;border:0;padding:2px 0;cursor:pointer}
 .opn::before{content:"+ "}
@@ -151,7 +151,8 @@ body.min .pass.open>.opn{display:block}
 .han{font-size:clamp(48px,7vw,84px)}
 .thesis{font-size:clamp(16px,1.5vw,18px)}
 @media (max-width:900px){body.min .pass{min-height:0;padding:16px 0}.view button{padding:4px 8px}}
-@media (max-width:480px){.brand span{display:none}.brand{white-space:nowrap}.lang{padding:5px 10px}.view{margin-left:auto}}
+@media (max-width:900px){.view{top:10px;right:10px}.view button{font-size:10.5px;padding:3px 7px}}
+@media (max-width:480px){.brand{white-space:nowrap}}
 footer{border-top:1px solid var(--line);padding:24px 0 44px;color:var(--ink-2);font-size:13.5px}
 footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
 html[lang="zh-Hant"] body{line-height:1.85}
@@ -177,7 +178,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 </head>
 <body class="min">
 <div class="band"><div class="wrap" data-i="band">Concept stage. Nothing is built. All sound on this page is modelled.</div></div>
-<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div><button class="lang" id="lang" type="button" aria-label="Switch language">中文</button></div></header>
+<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><button class="lang" id="lang" type="button" aria-label="Switch language">中文</button></div></header>
 <main id="top">
 <section class="hero"><div class="wrap">
   <p class="eyebrow" data-i="eyebrow">OMT Site 殿境 · a study for a building</p>
@@ -188,7 +189,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 </div></section>
 <div class="wrap stage">
   <div class="temple">
-    <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas></div>
+    <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div></div>
     <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
     <p class="readout" id="readout" aria-live="polite"></p>
     <div class="ctrl">
