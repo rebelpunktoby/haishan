@@ -153,6 +153,12 @@ body.min .pass.open>.opn{display:block}
 @media (max-width:900px){body.min .pass{min-height:0;padding:16px 0}.view button{padding:4px 8px}}
 @media (max-width:900px){.view{top:10px;right:10px}.view button{font-size:10.5px;padding:3px 7px}}
 @media (max-width:480px){.brand{white-space:nowrap}}
+.scoreS{display:block;width:100%;height:64px;margin-top:8px;border-radius:8px;background:rgba(19,25,32,.6);border:1px solid var(--line)}
+.scorebox{margin:8px 0 2px;background:var(--stone-2);border:1px solid var(--line);border-radius:12px;padding:8px 8px 6px;box-shadow:0 30px 90px -60px rgba(142,199,184,.4)}
+.scoreB{display:block;width:100%;height:240px}
+.scap{font-size:12.5px;color:var(--ink-2);padding:6px 6px 0}
+.swatch{display:inline-block;width:9px;height:9px;border-radius:50%;margin:0 5px 0 10px;vertical-align:baseline}
+@media (max-width:900px){.scoreS{display:none}.scoreB{height:200px}}
 footer{border-top:1px solid var(--line);padding:24px 0 44px;color:var(--ink-2);font-size:13.5px}
 footer a{color:var(--ink-2);text-decoration:none;border-bottom:1px solid var(--line)}
 html[lang="zh-Hant"] body{line-height:1.85}
@@ -190,6 +196,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 <div class="wrap stage">
   <div class="temple">
     <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div></div>
+    <canvas class="scoreS" id="scoreS" aria-hidden="true"></canvas>
     <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
     <p class="readout" id="readout" aria-live="polite"></p>
     <div class="ctrl">
@@ -248,7 +255,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
       <h2 data-i="p4t">Eight faces</h2>
       <p class="short" data-i="p4s">Each season's wind opens a different face.</p>
       <p class="body" data-i="p4b">One face for each trigram. The prevailing wind turns with the year: 震 in spring, 巽 in summer, 兌 in autumn, 乾 in winter. Over the same A, each face sounds its own chord: summer cool and open, winter warm.</p>
-      <div class="ladder" id="ladder"></div><details><summary data-i="m4a">The other four faces</summary><div class="in"><p data-i="m4ap">離, south: light. 坤, southwest: entrance. 坎, north: water out. 艮, northeast: silence. Spring and autumn use piano tuning and lean away from A, played softer. Summer and winter use the harmonic series and rest on it. Voicings are provisional.</p></div></details><details><summary data-i="m4b">Notes in hertz</summary><div class="in" style="max-width:none"><div class="tablewrap"><table>
+      <div class="scorebox"><canvas class="scoreB" id="scoreB" role="img" aria-label="Live score: sounding strings as lines by pitch, rain on glass as marks, time drifting left"></canvas><p class="scap"><span data-i="scap">Live. Each line a sounding string, each mark a drop on glass. Sound drifts left as it fades.</span><br><span class="swatch" style="background:#8ec7b8;margin-left:0"></span><span data-i="sw0">pedal</span><span class="swatch" style="background:#96ceaa"></span><span data-i="sw1">spring</span><span class="swatch" style="background:#96bee8"></span><span data-i="sw2">summer</span><span class="swatch" style="background:#e2a860"></span><span data-i="sw3">autumn</span><span class="swatch" style="background:#ecb696"></span><span data-i="sw4">winter</span><span class="swatch" style="background:#dba84a"></span><span data-i="sw5">rain</span></p></div><details><summary data-i="m4a">The other four faces</summary><div class="in"><p data-i="m4ap">離, south: light. 坤, southwest: entrance. 坎, north: water out. 艮, northeast: silence. Spring and autumn use piano tuning and lean away from A, played softer. Summer and winter use the harmonic series and rest on it. Voicings are provisional.</p></div></details><details><summary data-i="m4b">Four seasons in hertz</summary><div class="in" style="max-width:none"><div class="ladder" id="ladder"></div><div class="tablewrap"><table>
       <thead><tr><th data-i="th1">Face</th><th data-i="th2">Season wind</th><th data-i="th3">Colour notes</th><th data-i="th4">A becomes</th></tr></thead>
       <tbody>
         <tr><td><span class="h">震</span><span data-i="f1">East</span></td><td data-i="w1">Spring</td><td class="n">E4 A4 D5 · 330 440 587 Hz</td><td data-i="r1">The fifth of D · piano tuning</td></tr>
@@ -330,7 +337,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
 <script>
 (function(){
 "use strict";
-var ZH={"p1k": "i · 緣起", "p1t": "冬天的門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦：夏清涼開闊，冬溫暖。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處落下，每一滴敲在天井中調好音的玻璃上。細雨只觸及八度與五度；雨勢漸大，便觸及三度、六度、七度、九度，再到十一與十三度。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也彎轉持續音，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "運作方式", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "日光與共鳴", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分；白天兩者緩慢拍動，黃昏歸於一致。聆聽環廊沿牆設有依 A 泛音列調音的弦，隨周圍一切聲響微微共鳴。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。春秋採鋼琴調律，偏離 A，奏得較輕；夏冬採泛音列，安於 A。配置為暫定。", "m4b": "音高（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "運作方式", "m5p": "每片玻璃懸在不同高度。同時被搖落的雨滴，依落差先後抵達，低音先至，音程在一瞬間展開。一滴匯集的水約有十五顆雨滴的能量。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan），鋼琴家、作曲家、製作人，創作涵蓋爵士、電影配樂與生成聲音。風雨殿是「山海 OceanMountain」的建築對應；山海以十二時辰與二十四節氣為本。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "季風", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度 · 鋼琴調律", "f2": "東南", "w2": "夏", "r2": "根音，清涼", "f3": "西", "w3": "秋", "r3": "F 的三度 · 鋼琴調律", "f4": "西北", "w4": "冬", "r4": "根音，溫暖", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "平面隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止", "p1s": "一扇在風中發聲的西北門。", "p2s": "縫讓風發聲，腔定下音高。", "p3s": "一個低音 A，貫穿一切。", "p4s": "每季的風，打開不同的一面。", "p5s": "雨聚成滴，落在調音的玻璃上。", "p6s": "一道日光，標出時辰，彎轉音高。", "p7s": "無風之日，無聲。", "p8s": "四段可聽的模擬。", "p9s": "每項陳述，只帶一個標籤。", "p10s": "下一步：測試牆。", "vmin": "簡", "vopen": "全", "opn": "展開", "cls": "收起"};
+var ZH={"p1k": "i · 緣起", "p1t": "冬天的門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦：夏清涼開闊，冬溫暖。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處落下，每一滴敲在天井中調好音的玻璃上。細雨只觸及八度與五度；雨勢漸大，便觸及三度、六度、七度、九度，再到十一與十三度。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也彎轉持續音，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "運作方式", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "日光與共鳴", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分；白天兩者緩慢拍動，黃昏歸於一致。聆聽環廊沿牆設有依 A 泛音列調音的弦，隨周圍一切聲響微微共鳴。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。春秋採鋼琴調律，偏離 A，奏得較輕；夏冬採泛音列，安於 A。配置為暫定。", "m4b": "四季的音（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "運作方式", "m5p": "每片玻璃懸在不同高度。同時被搖落的雨滴，依落差先後抵達，低音先至，音程在一瞬間展開。一滴匯集的水約有十五顆雨滴的能量。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan），鋼琴家、作曲家、製作人，創作涵蓋爵士、電影配樂與生成聲音。風雨殿是「山海 OceanMountain」的建築對應；山海以十二時辰與二十四節氣為本。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "季風", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度 · 鋼琴調律", "f2": "東南", "w2": "夏", "r2": "根音，清涼", "f3": "西", "w3": "秋", "r3": "F 的三度 · 鋼琴調律", "f4": "西北", "w4": "冬", "r4": "根音，溫暖", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "平面隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止", "p1s": "一扇在風中發聲的西北門。", "p2s": "縫讓風發聲，腔定下音高。", "p3s": "一個低音 A，貫穿一切。", "p4s": "每季的風，打開不同的一面。", "p5s": "雨聚成滴，落在調音的玻璃上。", "p6s": "一道日光，標出時辰，彎轉音高。", "p7s": "無風之日，無聲。", "p8s": "四段可聽的模擬。", "p9s": "每項陳述，只帶一個標籤。", "p10s": "下一步：測試牆。", "vmin": "簡", "vopen": "全", "opn": "展開", "cls": "收起", "scap": "即時。每條線是一根正在發聲的弦，每一點是落在玻璃上的雨。聲音漸弱，向左漂去。", "sw0": "持續音", "sw1": "春", "sw2": "夏", "sw3": "秋", "sw4": "冬", "sw5": "雨"};
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
 els.forEach(function(e){EN[e.dataset.i]=e.innerHTML;});
 EN.stop="Stop";EN.cls="Close";EN.play="Play the sketch";
@@ -372,11 +379,39 @@ function windArc(){return arc(now(),0);} function rainArc(){return arc(now(),16)
 var PH={en:["still","gathering","full","easing"],zh:["靜","聚","盛","散"]};
 function phase(){var a=windArc(),b=arc(now()+2,0);return a<.18?0:a>.78?2:(b>a?1:3);}
 
-/* ---------- audio ---------- */
-var audio=null;
-/* glass by partial of A55; tier = how hard the rain must fall to reach it; fall = metres of fall (lower notes hang higher, so they land first) */
+/* ---------- shared voice model: what sounds and how strongly; drives the sound and the score alike ---------- */
+var VM={ped:[{f:55,v:.6,L:.8},{f:110,v:.6,L:.8}],col:[],hist:[],strikes:[],gid:0};
+S.forEach(function(s,k){var a=s.notes.map(function(f){return {f:f,v:.45,L:k===cur?.3:0,k:k};});if(s.shimmer)a.push({f:s.shimmer,v:.45,L:0,k:k,sh:1});VM.col.push(a);});
+function vmStep(dt){
+  var wa=windArc(),ra=rainArc(),rf=Math.min(1,ra*S[cur].rain*1.4),now=performance.now()/1000;
+  VM.ped.forEach(function(p){p.v=Math.max(.3,Math.min(1,p.v+(Math.random()-.5)*.08));var tg=(.82+.18*p.v)*(.85+.15*wa);p.L+=(tg-p.L)*(1-Math.exp(-dt/3));});
+  VM.col.forEach(function(arr,k){arr.forEach(function(n){
+    n.v=Math.max(.2,Math.min(1,n.v+(Math.random()-.5)*.1));
+    var tg=(k===cur?S[k].gain:0)*n.v*n.v*(.12+.95*wa)*(1-.25*rf)*(n.sh?.35:1);
+    var tau=tg>n.L?3.2:7.5;n.L+=(tg-n.L)*(1-Math.exp(-dt/tau));});});
+  var row={t:now,p:VM.ped.map(function(p){return p.L;}),c:VM.col.map(function(a){return a.map(function(n){return n.L;});})};
+  VM.hist.push(row);while(VM.hist.length&&now-VM.hist[0].t>40)VM.hist.shift();
+  while(VM.strikes.length&&now-VM.strikes[0].t>40)VM.strikes.shift();
+}
+setInterval(function(){if(!document.hidden)vmStep(.1);},100);
+/* glass by partial of A55; tier = how hard the rain must fall to reach it; lower notes hang higher, so they land first */
 var GL=[{p:6,f:330,tier:0},{p:8,f:440,tier:0},{p:9,f:495,tier:1},{p:10,f:550,tier:1},{p:11,f:605,tier:2},{p:12,f:660,tier:0},{p:13,f:715,tier:2},{p:14,f:770,tier:1},{p:16,f:880,tier:0}];
 GL.forEach(function(g,i){g.fall=0.6+i*0.38;g.t=Math.sqrt(2*g.fall/9.81);});
+/* one gathered drop: force chooses how high it reaches and how many glasses it touches; fall height spaces them in time */
+function strikes(vel){
+  var force=Math.min(1,rainArc()*S[cur].rain*1.25+vel*.35);
+  var reach=force>.7?2:force>.38?1:0,pool=GL.filter(function(g){return g.tier<=reach;});
+  var k=Math.min(pool.length,1+(force>.3?1:0)+(force>.55?1:0)+(force>.78?1:0));
+  var step=1+Math.floor(Math.random()*2);while(step>1&&(k-1)*step>pool.length-1)step--;
+  var start=Math.floor(Math.random()*Math.max(1,pool.length-(k-1)*step));
+  var t0g=pool[start].t,gain=.12*vel*(.7+.5*force),pan=Math.random()*1.2-.6,out=[],gid=++VM.gid,now=performance.now()/1000;
+  for(var j=0;j<k;j++){var g=pool[start+j*step];
+    var s={f:g.f,delay:(g.t-t0g)*1.6,gain:gain*Math.pow(.82,j),pan:pan+j*.12,long:Math.random()<.3,gid:gid};
+    s.t=now+s.delay;out.push(s);VM.strikes.push(s);}
+  return out;
+}
+/* ---------- audio ---------- */
+var audio=null;
 function Engine(){
   var AC=window.AudioContext||window.webkitAudioContext,ctx=new AC(),t0=ctx.currentTime;
   var master=ctx.createGain();master.gain.value=0;
@@ -388,45 +423,35 @@ function Engine(){
   for(var i=0;i<len;i++)d[i]=Math.random()*2-1;
   var noise=ctx.createBufferSource();noise.buffer=buf;noise.loop=true;noise.start();
   /* resonant body: sympathetic strings on the A series, fed by every voice, heard faintly as a pad */
-  var bodyIn=ctx.createGain();bodyIn.gain.value=1;var bodyOut=ctx.createGain();bodyOut.gain.value=.55;
+  var bodyIn=ctx.createGain();var bodyOut=ctx.createGain();bodyOut.gain.value=.55;
   var bodyLP=ctx.createBiquadFilter();bodyLP.type="lowpass";bodyLP.frequency.value=2400;bodyOut.connect(bodyLP);bodyLP.connect(master);
-  [[110,4],[220,3],[330,2.4],[440,2],[660,1.5],[880,1.2]].forEach(function(m){
+  [[110,4.5],[220,3.4],[330,2.8],[440,2.4],[660,1.8],[880,1.4]].forEach(function(m){
     var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=m[0];bp.Q.value=Math.PI*m[0]*m[1]/6.91;
     var g=ctx.createGain();g.gain.value=Math.pow(110/m[0],.4);bodyIn.connect(bp);bp.connect(g);g.connect(bodyOut);
   });
-  var gusts=[];
-  function voice(f,level,breath,dest,role){
-    var g=ctx.createGain();g.gain.value=0;g.connect(dest);g.connect(bodyIn);
+  var voices=[];
+  function voice(f,level,breath,src){
+    var g=ctx.createGain();g.gain.value=0;g.connect(master);g.connect(bodyIn);
     var o=ctx.createOscillator();o.type="sine";o.frequency.value=f;o.connect(g);o.start();
     var o2=ctx.createOscillator();o2.type="sine";o2.frequency.value=f*2;var o2g=ctx.createGain();o2g.gain.value=.12;o2.connect(o2g);o2g.connect(g);o2.start();
     var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=34;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
-    gusts.push({g:g,level:level,v:.45,role:role});
+    voices.push({g:g,level:level,src:src});
   }
-  var pedal=ctx.createGain();pedal.gain.value=1;pedal.connect(master);
-  voice(55,.34,6,pedal,"pedal");voice(110,.2,4,pedal,"pedal");
-  var sunG=ctx.createGain();sunG.gain.value=sunBox.checked?1:0;sunG.connect(pedal);
-  voice(110*Math.pow(2,29/1200),.15,3,sunG,"pedal");
-  var groups=S.map(function(s,k){
-    var gg=ctx.createGain();gg.gain.value=k===cur?s.gain:0;gg.connect(master);
-    s.notes.forEach(function(f,j){voice(f,.062-.01*j,2.4,gg,"colour");});
-    if(s.shimmer)voice(s.shimmer,.022,1.2,gg,"colour");
-    return gg;
-  });
-  /* dynamic law: the pedal barely moves; colour swells with the wind, slowly, like a pad */
+  voice(55,.34,6,VM.ped[0]);voice(110,.2,4,VM.ped[1]);
+  var sunSrc={L:sunBox.checked?.75:0};voice(110*Math.pow(2,29/1200),.15,3,sunSrc);
+  VM.col.forEach(function(arr){arr.forEach(function(n,j){voice(n.f,n.sh?.06:(.062-.01*j),2.4,n);});});
+  /* the voice model sets every level; release is slow, so wind lets go gradually */
   var timer=setInterval(function(){
-    var now=ctx.currentTime,wa=windArc(),ra=rainArc();
-    gusts.forEach(function(q){q.v+=(Math.random()-.5)*.3;q.v=Math.max(.2,Math.min(1,q.v));
-      var lvl=q.role==="pedal"?q.level*(.82+.18*q.v)*(.85+.15*wa):q.level*q.v*q.v*(.12+.95*wa)*(1-.25*Math.min(1,ra*S[cur].rain*1.4));
-      q.g.gain.setTargetAtTime(lvl,now,q.role==="pedal"?3:3.2);});
-    if(rainBox.checked)bed.gain.setTargetAtTime((.004+.02*ra)*(.6+.6*S[cur].rain),now,2.5);
-  },700);
-  this.season=function(i){var now=ctx.currentTime;groups.forEach(function(g,k){g.gain.setTargetAtTime(k===i?S[k].gain:0,now,k===i?3:1.6);});};
-  this.sun=function(on){sunG.gain.setTargetAtTime(on?1:0,ctx.currentTime,.8);};
-  /* rain: glass taps with delay trails; force decides which partials are reached, fall height decides when */
+    var now=ctx.currentTime;voices.forEach(function(q){q.g.gain.setTargetAtTime(q.level*q.src.L,now,.25);});
+    if(rainBox.checked)bed.gain.setTargetAtTime((.004+.02*rainArc())*(.6+.6*S[cur].rain),now,2.5);
+  },200);
+  this.season=function(){};
+  this.sun=function(on){sunSrc.L=on?.75:0;};
+  /* rain: glass taps with delay trails */
   var rainBus=ctx.createBiquadFilter();rainBus.type="lowpass";rainBus.frequency.value=3200;rainBus.Q.value=.5;rainBus.connect(master);rainBus.connect(bodyIn);
   [[.23,-.55],[.37,.55]].forEach(function(dd){
     var dl=ctx.createDelay(1),fb=ctx.createGain(),damp=ctx.createBiquadFilter(),wet=ctx.createGain(),pn=ctx.createStereoPanner?ctx.createStereoPanner():null;
-    dl.delayTime.value=dd[0];fb.gain.value=.42;damp.type="lowpass";damp.frequency.value=1700;wet.gain.value=.5;
+    dl.delayTime.value=dd[0];fb.gain.value=.44;damp.type="lowpass";damp.frequency.value=1700;wet.gain.value=.5;
     rainBus.connect(dl);dl.connect(damp);damp.connect(fb);fb.connect(dl);damp.connect(wet);
     if(pn){pn.pan.value=dd[1];wet.connect(pn);pn.connect(master);}else wet.connect(master);
   });
@@ -434,11 +459,11 @@ function Engine(){
   var bedLP=ctx.createBiquadFilter();bedLP.type="lowpass";bedLP.frequency.value=1100;
   var bed=ctx.createGain();bed.gain.value=0;noise.connect(bedHP);bedHP.connect(bedLP);bedLP.connect(bed);bed.connect(master);
   this.rain=function(on,amt){bed.gain.setTargetAtTime(on?(.004+.02*rainArc())*(.6+.6*amt):0,ctx.currentTime,1.5);};
-  function tap(f,when,gain,pan,long){
-    var out=ctx.createGain();out.gain.value=gain;var pn=ctx.createStereoPanner?ctx.createStereoPanner():null;
-    if(pn){pn.pan.value=pan;out.connect(pn);pn.connect(rainBus);}else out.connect(rainBus);
-    [[1,.6,long?.22:.07],[2,.08,.02]].forEach(function(q){
-      var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=f*q[0];
+  function tap(s){
+    var when=ctx.currentTime+.02+s.delay,out=ctx.createGain();out.gain.value=s.gain;var pn=ctx.createStereoPanner?ctx.createStereoPanner():null;
+    if(pn){pn.pan.value=Math.max(-1,Math.min(1,s.pan));out.connect(pn);pn.connect(rainBus);}else out.connect(rainBus);
+    [[1,.6,s.long?.32:.08],[2,.08,.02]].forEach(function(q){
+      var o=ctx.createOscillator(),g=ctx.createGain();o.type="sine";o.frequency.value=s.f*q[0];
       g.gain.setValueAtTime(0,when);g.gain.linearRampToValueAtTime(q[1],when+.004);g.gain.setTargetAtTime(0,when+.005,q[2]);
       o.connect(g);g.connect(out);o.start(when);o.stop(when+q[2]*7+.05);
     });
@@ -446,14 +471,7 @@ function Engine(){
     var tg=ctx.createGain();tg.gain.setValueAtTime(.12,when);tg.gain.setTargetAtTime(0,when+.001,.004);
     tk.connect(tf);tf.connect(tg);tg.connect(out);tk.start(when,Math.random()*3,.03);
   }
-  this.drip=function(vel){
-    var now=ctx.currentTime+.02,force=Math.min(1,rainArc()*S[cur].rain*1.25+vel*.35);
-    var reach=force>.7?2:force>.38?1:0,pool=GL.filter(function(g){return g.tier<=reach;});
-    var k=1+(force>.42?1:0)+(force>.74?1:0),start=Math.floor(Math.random()*Math.max(1,pool.length-k+1));
-    var pan=Math.random()*1.2-.6,step=1+Math.floor(Math.random()*2),t0g=pool[start].t,gain=.12*vel*(.7+.5*force);
-    for(var j=0;j<k;j++){var g=pool[Math.min(pool.length-1,start+j*step)];
-      tap(g.f,now+(g.t-t0g),gain*Math.pow(.82,j),pan+j*.12,Math.random()<.2);}
-  };
+  this.drip=function(list){list.forEach(tap);};
   this.stop=function(){
     clearInterval(timer);var now=ctx.currentTime;master.gain.cancelScheduledValues(now);master.gain.setTargetAtTime(0,now,.25);
     setTimeout(function(){ctx.close();},1500);
@@ -623,12 +641,13 @@ function frame(ms){
     var ra=Math.max(rainArc(),.7*E.rb);nextDrip=t+.06+(-Math.log(Math.random()+.001))/(S[cur].rain*(.12+3.6*ra*ra));
     var an=Math.random()*7,rr=Math.random()*R*.22,vel=(.35+Math.random()*.45)*(.55+.6*ra);
     ripples.push({x:C+Math.cos(an)*rr,y:C+Math.sin(an)*rr,t:t,v:Math.min(1,vel*1.3)});
-    if(audio)audio.drip(vel);
+    var st=strikes(vel);if(audio)audio.drip(st);
+    st.forEach(function(s,j){if(j>0){var a2=Math.random()*7,r2=Math.random()*R*.22;ripples.push({x:C+Math.cos(a2)*r2,y:C+Math.sin(a2)*r2,t:t+s.delay,v:Math.min(1,s.gain*9)});}});
   }
   if(reduce&&!ripples.length){ripples.push({x:C-20,y:C+14,t:t-.5,v:.8},{x:C+34,y:C-22,t:t-.2,v:.6});}
   g.save();g.beginPath();g.arc(C,C,R*.3-2,0,7);g.clip();
   ripples=ripples.filter(function(r){return reduce||t-r.t<1.8;});
-  g.shadowColor="rgba(219,168,74,.8)";g.shadowBlur=10;ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v*Math.max(E.r,.3))+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
+  g.shadowColor="rgba(219,168,74,.8)";g.shadowBlur=10;ripples.forEach(function(r){var q=reduce?.4:(t-r.t)/1.8;if(q<0)return;g.strokeStyle="rgba(219,168,74,"+(.9*(1-q)*r.v*Math.max(E.r,.3))+")";g.lineWidth=2.5;g.beginPath();g.arc(r.x,r.y,4+q*46,0,7);g.stroke();});
   g.shadowBlur=0;g.restore();
   /* annotation for the passage being read */
   if(annKey&&annA>0){
@@ -676,6 +695,63 @@ vb.forEach(function(b){b.addEventListener("click",function(){setView(b.dataset.v
 var sv="min";try{sv=localStorage.getItem("omtsite-view")||"min";}catch(e){}
 setView(sv);
 var lw=0;window.addEventListener("resize",function(){var el=document.getElementById("ladder");if(!el)return;var w=el.clientWidth<600;if(w!==lw){lw=w;drawLadder();}});
+
+/* ---------- the score: every sounding string as a line, every drop as a mark; time drifts left ---------- */
+var SCOL=["rgba(150,206,170,","rgba(150,190,232,","rgba(226,168,96,","rgba(236,182,150,"];
+function Score(id,span,big){
+  var c=document.getElementById(id);if(!c)return null;var x=c.getContext("2d"),dpr=Math.min(2,window.devicePixelRatio||1),W2=0,H2=0;
+  function size(){var r=c.getBoundingClientRect();if(!r.width)return;W2=Math.round(r.width*dpr);H2=Math.round(r.height*dpr);if(c.width!==W2)c.width=W2;if(c.height!==H2)c.height=H2;}
+  var lo=Math.log(46),hi=Math.log(960),padL=big?52:6,padR=big?62:6,padT=big?14:6,padB=big?14:6;
+  /* two-part pitch scale: the low pedal gets a third of the height, the colour and glass register gets the rest */
+  function Y(f){var u=f<=220?.32*(Math.log(f)-lo)/(Math.log(220)-lo):.32+.68*(Math.log(f)-Math.log(220))/(hi-Math.log(220));return (padT+(1-u)*(H2/dpr-padT-padB))*dpr;}
+  function X(t,now){return (padL+(1-(now-t)/span)*(W2/dpr-padL-padR))*dpr;}
+  function draw(){
+    size();if(!W2||!H2)return;var now=performance.now()/1000,tt=now;x.clearRect(0,0,W2,H2);
+    /* pitch grid */
+    x.font=(10.5*dpr)+"px 'IBM Plex Mono',monospace";x.textBaseline="middle";
+    [55,110,220,330,440,660,880].forEach(function(f){var y=Y(f);x.strokeStyle=f<=110?"rgba(142,199,184,.16)":"rgba(235,231,221,.06)";x.lineWidth=dpr;x.setLineDash(f<=110?[]:[3*dpr,6*dpr]);x.beginPath();x.moveTo(padL*dpr,y);x.lineTo(W2-padR*dpr,y);x.stroke();x.setLineDash([]);
+      if(big){x.fillStyle=f<=110?"rgba(142,199,184,.75)":"rgba(154,165,174,.7)";x.textAlign="right";x.fillText((f%55===0&&[55,110,220,440,880].indexOf(f)>=0?"A ":"E ")+f,(padL-8)*dpr,y);}});
+    var H=VM.hist;if(H.length<2)return;
+    var i0=0;while(i0<H.length-1&&now-H[i0].t>span)i0++;
+    /* strings: a band whose width is the level, and a thin vibrating line inside it */
+    function string(f,get,col,thick,k,sh){
+      var y0=Y(f),pts=[],any=false;
+      for(var i=i0;i<H.length;i++){var L=get(H[i]);if(L>.008)any=true;pts.push([X(H[i].t,now),L]);}
+      if(!any)return;
+      var amp=thick*dpr;x.beginPath();
+      for(i=0;i<pts.length;i++){var p=pts[i];i?x.lineTo(p[0],y0-p[1]*amp):x.moveTo(p[0],y0-p[1]*amp);}
+      for(i=pts.length-1;i>=0;i--){p=pts[i];x.lineTo(p[0],y0+p[1]*amp);}
+      x.closePath();x.fillStyle=col+".16)";x.fill();
+      var w=.035*Math.sqrt(f/55),sp=reduce?0:tt*(2+Math.log(f/55));
+      x.beginPath();
+      for(i=0;i<pts.length;i++){p=pts[i];var yy=y0+Math.sin(p[0]/dpr*w-sp)*p[1]*amp*.55;i?x.lineTo(p[0],yy):x.moveTo(p[0],yy);}
+      var last=pts[pts.length-1][1];
+      x.strokeStyle=col+(.35+.6*Math.min(1,last*1.3))+")";x.lineWidth=(big?1.4:1.1)*dpr;if(big&&last>.05){x.shadowColor=col+".8)";x.shadowBlur=8*dpr*last;}x.stroke();x.shadowBlur=0;
+      if(big&&last>.03&&k!==undefined&&!sh){var ok=labels.every(function(ly){return Math.abs(ly-y0)>11*dpr;});if(ok){labels.push(y0);x.fillStyle=col+Math.min(1,.4+last)+")";x.textAlign="left";x.fillText(Math.round(f)+"",W2-(padR-8)*dpr,y0);}}
+    }
+    VM.ped.forEach(function(p,j){string(p.f,function(h){return h.p[j];},"rgba(142,199,184,",big?9:4,undefined);});
+    var labels=[],order=[];VM.col.forEach(function(arr,k){arr.forEach(function(n,j){order.push([k,j,n]);});});
+    order.sort(function(a,b){return (b[0]===cur)-(a[0]===cur);});
+    order.forEach(function(o){var n=o[2];string(n.f,function(h){return h.c[o[0]][o[1]];},SCOL[o[0]],big?16:4,o[0],n.sh);});
+    /* rain on glass: a mark at the strike, a fading ring after it, joined within one drop */
+    var lastG=-1,lp=null;
+    VM.strikes.forEach(function(s){
+      if(s.t>now||now-s.t>span)return;var sx=X(s.t,now),sy=Y(s.f),ring=(s.long?2.2:.8),ex=X(Math.min(now,s.t+ring),now),age=(now-s.t)/span;
+      var gr=x.createLinearGradient(sx,0,Math.max(ex,sx+1),0);gr.addColorStop(0,"rgba(219,168,74,"+(.7*(1-age))+")");gr.addColorStop(1,"rgba(219,168,74,0)");
+      x.strokeStyle=gr;x.lineWidth=(big?2:1.4)*dpr;x.beginPath();x.moveTo(sx,sy);x.lineTo(ex,sy);x.stroke();
+      if(lp&&lastG===s.gid){x.strokeStyle="rgba(219,168,74,"+(.28*(1-age))+")";x.lineWidth=dpr;x.beginPath();x.moveTo(lp[0],lp[1]);x.lineTo(sx,sy);x.stroke();}
+      var r=(big?2.6:1.8)*dpr*(.6+s.gain*6);x.fillStyle="rgba(240,200,120,"+(.95*(1-age))+")";if(now-s.t<.4){x.shadowColor="rgba(219,168,74,.9)";x.shadowBlur=10*dpr;}
+      x.beginPath();x.arc(sx,sy,r,0,7);x.fill();x.shadowBlur=0;lastG=s.gid;lp=[sx,sy];
+    });
+    /* the present */
+    var nx=X(now,now);x.strokeStyle="rgba(235,231,221,.14)";x.lineWidth=dpr;x.beginPath();x.moveTo(nx,padT*dpr);x.lineTo(nx,H2-padB*dpr);x.stroke();
+  }
+  return {draw:draw};
+}
+var scores=[Score("scoreS",14,false),Score("scoreB",24,true)].filter(Boolean);
+function scoreLoop(){scores.forEach(function(s){s.draw();});if(!reduce)requestAnimationFrame(scoreLoop);}
+if(reduce)setInterval(function(){scores.forEach(function(s){s.draw();});},1000);
+requestAnimationFrame(scoreLoop);
 
 })();
 </script>
