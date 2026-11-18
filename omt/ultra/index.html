@@ -198,7 +198,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
     <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div></div>
     <canvas class="scoreS" id="scoreS" aria-hidden="true"></canvas>
     <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
-    <p class="readout" id="readout" aria-live="polite"></p>
+    <p class="readout" id="readout"></p>
     <div class="ctrl">
       <button class="play" id="play" type="button" aria-pressed="false" data-i="play">Play the sketch</button>
       <div class="ctrl" role="group" aria-label="Season" style="margin:0">
@@ -357,11 +357,12 @@ var S=[
  {face:7,notes:[440,550,770],shimmer:771,n:"8 · 10 · 14",en:["northwest","the root, warm: third and seventh"],zh:["西北","根音，溫暖：三度與七度"],kmh:28,rain:.25,gain:1}
 ];
 var cur=0,chips=document.querySelectorAll(".chip"),turn=document.getElementById("turn"),sunBox=document.getElementById("sun"),rainBox=document.getElementById("rain");
+function kmh(){var g=(typeof GU!=="undefined")?GU.w:windArc();return Math.round(S[cur].kmh*(.45+.85*g));}
 function setReadout(){
   var s=S[cur],r=document.getElementById("readout"),ph=phase();
   r.innerHTML=lang==="zh"
-   ? "風自<b>"+s.zh[0]+"</b>來 · "+s.kmh+" km/h · A 成為<b>"+s.zh[1]+"</b><br>"+s.n+" · 持續音 A 55 / 110 Hz · 天氣：<b>"+PH.zh[ph]+"</b>"
-   : "Wind from the <b>"+s.en[0]+"</b> · "+s.kmh+" km/h · A becomes <b>"+s.en[1]+"</b><br>"+s.n+" over A 55 / 110 Hz · weather: <b>"+PH.en[ph]+"</b>";
+   ? "風自<b>"+s.zh[0]+"</b>來 · "+kmh()+" km/h · A 成為<b>"+s.zh[1]+"</b><br>"+s.n+" · 持續音 A 55 / 110 Hz · "+shichen()+" · 天氣：<b>"+PH.zh[ph]+"</b>"
+   : "Wind from the <b>"+s.en[0]+"</b> · "+kmh()+" km/h · A becomes <b>"+s.en[1]+"</b><br>"+s.n+" over A 55 / 110 Hz · "+shichen()+" · weather: <b>"+PH.en[ph]+"</b>";
 }
 function setSeason(i,byUser){
   cur=i;chips.forEach(function(c,k){c.setAttribute("aria-pressed",k===i?"true":"false");});
@@ -372,8 +373,14 @@ chips.forEach(function(c){c.addEventListener("click",function(){setSeason(+c.dat
 setInterval(function(){if(turn.checked&&!document.hidden)setSeason((cur+1)%4,false);},40000);
 /* ---------- weather arc: long swells, about 80 s, wind leads and rain follows ---------- */
 function arc(sec,lag){var x=sec-(lag||0);
-  var w=.5-.5*Math.cos(2*Math.PI*x/80)+.12*Math.sin(2*Math.PI*x/31+1.3);
+  /* swells drift between about 60 and 110 s, so no two are the same length */
+  var w=.5-.5*Math.cos(2*Math.PI*x/80+.9*Math.sin(2*Math.PI*x/233))+.12*Math.sin(2*Math.PI*x/31+1.3)+.06*Math.sin(2*Math.PI*x/53+.4);
   return Math.max(0,Math.min(1,w));}
+/* time of day: land wind is usually strongest mid-afternoon and calmest before dawn; the 時辰 sets how often and how hard it gusts */
+var SC=["子","丑","寅","卯","辰","巳","午","未","申","酉","戌","亥"];
+function hourNow(){var d=new Date();return d.getHours()+d.getMinutes()/60;}
+function shichen(){return SC[Math.floor(((hourNow()+1)%24)/2)]+"時";}
+function dayF(){return .5-.5*Math.cos(2*Math.PI*(hourNow()-3)/24);}
 var T0=performance.now()/1000-14;function now(){return performance.now()/1000-T0;}
 function windArc(){return arc(now(),0);} function rainArc(){return arc(now(),16);}
 var PH={en:["still","gathering","full","easing"],zh:["靜","聚","盛","散"]};
@@ -382,14 +389,40 @@ function phase(){var a=windArc(),b=arc(now()+2,0);return a<.18?0:a>.78?2:(b>a?1:
 /* ---------- shared voice model: what sounds and how strongly; drives the sound and the score alike ---------- */
 var VM={ped:[{f:55,v:.6,L:.8},{f:110,v:.6,L:.8}],col:[],hist:[],strikes:[],gid:0};
 S.forEach(function(s,k){var a=s.notes.map(function(f){return {f:f,v:.45,L:k===cur?.3:0,k:k};});if(s.shimmer)a.push({f:s.shimmer,v:.45,L:0,k:k,sh:1});VM.col.push(a);});
+/* gusts: each one rises, holds and lets go at its own pace; between them the air only flutters */
+var GU={list:[],next:performance.now()/1000+2,fl:0,G:0,w:0};
+function gustStep(dt,now,wa){
+  var df=dayF();
+  if(now>GU.next){
+    var pk=(.3+.7*Math.random())*(.55+.45*df);
+    GU.list.push({t0:now,r:1+Math.random()*2.5,h:.5+Math.random()*3.5,f:3+Math.random()*6,pk:pk});
+    GU.next=now+(2.5+Math.random()*9)/(.45+.55*wa)/(.6+.5*df);}
+  var G=0;GU.list=GU.list.filter(function(g){var a=now-g.t0,e;
+    if(a<g.r)e=.5-.5*Math.cos(Math.PI*a/g.r);else if(a<g.r+g.h)e=1;else if(a<g.r+g.h+g.f)e=.5+.5*Math.cos(Math.PI*(a-g.r-g.h)/g.f);else return false;
+    G=Math.max(G,e*g.pk);return true;});
+  var n=0;for(var i=0;i<4;i++)n+=Math.random();n=(n-2)*1.7;
+  GU.fl+=-GU.fl*dt/.9+Math.sqrt(dt)*.5*n;
+  GU.G=Math.max(0,Math.min(1,G+.12*GU.fl));
+  GU.w=Math.max(0,Math.min(1,wa*(.5+.65*GU.G)+.04*GU.fl));
+}
+function voiceWind(n,dt,lo,hi){
+  if(n.tw===undefined){n.tw=lo+Math.random()*(hi-lo);n.w=GU.w;n.j=0;}
+  var prev=n.w;n.w+=(GU.w-n.w)*(1-Math.exp(-dt/n.tw));
+  n.j+=(-n.j*dt/6)+(Math.random()-.5)*.25*Math.sqrt(dt);
+  /* breath leads tone: air rises first while the wind is climbing faster than the pipe can follow */
+  n.B=Math.max(.35,Math.min(2.2,.45+2.6*Math.max(0,GU.w-n.w)+.7*GU.G));
+  n.d=(n.w-.5)*(n.ped?3:9)+n.j*(n.ped?1:3);
+}
 function vmStep(dt){
   var wa=windArc(),ra=rainArc(),rf=Math.min(1,ra*S[cur].rain*1.4),now=performance.now()/1000;
-  VM.ped.forEach(function(p){p.v=Math.max(.3,Math.min(1,p.v+(Math.random()-.5)*.08));var tg=(.82+.18*p.v)*(.85+.15*wa);p.L+=(tg-p.L)*(1-Math.exp(-dt/3));});
+  gustStep(dt,now,wa);
+  VM.ped.forEach(function(p){p.ped=1;voiceWind(p,dt,2.5,4.5);p.v=Math.max(.3,Math.min(1,p.v+(Math.random()-.5)*.08));var tg=(.82+.18*p.v)*(.8+.2*p.w);p.L+=(tg-p.L)*(1-Math.exp(-dt/3));});
   VM.col.forEach(function(arr,k){arr.forEach(function(n){
+    voiceWind(n,dt,.5,2.4);
     n.v=Math.max(.2,Math.min(1,n.v+(Math.random()-.5)*.1));
-    var tg=(k===cur?S[k].gain:0)*n.v*n.v*(.12+.95*wa)*(1-.25*rf)*(n.sh?.35:1);
-    var tau=tg>n.L?3.2:7.5;n.L+=(tg-n.L)*(1-Math.exp(-dt/tau));});});
-  var row={t:now,p:VM.ped.map(function(p){return p.L;}),c:VM.col.map(function(a){return a.map(function(n){return n.L;});})};
+    var tg=(k===cur?S[k].gain:0)*n.v*n.v*(.12+1.25*n.w)*(1-.25*rf)*(n.sh?.35:1);
+    var tau=tg>n.L?2.6:7.5;n.L+=(tg-n.L)*(1-Math.exp(-dt/tau));});});
+  var row={t:now,g:GU.G,p:VM.ped.map(function(p){return p.L;}),c:VM.col.map(function(a){return a.map(function(n){return n.L;});})};
   VM.hist.push(row);while(VM.hist.length&&now-VM.hist[0].t>40)VM.hist.shift();
   while(VM.strikes.length&&now-VM.strikes[0].t>40)VM.strikes.shift();
 }
@@ -429,20 +462,25 @@ function Engine(){
     var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=m[0];bp.Q.value=Math.PI*m[0]*m[1]/6.91;
     var g=ctx.createGain();g.gain.value=Math.pow(110/m[0],.4);bodyIn.connect(bp);bp.connect(g);g.connect(bodyOut);
   });
+  /* air: the wind itself between the notes, brighter as it gusts */
+  var airBP=ctx.createBiquadFilter();airBP.type="bandpass";airBP.frequency.value=500;airBP.Q.value=.8;
+  var airLP=ctx.createBiquadFilter();airLP.type="lowpass";airLP.frequency.value=1800;
+  var air=ctx.createGain();air.gain.value=0;var airPn=ctx.createStereoPanner?ctx.createStereoPanner():null;
+  noise.connect(airBP);airBP.connect(airLP);airLP.connect(air);if(airPn){air.connect(airPn);airPn.connect(master);}else air.connect(master);
   var voices=[];
   function voice(f,level,breath,src){
     var g=ctx.createGain();g.gain.value=0;g.connect(master);g.connect(bodyIn);
     var o=ctx.createOscillator();o.type="sine";o.frequency.value=f;o.connect(g);o.start();
     var o2=ctx.createOscillator();o2.type="sine";o2.frequency.value=f*2;var o2g=ctx.createGain();o2g.gain.value=.12;o2.connect(o2g);o2g.connect(g);o2.start();
-    var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=34;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
-    voices.push({g:g,level:level,src:src});
+    var bp=ctx.createBiquadFilter();bp.type="bandpass";bp.frequency.value=f;bp.Q.value=26;var bg=ctx.createGain();bg.gain.value=breath;noise.connect(bp);bp.connect(bg);bg.connect(g);
+    voices.push({g:g,level:level,src:src,bg:bg,br:breath,o:o,o2:o2});
   }
   voice(55,.34,6,VM.ped[0]);voice(110,.2,4,VM.ped[1]);
   var sunSrc={L:sunBox.checked?.75:0};voice(110*Math.pow(2,29/1200),.15,3,sunSrc);
   VM.col.forEach(function(arr){arr.forEach(function(n,j){voice(n.f,n.sh?.06:(.062-.01*j),2.4,n);});});
   /* the voice model sets every level; release is slow, so wind lets go gradually */
   var timer=setInterval(function(){
-    var now=ctx.currentTime;voices.forEach(function(q){q.g.gain.setTargetAtTime(q.level*q.src.L,now,.25);});
+    var now=ctx.currentTime;voices.forEach(function(q){q.g.gain.setTargetAtTime(q.level*q.src.L,now,.25);if(q.src.B!==undefined){q.bg.gain.setTargetAtTime(q.br*q.src.B,now,.35);q.o.detune.setTargetAtTime(q.src.d,now,.5);q.o2.detune.setTargetAtTime(q.src.d,now,.5);}});air.gain.setTargetAtTime(.0035+.03*GU.G*GU.w,now,.6);airBP.frequency.setTargetAtTime(380+520*GU.w,now,.8);if(airPn)airPn.pan.setTargetAtTime(.5*Math.sin(now/7.3),now,1);
     if(rainBox.checked)bed.gain.setTargetAtTime((.004+.02*rainArc())*(.6+.6*S[cur].rain),now,2.5);
   },200);
   this.season=function(){};
@@ -540,6 +578,7 @@ function door(ms){
     dg.strokeStyle="rgba(219,168,74,"+(.75/k)+")";dg.lineWidth=2.2/k+.4;dg.shadowColor="rgba(219,168,74,.7)";dg.shadowBlur=k===1?10:0;dg.stroke();dg.shadowBlur=0;}
   if(!reduce)requestAnimationFrame(door);
 }
+setInterval(function(){if(!document.hidden)setReadout();},2000);
 
 /* ---------- the temple: pinned plan that turns toward the passage being read ---------- */
 var cv=document.getElementById("cv"),g=cv.getContext("2d"),W=900,C=W/2,R=W*.33;
@@ -716,7 +755,7 @@ function Score(id,span,big){
     /* strings: a band whose width is the level, and a thin vibrating line inside it */
     function string(f,get,col,thick,k,sh){
       var y0=Y(f),pts=[],any=false;
-      for(var i=i0;i<H.length;i++){var L=get(H[i]);if(L>.008)any=true;pts.push([X(H[i].t,now),L]);}
+      for(var i=i0;i<H.length;i++){var L=get(H[i]);if(L>.008)any=true;pts.push([X(H[i].t,now),L*(.8+.55*(H[i].g||0)),H[i].g||0]);}
       if(!any)return;
       var amp=thick*dpr;x.beginPath();
       for(i=0;i<pts.length;i++){var p=pts[i];i?x.lineTo(p[0],y0-p[1]*amp):x.moveTo(p[0],y0-p[1]*amp);}
@@ -724,7 +763,7 @@ function Score(id,span,big){
       x.closePath();x.fillStyle=col+".16)";x.fill();
       var w=.035*Math.sqrt(f/55),sp=reduce?0:tt*(2+Math.log(f/55));
       x.beginPath();
-      for(i=0;i<pts.length;i++){p=pts[i];var yy=y0+Math.sin(p[0]/dpr*w-sp)*p[1]*amp*.55;i?x.lineTo(p[0],yy):x.moveTo(p[0],yy);}
+      for(i=0;i<pts.length;i++){p=pts[i];var yy=y0+Math.sin(p[0]/dpr*w*(1+.5*p[2])-sp)*p[1]*amp*(.4+.5*p[2]);i?x.lineTo(p[0],yy):x.moveTo(p[0],yy);}
       var last=pts[pts.length-1][1];
       x.strokeStyle=col+(.35+.6*Math.min(1,last*1.3))+")";x.lineWidth=(big?1.4:1.1)*dpr;if(big&&last>.05){x.shadowColor=col+".8)";x.shadowBlur=8*dpr*last;}x.stroke();x.shadowBlur=0;
       if(big&&last>.03&&k!==undefined&&!sh){var ok=labels.every(function(ly){return Math.abs(ly-y0)>11*dpr;});if(ok){labels.push(y0);x.fillStyle=col+Math.min(1,.4+last)+")";x.textAlign="left";x.fillText(Math.round(f)+"",W2-(padR-8)*dpr,y0);}}
