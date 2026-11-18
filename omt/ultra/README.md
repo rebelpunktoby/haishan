@@ -1,6 +1,6 @@
 # 風雨殿 · OMT Site 殿境
 
-**Temple of Wind and Rain — the physical OceanMountain.**
+**Temple of Wind and Rain — the architectural counterpart to OMT Engine.**
 **風雨之殿 —— 山海的實體版。**
 
 Concept stage. Nothing is built yet. Every sound here is a computer model.
