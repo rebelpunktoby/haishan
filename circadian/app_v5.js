@@ -353,7 +353,7 @@ function setMode(spk) {
 function setTimeSystem(solar) {
   solarMode = solar;
   timeBtn.setAttribute("aria-pressed", String(solar));
-  timeBtn.setAttribute("aria-label", solar ? "Switch to clock time" : "Switch to 時辰 time (true sun)");
+  timeBtn.setAttribute("aria-label", solar ? "Switch to clock time" : "Switch to 時辰 time (by the sun)");
   pushClock(); if (aboutBox.classList.contains("open")) drawClock();
 }
 function readDials(immediate = false) {
@@ -507,7 +507,7 @@ function drawClock(sky = skyNow()) {
   const placeName = place.mine ? t("s_mine") : (L === "zh" ? place.zh : place.en);
   $("skyDay").textContent = times.rise ? `↑ ${hhmm(times.rise)} · ↓ ${hhmm(times.set)} · ${placeName}` : `${times.polar === "day" ? (L === "zh" ? "永晝" : "midnight sun") : (L === "zh" ? "永夜" : "polar night")} · ${placeName}`;
   const solTxt = `${String(Math.floor(sky.solH)).padStart(2, "0")}:${String(Math.floor((sky.solH % 1) * 60)).padStart(2, "0")}`;
-  $("skyNow").textContent = (L === "zh" ? `${sc.zh}時` : `${sc.zh}時 · ${sc.en}`) + (solarMode ? ` · ${L === "zh" ? "真太陽時" : "true sun"} ${solTxt}` : ` · ${L === "zh" ? "時鐘" : "clock"} ${hhmm(now)}`);
+  $("skyNow").textContent = (L === "zh" ? `${sc.zh}時` : `${sc.zh}時 · ${sc.en}`) + (solarMode ? ` · ${L === "zh" ? "日" : "Sun"} ${solTxt}` : ` · ${L === "zh" ? "時鐘" : "clock"} ${hhmm(now)}`);
   const snd = engine ? engine.env.sounding : [];
   $("skySounding").textContent = snd.length ? snd.map(d => L === "zh" ? d.zh : d.en).join(" · ") : (L === "zh" ? "聲部而已" : "the voices alone");
   $("locBtn").hidden = place.mine; if (place.mine) $("skyPlace").textContent = `${t("s_mine")} · ${Math.abs(place.lat).toFixed(1)}°${place.lat >= 0 ? "N" : "S"} ${Math.abs(place.lon).toFixed(1)}°${place.lon >= 0 ? "E" : "W"}`;
