@@ -147,7 +147,20 @@ body{font-family:var(--f-body),"Noto Sans TC",sans-serif}
 .bell{position:absolute;width:40px;height:40px;margin:-20px 0 0 -20px;border-radius:50%;border:1px solid rgb(var(--bc) / .85);pointer-events:none;animation:bell 2.6s cubic-bezier(.16,.7,.3,1) forwards}
 @keyframes bell{from{transform:scale(.4);opacity:.9}to{transform:scale(var(--bs,9));opacity:0}}
 @media (prefers-reduced-motion:reduce){.bell{animation-duration:4s}@keyframes bell{from{transform:scale(2);opacity:.5}to{transform:scale(4);opacity:0}}}
-.gate[hidden],.hint[hidden]{display:none}
+.gate[hidden],.hint[hidden],.fs[hidden]{display:none}
+.cam .fs{position:absolute;right:10px;top:10px;z-index:6;width:36px;height:36px;padding:0;display:grid;place-items:center;font-size:17px;line-height:1;border-radius:999px;
+  background:color-mix(in srgb,var(--bg) 55%,transparent);border-color:color-mix(in srgb,var(--line) 70%,transparent);color:var(--mute);text-transform:none;opacity:.7}
+.cam .fs:hover{opacity:1;color:var(--fg)}
+body.full{overflow:hidden}
+body.full .piece .cam{position:fixed;inset:0;z-index:40;aspect-ratio:auto;border-radius:0;border:0}
+body.full .site{visibility:hidden}
+.cam .fs[hidden]{display:none}
+body.full .under{position:fixed;left:12px;right:12px;bottom:max(12px,env(safe-area-inset-bottom));z-index:41;padding:8px 10px;border-radius:12px;
+  background:color-mix(in srgb,var(--bg) 70%,transparent);backdrop-filter:blur(8px);gap:8px}
+body.full .under .world{display:none}
+body.full .under .btns button,body.full .under .ctl button{padding:7px 9px;font-size:11px}
+body.full .cam .hint{bottom:86px}
+body.full .cam .inkgl{bottom:84px}
 #play,#about,#rig{scroll-margin-top:64px}
 @media (max-width:560px){.site nav a[href="#play"]{display:none}.brand span{display:none}}
 .cam .hint{position:absolute;left:50%;bottom:12px;transform:translateX(-50%);font-family:var(--f-mono);font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--mute);pointer-events:none;transition:opacity 1.5s}
@@ -228,10 +241,11 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
       <div class="empty" id="camEmpty"></div>
       <div class="gate" id="gate">
         <div class="g" aria-hidden="true">土水火風</div>
-        <div class="row"><button id="startTouch" class="primary" data-t="g_touch">Play with touch</button><button id="start" data-t="g_cam">Camera + mic</button></div>
+        <div class="row"><button id="startTilt" class="primary" data-t="g_tilt" hidden>Move the phone</button><button id="startTouch" class="primary" data-t="g_touch">Play with touch</button><button id="start" data-t="g_cam">Camera + mic</button></div>
         <p data-t="g_note">Move your mouse or finger here. Nothing is recorded.</p>
       </div>
       <span class="hint" id="hint" hidden></span>
+      <button class="fs" id="fsBtn" type="button" aria-label="Full screen" title="Full screen" hidden>⤢</button>
       <span class="flag" id="flag" hidden></span>
       <div class="roi" id="roiBox" hidden></div><div class="ring" id="ring" hidden></div>
     </div>
@@ -501,8 +515,43 @@ function makeGrain(){
   return sp;
 }
 
-/* Glitch: a 3 s memory of the whole output. Events repeat, reverse, tape-stop or drop it; crush holds samples and cuts bits. */
+
+/* Glitch on the audio thread: a 3 s memory of the whole output. Events start on the pulse grid (sample-exact),
+   gaps fade in and out over a few ms so a break sounds like a cut in the music, never like a dropout. */
+const GLITCH_SRC=`class Glitch extends AudioWorkletProcessor{
+  constructor(){super();const N=sampleRate*3|0;this.N=N;this.B=[new Float32Array(N),new Float32Array(N)];this.w=0;
+    this.g={mode:'',pos:0,start:0,len:1,rate:1,left:0,total:1,ramp:0,hold:1,bits:16,hc:0,h0:0,h1:0};this.q=[];
+    this.port.onmessage=e=>{const m=e.data;if(m.k==='s'){this.g.hold=Math.max(1,m.h|0);this.g.bits=m.b}else this.q.push(m)}}
+  start(m){const g=this.g,sr=sampleRate,N=this.N,o=m.o||{};g.mode=m.type;g.pos=0;g.rate=o.rate||1;
+    if(m.type==='tape'){g.len=Math.round((o.dur||.5)*sr);g.start=(this.w-256+N)%N;g.ramp=1/g.len;g.left=g.len}
+    else if(m.type==='drop'){g.left=Math.max(64,Math.round((o.dur||.08)*sr));g.len=1}
+    else{g.len=Math.max(256,Math.round((o.len||.12)*sr));g.start=(this.w-g.len+N*4)%N;g.left=Math.round(g.len*(o.reps||4)/Math.abs(g.rate))}
+    g.total=g.left}
+  process(ins,outs){const i=ins[0],o=outs[0],n=o[0].length;const iL=i&&i[0]?i[0]:null,iR=i&&i[1]?i[1]:iL;const oL=o[0],oR=o[1]||o[0];
+    const g=this.g,B=this.B,N=this.N,q=g.bits<15.5?Math.pow(2,Math.max(2,g.bits)-1):0,F=Math.round(sampleRate*.004);
+    let due=-1;if(this.q.length){const at=this.q[0].at||0;due=Math.max(0,Math.round((at-currentTime)*sampleRate));if(due>=n)due=-1}
+    for(let k=0;k<n;k++){
+      if(k===due){this.start(this.q.shift());due=-1}
+      const xl=iL?iL[k]:0,xr=iR?iR[k]:0;B[0][this.w]=xl;B[1][this.w]=xr;this.w=(this.w+1)%N;let l=xl,r=xr;
+      if(g.left>0){const done=g.total-g.left,edge=Math.min(1,done/F,g.left/F);
+        if(g.mode==='drop'){const keep=1-edge*.94;l*=keep;r*=keep}
+        else{const ph=g.pos%g.len,rd=g.mode==='rev'?g.len-1-ph:ph,idx=(g.start+(rd|0))%N,env=Math.min(1,ph/96,(g.len-ph)/96);
+          const wl=B[0][idx]*env,wr=B[1][idx]*env;l=xl+(wl-xl)*edge;r=xr+(wr-xr)*edge;
+          if(g.mode==='tape'){g.rate=Math.max(0,g.rate-g.ramp);g.pos+=g.rate}else g.pos+=Math.abs(g.rate)}
+        g.left--}
+      if(g.hold>1){if(g.hc++%g.hold===0){g.h0=l;g.h1=r}l=g.h0;r=g.h1}
+      if(q){l=Math.round(l*q)/q;r=Math.round(r*q)/q}
+      oL[k]=l;oR[k]=r}
+    return true}}
+registerProcessor('glitch',Glitch);`;
+function glitchDur(type,o={}){return type==='tape'?(o.dur||.5):type==='drop'?(o.dur||.08):(o.len||.12)*(o.reps||4)/Math.abs(o.rate||1)}
+/* Fallback (file:// only): the same glitch on the main thread. Events repeat, reverse, tape-stop or drop it; crush holds samples and cuts bits. */
 function makeGlitch(){
+  if(!useSP){const nd=new AudioWorkletNode(ctx,'glitch',{numberOfInputs:1,numberOfOutputs:1,outputChannelCount:[2],channelCount:2,channelCountMode:'explicit'});
+    let until=0,lh=-1,lb=-1;
+    nd.trigger=(type,o={},at)=>{const t0=Math.max(ctx.currentTime,at||0);until=t0+glitchDur(type,o);nd.port.postMessage({type,o,at:t0})};
+    nd.set=(h,b)=>{h=Math.max(1,Math.round(h));b=Math.round(b*4)/4;if(h!==lh||b!==lb){lh=h;lb=b;nd.port.postMessage({k:'s',h,b})}};
+    nd.busy=()=>ctx.currentTime<until;return nd}
   const sp=ctx.createScriptProcessor(1024,2,2),sr=ctx.sampleRate,N=sr*3|0,B=[new Float32Array(N),new Float32Array(N)];let w=0;
   const g={mode:'',pos:0,start:0,len:1,rate:1,left:0,ramp:0,hold:1,bits:16,hc:0,h0:0,h1:0};
   sp.trigger=(type,o={})=>{g.mode=type;g.pos=0;g.rate=o.rate||1;
@@ -535,9 +584,12 @@ function weird(dt){
   glitch.set(1+Math.round((E*(S.storm*14+S.bound*6)+S.sh*10)*h),16-(E*(S.storm*10+S.bound*5)+S.sh*5)*h);
   const rate=E*E*(1.4*S.sud+.9*S.bound+.7*S.storm+.15*S.ten)*h*(1+3*S.sh)*S.st.glitch*(S.mot>=.035?S.hab:1);// events per second
   if(!glitch.busy()&&Math.random()<rate*dt){
-    if(S.sud>.35&&Math.random()<.55)glitch.trigger(Math.random()<.5?'rev':'tape',{len:.2+Math.random()*.5,dur:.3+Math.random()*.7,reps:1});
-    else if(S.bound>.35||Math.random()<.65)glitch.trigger('rep',{len:beat()*pickOne([1/16,1/8,1/8,1/4,3/16,1/2]),reps:2+(Math.random()*10|0),rate:Math.random()<E*.6?pickOne([.5,2,1.5,.75]):1});
-    else glitch.trigger('drop',{dur:.04+Math.random()*.14});
+    // the grid gets finer as she gives more: beats, then eighths, then sixteenths
+    const bt=beat(),bd=S.body||0,q=bt*(bd>.75?.25:bd>.4?.5:1),at=Math.ceil((t+.03)/q)*q;
+    if(bd>.55&&Math.random()<.5){const len=q*(bd>.85&&Math.random()<.5?.5:1);glitch.trigger('rep',{len,reps:Math.max(2,Math.round(bt/len)),rate:1},at)}   // a roll that fills the beat
+    else if(S.sud>.35&&Math.random()<.5)glitch.trigger(Math.random()<.5?'rev':'tape',{len:bt*pickOne([1/4,1/2,1]),dur:bt*pickOne([1/2,1]),reps:1},at);
+    else if(S.sud>.5&&Math.random()<.3)glitch.trigger('drop',{dur:q*.5},at);                                     // an off-beat breath, never a hole
+    else glitch.trigger('rep',{len:bt*pickOne([1/16,1/8,1/8,1/4,3/16,1/2]),reps:2+(Math.random()*6|0),rate:Math.random()<E*.6?pickOne([.5,2,1.5,.75]):1},at);
   }
   // ring mod: depth from the arc, carrier from the newest open rung, lower for strong weight
   const b=banks[S.w],top=b?b.parts[Math.max(0,Math.min(b.parts.length-1,Math.floor(S.ceil-.001)))]:null,fc=(top&&top.f)||220;
@@ -552,10 +604,13 @@ function weird(dt){
   selfG.gain.setTargetAtTime(E>.25&&t-S.lastOnset>4?E*3*clamp(bd*1.4):0,t,bd>.3?.3:.8);
 }
 async function initAudio(){
+  try{if(navigator.audioSession)navigator.audioSession.type='playback'}catch(_){}   // iPhone: play even with the silent switch on
   ctx=new AudioContext({latencyHint:'playback'});
-  try{await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([GRAIN_SRC],{type:'application/javascript'})))}catch(e){useSP=true}
+  try{await ctx.audioWorklet.addModule(URL.createObjectURL(new Blob([GRAIN_SRC,'\n',GLITCH_SRC],{type:'application/javascript'})))}catch(e){useSP=true}
   master=G(.85);const hp=biq('highpass',40);const comp=ctx.createDynamicsCompressor();comp.threshold.value=-9;comp.ratio.value=3;comp.attack.value=.05;comp.release.value=1;
-  stopG=G(1);glitch=makeGlitch();dynLP=biq('lowpass',4000,.5);master.connect(dynLP).connect(glitch).connect(hp).connect(comp).connect(stopG).connect(ctx.destination);
+  stopG=G(0);stopG.gain.setTargetAtTime(1,ctx.currentTime+.05,1.1);glitch=makeGlitch();dynLP=biq('lowpass',4000,.5);
+  const lim=ctx.createDynamicsCompressor();lim.threshold.value=-3;lim.knee.value=0;lim.ratio.value=20;lim.attack.value=.002;lim.release.value=.12;   // safety ceiling for earbuds
+  master.connect(dynLP).connect(glitch).connect(hp).connect(comp).connect(lim).connect(stopG).connect(ctx.destination);
   bus=G(1);dryG=G(.6);bus.connect(dryG).connect(master);
   pre=ctx.createDelay(1);pre.delayTime.value=.09;const verb=ctx.createConvolver();verb.buffer=impulse(12,2);const damp=biq('lowpass',4200);verbG=G(.8);
   bus.connect(pre).connect(verb).connect(damp).connect(verbG).connect(master);
@@ -685,7 +740,11 @@ function stormDrive(){
   storm.fms.forEach(f=>{f.idx.gain.setTargetAtTime(f.fc*c*2.5,t,.1);f.g.gain.setTargetAtTime(c*.22,t,.1)});
   storm.pre.gain.setTargetAtTime(.6+c*2.4,t,.1);
   storm.lp.frequency.setTargetAtTime(600+S.hi*8000*(.4+c*.6),t,.2);
-  storm.gate.gain.setTargetAtTime(c>.35&&Math.random()<w.sGate*c?0:1,t,.004);
+  const s16=beat()/4;
+  if(c>.35){if(!storm.gNext||storm.gNext<t)storm.gNext=Math.ceil(t/s16)*s16;
+    const k=Math.max(3,Math.min(13,Math.round(16-(w.sGate*2.2+.2)*c*14)));   // fewer hits = more air; Fire cuts most
+    while(storm.gNext<t+.25){const st=Math.round(storm.gNext/s16)%16,hit=((st*k)%16)<k;storm.gate.gain.setTargetAtTime(hit?1:.1,storm.gNext,.006);storm.gNext+=s16}}
+  else if(storm.gNext){storm.gNext=0;storm.gate.gain.cancelScheduledValues(t);storm.gate.gain.setTargetAtTime(1,t,.05)}
 }
 function setMode(id){S.mode=id;const m=MODES.find(x=>x.id===id);MODES.forEach(x=>$('mode-'+x.id).setAttribute('aria-pressed',x.id===id));$('mDesc').textContent=m.desc}
 function setFreeze(on){S.freeze=on;$('freeze').setAttribute('aria-pressed',on);$('freeze').innerHTML=(on?'Frozen':'Freeze')+' <kbd>Q</kbd>';if(memGrain)memGrain.parameters.get('freeze').value=(on||S.lock)?1:0;flag()}
@@ -1237,28 +1296,66 @@ function setHint(t){const h=$('hint');if(!t){h.hidden=true;return}h.textContent=
 async function startTouch(){
   $('startTouch').disabled=true;if(!await boot()){$('startTouch').disabled=false;return}
   PT.on=true;$('gate').hidden=true;$('cam').classList.add('touch');$('camEmpty').hidden=true;
-  setHint(L('h_touch'));toast(L('t_touch'));
+  afterStart();setHint(L('h_touch'));toast(L('t_touch'));
 }
 async function startCam(){
   $('start').disabled=true;$('camBtn').disabled=true;
   if(!await boot()){$('start').disabled=false;$('camBtn').disabled=false;return}
   try{await initCam();PT.on=false;$('cam').classList.remove('touch');setHint('');$('gate').hidden=true;$('camBtn').textContent='Camera on'}
   catch(e){showErr('Camera blocked or unavailable. Allow the camera for this site in Chrome, or keep playing with touch.');$('start').disabled=false;$('camBtn').disabled=false;if(!PT.on)startTouch();return}
-  await initMic();
+  afterStart();await initMic();
 }
 $('startTouch').addEventListener('click',startTouch);
 $('start').addEventListener('click',startCam);
 $('camBtn').addEventListener('click',startCam);
 $('midiBtn').addEventListener('click',()=>{$('midiBtn').disabled=true;$('midiBtn').textContent='MIDI on';initMidi()});
 $('relBtn').addEventListener('click',()=>setRelease(!(S.rel||S.fade)));
-$('cam').addEventListener('pointermove',e=>{if(!PT.on||S.drawing)return;const r=$('cam').getBoundingClientRect();
+$('cam').addEventListener('pointermove',e=>{if(!PT.on||SN.on||S.drawing)return;const r=$('cam').getBoundingClientRect();
   const x=(1-(e.clientX-r.left)/r.width)*CW,y=(e.clientY-r.top)/r.height*CH;
   if(PT.seen)PT.acc+=Math.hypot(x-PT.x,y-PT.y);PT.x=Math.max(0,Math.min(CW-1,x));PT.y=Math.max(0,Math.min(CH-1,y));PT.seen=true;
   if(!$('hint').hidden){$('hint').style.opacity=0;setTimeout(()=>{$('hint').hidden=true},1500)}});
-$('cam').addEventListener('pointerleave',()=>{PT.seen=false});
-$('cam').addEventListener('pointerdown',e=>{if(PT.on&&e.pointerType!=='mouse')PT.seen=false});
+$('cam').addEventListener('pointerleave',()=>{if(!SN.on)PT.seen=false});
+$('cam').addEventListener('pointerdown',e=>{if(PT.on&&!SN.on&&e.pointerType!=='mouse')PT.seen=false});
+
+/* ---- Online flow: phone motion, screen awake, full screen, a hint if the phone is silent ---- */
+const isTouchDev=matchMedia('(pointer:coarse)').matches,isIOS=/iP(hone|ad|od)/.test(navigator.userAgent)||(navigator.platform==='MacIntel'&&navigator.maxTouchPoints>1);
+const SN={on:false,a:0,beta:60,gamma:0};
+if(isTouchDev&&'DeviceMotionEvent' in window){$('startTilt').hidden=false;const n=document.querySelector('[data-t="g_note"]');n.dataset.t='g_note2';n.innerHTML='Move the phone, or your finger here. Nothing is recorded.'}
+async function startTilt(){
+  $('startTilt').disabled=true;
+  try{if(typeof DeviceMotionEvent.requestPermission==='function'){const r=await DeviceMotionEvent.requestPermission();if(r!=='granted')throw 0}
+    if(typeof DeviceOrientationEvent!=='undefined'&&typeof DeviceOrientationEvent.requestPermission==='function'){try{await DeviceOrientationEvent.requestPermission()}catch(_){}}}
+  catch(_){showErr(L('e_tilt'));$('startTilt').disabled=false;startTouch();return}
+  if(!await boot()){$('startTilt').disabled=false;return}
+  addEventListener('devicemotion',e=>{const a=e.acceleration;let v;
+    if(a&&a.x!=null)v=Math.hypot(a.x,a.y,a.z);
+    else{const g=e.accelerationIncludingGravity;if(!g)return;const m=Math.hypot(g.x,g.y,g.z);SN.g=(SN.g??m)+(m-(SN.g??m))*.05;v=Math.abs(m-SN.g)}
+    SN.a=Math.max(SN.a,v)});
+  addEventListener('deviceorientation',e=>{if(e.beta!=null){SN.beta=e.beta;SN.gamma=e.gamma||0}});
+  SN.on=true;PT.on=true;PT.seen=true;$('gate').hidden=true;$('camEmpty').hidden=true;afterStart();setHint(L('h_tilt'));toast(L('t_tilt'));
+}
+/* the phone stands in for the body: shaking is speed, tilting left/right is position, tilting up is height */
+function tiltFrame(dt){
+  const v=SN.a;SN.a*=.5;const tgt=Math.min(1,Math.pow(Math.max(0,v-.25)/9,.75));
+  PT.m+=(tgt-PT.m)*(1-Math.exp(-dt/(tgt>PT.m?.06:.3)));
+  const gx=Math.max(-1,Math.min(1,SN.gamma/50)),hy=Math.max(0,Math.min(1,(SN.beta-15)/90));
+  PT.x+=((.5-gx*.45)*CW-PT.x)*(1-Math.exp(-dt/.25));PT.y+=((1-hy)*CH-PT.y)*(1-Math.exp(-dt/.25));
+  return PT.m;
+}
+let wakeL=null;
+async function keepAwake(){try{if('wakeLock' in navigator&&document.visibilityState==='visible'&&!wakeL){wakeL=await navigator.wakeLock.request('screen');wakeL.addEventListener('release',()=>{wakeL=null})}}catch(_){}}
+document.addEventListener('visibilitychange',()=>{if(S.running&&document.visibilityState==='visible')keepAwake()});
+function setFull(on){document.body.classList.toggle('full',on);$('fsBtn').textContent=on?'✕':'⤢';$('fsBtn').title=$('fsBtn').ariaLabel=on?L('fs_off'):L('fs_on');
+  try{if(on&&document.documentElement.requestFullscreen&&!document.fullscreenElement)document.documentElement.requestFullscreen().catch(()=>{});
+      if(!on&&document.fullscreenElement)document.exitFullscreen().catch(()=>{})}catch(_){}}
+$('fsBtn').addEventListener('click',e=>{e.stopPropagation();setFull(!document.body.classList.contains('full'))});
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement&&document.body.classList.contains('full'))setFull(false)});
+function afterStart(){keepAwake();$('fsBtn').hidden=false;
+  if(isIOS){setTimeout(()=>{if(S.running&&!navigator.audioSession)toast(L('t_ios'))},1600)}}
+$('startTilt').addEventListener('click',startTilt);
 /* touch mode: pointer speed stands in for the dancer. Same signals, same rules. */
 function touchFrame(dt){
+  if(SN.on)return tiltFrame(dt);
   const spd=PT.acc/CW/dt;PT.acc=0;const tgt=Math.min(1,Math.pow(spd/2.4,.85));
   PT.m+=(tgt-PT.m)*(1-Math.exp(-dt/(tgt>PT.m?.08:.25)));
   return PT.m;
@@ -1449,9 +1546,9 @@ const ZH={
  a_nc:'本作不作任何健康或療效主張。呼吸速度是一個音樂決定。',
  a_h5:'隱私',a_pv:'鏡頭與麥克風都在你的瀏覽器內處理，不錄音、不傳送。若你設定了舞台範圍與房間調音，只會存在這個瀏覽器。開啟姿態追蹤時，會從 Google 的伺服器下載模型。',
  a_h6:'狀態',a_st:'測試版 0.20，2026 年 11 月為墨西哥城一場鋼琴與當代舞即興而做。下一步：與聲境共用的生成器，以及 Max/RNBO 的聲音引擎。觸控模式是最溫和的開始；鏡頭模式才是真正的樂器。',
- h_touch:'在這裡移動',t_touch:'觸控模式'
+ h_touch:'在這裡移動',t_touch:'觸控模式',g_tilt:'移動手機',g_note2:'移動手機，或在這裡移動手指。不錄音。',h_tilt:'揮動、傾斜、靜止',t_tilt:'手機即身體',e_tilt:'無法讀取動作感應，改用觸控。',t_ios:'沒有聲音？關掉靜音模式',fs_on:'全螢幕',fs_off:'離開全螢幕'
 };
-const EN={h_touch:'move here',t_touch:'Touch mode'};
+const EN={h_touch:'move here',t_touch:'Touch mode',h_tilt:'swing · tilt · hold still',t_tilt:'The phone is the body',e_tilt:'Motion sensors are off, so touch it is.',t_ios:'No sound? Turn off silent mode',fs_on:'Full screen',fs_off:'Exit full screen'};
 let LANG='en';try{LANG=localStorage.getItem('omt-lang')==='zh'?'zh':'en'}catch(_){}
 function L(k){return (LANG==='zh'&&ZH[k])||EN[k]||k}
 document.querySelectorAll('[data-t]').forEach(el=>{el.dataset.en=el.innerHTML});
