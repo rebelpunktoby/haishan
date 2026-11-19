@@ -65,6 +65,20 @@
   /* ---------- stage ---------- */
   .stage{position:relative;flex:1;display:grid;place-items:center;overflow:hidden;min-height:0}
   .field{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+  /* the sky: the stage's colour follows the real sun (and, very slightly, the 節氣); it changes slowly, never per frame */
+  @property --sky-a{syntax:"<color>";inherits:true;initial-value:#0A0C18}
+  @property --sky-b{syntax:"<color>";inherits:true;initial-value:#0C1220}
+  :root{--sky-a:#0A0C18;--sky-b:#0C1220;--sun-x:50%;--sun-y:120%;--sun-c:255,214,170;--sun-a:0;--orb-o:1;--warm:0;--dim:0}
+  .sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) 100%);transition:--sky-a 20s linear,--sky-b 20s linear}
+  /* the light's source: where the sun is (or, at night, the moon) — shown only */
+  .lum{position:absolute;width:80vmax;height:80vmax;left:var(--sun-x);top:var(--sun-y);transform:translate(-50%,-50%);border-radius:50%;
+    background:radial-gradient(circle,rgba(var(--sun-c),.42) 0%,rgba(var(--sun-c),.10) 30%,rgba(var(--sun-c),0) 62%);mix-blend-mode:screen;opacity:var(--sun-a);
+    transition:left 20s linear,top 20s linear,opacity 20s linear}
+  body.on .orb{opacity:var(--orb-o);transition:opacity 20s linear}
+  /* night comfort: warmer, darker after dark; the breath and the rests ride on its opacity */
+  .nightveil{position:absolute;inset:0;pointer-events:none;z-index:1;
+    background:linear-gradient(rgba(255,150,70,var(--warm)),rgba(255,150,70,var(--warm))),linear-gradient(rgba(4,5,10,var(--dim)),rgba(4,5,10,var(--dim)));
+    transition:opacity 1.2s linear}
   .orb{position:absolute;border-radius:50%;filter:blur(64px);mix-blend-mode:screen;opacity:0;transition:opacity 4s var(--ease)}
   body.on .orb{opacity:1}
   .o1{width:70vmax;height:70vmax;top:-26%;left:-18%;background:radial-gradient(circle,rgba(124,107,179,.55) 0%,rgba(124,107,179,0) 62%);animation:driftA 52s var(--ease) infinite}
@@ -262,9 +276,12 @@
 
 <main class="stage">
   <div class="field" aria-hidden="true">
+    <span class="sky"></span>
     <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
+    <span class="lum"></span>
   </div>
   <canvas id="horizon" aria-hidden="true"></canvas>
+  <span class="nightveil" aria-hidden="true"></span>
   <span class="ink-c" aria-hidden="true">海</span>
 
   <div class="veil" id="veil">
@@ -343,6 +360,6 @@
 
 <script src="/omt/knob.js"></script>
 <script>OMTKnob.addCloser(function(){var a=document.getElementById("about");if(a&&a.classList.contains("open")){document.getElementById("aboutClose").click();return true}return false});</script>
-<script type="module" src="app_v4.js?v=4"></script>
+<script type="module" src="app_v5.js?v=1"></script>
 </body>
 </html>
