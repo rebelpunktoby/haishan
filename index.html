@@ -451,7 +451,7 @@ body.lang-zh .hero-E .pp{font-family:var(--zh-font);font-style:normal;letter-spa
   font-family:var(--serif);font-weight:300;font-size:clamp(9rem,27vw,23rem);line-height:1;letter-spacing:-.03em;
   transform:translate(var(--sx,0px),var(--sy,0px));}
 body.lang-zh .hero-E .ffw{font-family:var(--zh-font);font-size:clamp(8rem,24vw,20rem);letter-spacing:.02em;bottom:-.14em;}
-.hero-E .ff{position:relative;z-index:2;color:#CFC9BC;opacity:0;filter:blur(18px);letter-spacing:.14em;}
+.hero-E .ff{position:relative;z-index:2;color:#CFC9BC;opacity:0;filter:blur(18px);letter-spacing:inherit;}
 .hero-E .ff.in{animation:ffIn 4.4s var(--ease) forwards;}
 @keyframes ffIn{to{opacity:.8;filter:blur(0);letter-spacing:inherit}}
 .hero-E .echo{position:absolute;left:0;top:0;z-index:1;color:#CFCBE6;pointer-events:none;opacity:0;letter-spacing:inherit;
@@ -796,6 +796,17 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
 @keyframes ilTw{0%,100%{opacity:.35}50%{opacity:1}}
 @keyframes ilDraw{from{stroke-dashoffset:1}to{stroke-dashoffset:0}}
 @keyframes ilNums{0%{opacity:0}40%,70%{opacity:1}100%{opacity:0}}
+@media (max-width:700px){.il-fib{width:150vw}}
+
+/* interlude proportions on φ: height φ·100svh; spiral field = character × φ²; echoes step by φ^(1/4); line = 1/φ⁴ of the room */
+.interlude{height:161.8svh;}
+@media (max-width:979px){.interlude{height:138.2svh;}}
+.il-k,.il-echo{font-size:clamp(9rem,24vw,19rem);}
+.il-fib{width:clamp(23.56rem,62.8vw,49.74rem);}
+.il-echo.e1{--s:1.128}.il-echo.e2{--s:1.272}.il-echo.e3{--s:1.435}
+.il-ring{width:clamp(14.56rem,38.8vw,30.74rem);}
+.il-line{height:14.6svh;}
+.il-in{gap:calc(1.618rem);}
 @media (max-width:700px){.il-fib{width:150vw}}
 </style>
 </head>
@@ -1281,8 +1292,8 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
     var onScroll = function(){ nav.classList.toggle('scrolled', window.scrollY > 40); };
     onScroll(); window.addEventListener('scroll', onScroll, {passive:true});
 
-    // hero parallax
-    if(!reduce && hover){
+    // hero parallax — off: nothing on the hero follows the cursor
+    if(false){
       var field = document.querySelector('.field');
       var raf=null, tx=0, ty=0;
       window.addEventListener('pointermove', function(e){
@@ -1356,7 +1367,7 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
     var tight=zh()? '.02em' : '-.03em';
     var kf=[{opacity:.78,letterSpacing:tight,filter:'blur(0px)',offset:0},
             {opacity:.84,letterSpacing:tight,filter:'blur(0px)',offset:.38},
-            {opacity:quiet,letterSpacing:loose+'em',filter:'blur(2.6px)',offset:.7},
+            {opacity:quiet,letterSpacing:tight,filter:'blur(2.6px)',offset:.7},
             {opacity:.78,letterSpacing:tight,filter:'blur(0px)',offset:1}];
     var opts={duration:dur,easing:'cubic-bezier(.45,.05,.3,1)',fill:'forwards'};
     var a=ff.animate(kf,opts);
