@@ -411,6 +411,8 @@
   .track-toggle:hover{color:var(--lumen);border-color:var(--lumen);}
   @media(max-width:600px){.row.album{--cv:64px;}.tracklist{padding-left:0;}.track-toggle{margin-left:calc(64px + 1rem);}.tracklist li{font-size:1rem;}}
   @media(prefers-reduced-motion:reduce){.tracks{transition:none;}}
+/* OMT trio: Engine, Site and Motion fit one screen */
+#omt .omt-seam{margin-top:clamp(.8rem,2.6vh,2.8rem);margin-bottom:clamp(.8rem,2.6vh,2.8rem);}
 </style>
 <style>
 
@@ -754,6 +756,14 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
       <div class="rows">
         <div class="row" data-reveal>
           <div class="title has-cover">
+            <a class="cover" href="/breath/" tabindex="-1" aria-hidden="true"><img src="covers/breath.svg" alt="Cover for Breath" width="96" height="96" loading="lazy" decoding="async"></a>
+            <a href="/breath/" class="work-link">Breath <span class="arr">↗</span></a>
+            <span class="role" data-i18n="workB_role">Still Air · four movements for piano, electronics and breath</span>
+          </div>
+          <div class="meta"><span class="yr">11.2026</span></div>
+        </div>
+        <div class="row" data-reveal>
+          <div class="title has-cover">
             <a class="cover" href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="covers/flow.webp" alt="Cover for FLOW / 04032026" width="96" height="96" loading="lazy" decoding="async"></a>
             <a href="https://on.soundcloud.com/MSsba2EsOn1txhu1M5" target="_blank" rel="noopener" class="work-link">FLOW / 04032026 <span class="arr">↗</span></a>
             <span class="role" data-i18n="work7_role">OceanMountain</span>
@@ -828,14 +838,7 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
           <span class="go" aria-hidden="true">↗</span>
         </a>
       </div>
-      <div class="rows">
-        <div class="row" data-reveal>
-          <div class="title">
-            <a href="/omt/stillair/" class="work-link"><span data-i18n="omt5_title">Still Air</span> <span class="arr">↗</span></a>
-            <span class="role" data-i18n="omt5_role">A suite in four breaths for piano and electronics.</span>
-          </div>
-          <div class="meta"><span class="yr">2026</span></div>
-        </div>
+      <div class="rows" hidden>
         <div class="row" data-reveal hidden>
           <div class="title">
             <a href="/omt/laws/" class="work-link"><span data-i18n="omt3_title">The Laws</span> <span class="arr">↗</span></a>
@@ -1021,7 +1024,7 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
       nav_beta:{en:'OMT&nbsp;<span>β</span>',zh:'OMT&nbsp;<span>β</span>'},
       idx_omt:{en:'In progress',zh:'進行中'},
       omt4_title:{en:"Sketch 4B",zh:"草圖 4B"},omt4_role:{en:"The drone listens to the hour — four voices, an auto mixer, render any moment as a sample.",zh:"持續音開始聆聽時辰——四個聲部、自動混音，任何一刻都可渲染成取樣。"},
-      omt5_title:{en:"Still Air",zh:"靜氣"},omt5_role:{en:"A suite in four breaths for piano and electronics.",zh:"為鋼琴與電子聲音而寫的四個呼吸組曲。"}, omt3_title:{en:"The Laws",zh:"山海憲章"},omt3_role:{en:"How the hour leans, right now — and the ten articles behind it.",zh:"此刻時辰的傾向，與背後的十條憲章。"},
+      omt3_title:{en:"The Laws",zh:"山海憲章"},omt3_role:{en:"How the hour leans, right now — and the ten articles behind it.",zh:"此刻時辰的傾向，與背後的十條憲章。"},
       omt2_title:{en:'Sketch 4A',zh:'草圖 4A'},
       omt2_role:{en:'A breathing drone study — breath, brightness, space.',zh:'一個會呼吸的持續音習作——呼吸、明暗、空間。'},
       omt_sub:{en:'Beta · Live',zh:'測試版 · 線上'},
@@ -1071,7 +1074,7 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
       album1_role:{en:'with Eric Leo',zh:'與 Eric Leo'},
       track_more:{en:"Tracklist · 3",zh:"曲目 · 3"},
       track_less:{en:"Close",zh:"收起"},
-      work7_role:{en:'OceanMountain',zh:'OceanMountain'},
+      workB_role:{en:"Still Air · four movements for piano, electronics and breath",zh:"靜氣 · 為鋼琴、電子聲音與呼吸而寫的四個樂章"}, work7_role:{en:'OceanMountain',zh:'OceanMountain'},
       work8_role:{en:'OceanMountain',zh:'OceanMountain'},
       lbl_listen:{en:'Listen',zh:'聆聽'},
       lbl_stage:{en:"On Stage",zh:"現場演出"},
