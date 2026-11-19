@@ -156,10 +156,17 @@ function start() {
     top: [-.55, .6, 50], origin: [-.79, .5, 46], wall: [null, .38, 44], pedal: [null, .2, 42], seasons: [null, .58, 47],
     rain: [null, 1.08, 42], light: [Math.PI + .5, .82, 44], silence: [null, .55, 54], listen: [null, .55, 48], method: [null, .62, 50], next: [null, .6, 50]
   };
-  let camA = -.55, camE = .6, camD = 50, drag = null, lastUser = -99, spin = 0;
-  host.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, a: camA, e: camE }; host.setPointerCapture(e.pointerId); });
-  host.addEventListener('pointermove', e => { if (!drag) return; camA = drag.a - (e.clientX - drag.x) * .008; camE = MathUtils.clamp(drag.e + (e.clientY - drag.y) * .006, .08, 1.25); lastUser = performance.now() / 1000; });
-  const end = () => { drag = null; }; host.addEventListener('pointerup', end); host.addEventListener('pointercancel', end);
+  let camA = -.55, camE = .6, camD = 50, drag = null, lastUser = -99, spin = 0, zoom = 1;
+  const full = () => document.body.classList.contains('full');
+  const pts = new Map(); let pinch0 = 0, zoom0 = 1;
+  host.addEventListener('wheel', e => { if (!full()) return; e.preventDefault(); zoom = MathUtils.clamp(zoom * Math.exp(e.deltaY * .0012), .4, 1.6); lastUser = performance.now() / 1000; }, { passive: false });
+  host.addEventListener('pointerdown', e => { pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pts.size === 2) { const [a, b] = [...pts.values()]; pinch0 = Math.hypot(a[0] - b[0], a[1] - b[1]); zoom0 = zoom; drag = null; }
+    else { drag = { x: e.clientX, y: e.clientY, a: camA, e: camE }; } host.setPointerCapture(e.pointerId); });
+  host.addEventListener('pointermove', e => { if (pts.has(e.pointerId)) pts.set(e.pointerId, [e.clientX, e.clientY]);
+    if (pts.size === 2 && pinch0) { const [a, b] = [...pts.values()]; zoom = MathUtils.clamp(zoom0 * pinch0 / Math.max(20, Math.hypot(a[0] - b[0], a[1] - b[1])), .4, 1.6); lastUser = performance.now() / 1000; return; }
+    if (!drag) return; camA = drag.a - (e.clientX - drag.x) * .008; camE = MathUtils.clamp(drag.e + (e.clientY - drag.y) * .006, .08, 1.25); lastUser = performance.now() / 1000; });
+  const end = e => { pts.delete(e.pointerId); if (pts.size < 2) pinch0 = 0; drag = null; }; host.addEventListener('pointerup', end); host.addEventListener('pointercancel', end);
 
   function size() {
     const r = host.getBoundingClientRect(); if (!r.width) return;
@@ -182,15 +189,15 @@ function start() {
     const focus = O.focus(), hi = O.hi();
 
     /* camera */
-    const v = VIEW[focus] || VIEW.top, userHold = now - lastUser < 6;
+    const v = full() ? VIEW.top : (VIEW[focus] || VIEW.top), userHold = now - lastUser < (full() ? 12 : 6);
     if (!userHold && !drag) {
-      spin += dt * .035;
+      spin += dt * (full() ? .02 : .03);
       let ta = v[0] === null ? az(S.face) + Math.PI + .35 + Math.sin(spin) * .5 : v[0];
       if (focus === 'top' || focus === 'listen' || focus === 'next' || focus === 'method' || focus === 'silence') ta = -.55 + spin;
-      const da = Math.atan2(Math.sin(ta - camA), Math.cos(ta - camA)); camA += da * Math.min(1, dt * .6);
-      camE += (v[1] - camE) * Math.min(1, dt * .8); camD += (v[2] - camD) * Math.min(1, dt * .8);
+      const da = Math.atan2(Math.sin(ta - camA), Math.cos(ta - camA)); camA += MathUtils.clamp(da * Math.min(1, dt * .5), -.35 * dt, .35 * dt);
+      camE += (v[1] - camE) * Math.min(1, dt * .6); camD += (v[2] - camD) * Math.min(1, dt * .6);
     }
-    look.set(0, focus === 'rain' ? 2.6 : 3.4, 0); const cd = camD * (camera.aspect < 1 ? 1.12 : 1);
+    look.set(0, focus === 'rain' ? 2.6 : 3.4, 0); if (!full()) zoom += (1 - zoom) * Math.min(1, dt * .8); const cd = camD * zoom * (camera.aspect < 1 ? 1.12 : 1);
     camera.position.set(look.x + cd * Math.cos(camE) * Math.sin(camA), look.y + cd * Math.sin(camE), look.z - cd * Math.cos(camE) * Math.cos(camA));
     camera.lookAt(look);
 
@@ -279,6 +286,9 @@ function start() {
 
     renderer.render(scene, camera);
   }
+  { const v0 = VIEW[O.focus()] || VIEW.top; camE = v0[1]; camD = v0[2]; if (v0[0] !== null) camA = v0[0]; else if (O.focus() !== 'top') camA = az(O.S[O.cur()].face) + Math.PI + .35; }
+  host.style.opacity = '0'; host.style.transition = 'opacity 1.4s ease';
+  requestAnimationFrame(() => requestAnimationFrame(() => { host.style.opacity = '1'; }));
   requestAnimationFrame(frame);
   window.OMT.has3d = true;
   document.documentElement.classList.add('has3d');
