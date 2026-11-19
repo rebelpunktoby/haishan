@@ -808,6 +808,7 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
 .il-line{height:14.6svh;}
 .il-in{gap:calc(1.618rem);}
 @media (max-width:700px){.il-fib{width:150vw}}
+a.brand{color:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-color:transparent;}
 </style>
 </head>
 <body>
@@ -815,7 +816,7 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
 
 <header class="nav" id="nav">
   <div class="wrap nav-row">
-    <div class="brand">OceanMountain<span class="brand-alt"> <b>/</b> Toby&nbsp;Hysan</span></div>
+    <a class="brand" href="/" aria-label="OceanMountain — back to the top" onclick="if(location.pathname==='/'){event.preventDefault();history.replaceState(null,'','/');window.scrollTo({top:0,behavior:matchMedia('(prefers-reduced-motion: reduce)').matches?'auto':'smooth'});}">OceanMountain<span class="brand-alt"> <b>/</b> Toby&nbsp;Hysan</span></a>
     <div class="nav-right">
       <nav class="nav-links" aria-label="Primary">
         <a href="#work" data-i18n="nav_work">Work</a>
