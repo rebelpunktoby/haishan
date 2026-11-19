@@ -746,6 +746,34 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
 @keyframes ilCap{0%{opacity:0;letter-spacing:.6em}40%,70%{opacity:1;letter-spacing:.32em}100%{opacity:0}}
 @keyframes ilLine{from{transform:scaleY(0)}to{transform:scaleY(1)}}
 @media (max-width:979px){.interlude{height:120svh}.il-cap{font-size:.62rem;letter-spacing:.22em}}
+
+/* interlude, enriched: reverb echoes of the character, slow ripples, drifting dust */
+.il-stage{position:relative;display:grid;place-items:center;}
+.il-stage>*{grid-area:1/1;}
+.il-echo{font-family:"Noto Serif TC",serif;font-weight:200;font-size:clamp(9rem,26vw,20rem);line-height:1;color:transparent;pointer-events:none;
+  -webkit-text-stroke:1px rgba(120,200,190,var(--a));transform:scale(var(--s)) translateY(var(--ty,0));}
+.il-echo.e1{--a:.22;--s:1.07}.il-echo.e2{--a:.12;--s:1.16}.il-echo.e3{--a:.06;--s:1.28}
+.il-ring{width:clamp(14rem,34vw,26rem);aspect-ratio:1;border-radius:50%;border:1px solid rgba(120,200,190,.16);opacity:0;pointer-events:none;}
+.il-dust{position:absolute;inset:-30%;pointer-events:none;}
+.il-dust i{position:absolute;left:var(--x);top:var(--y);width:2px;height:2px;border-radius:50%;background:rgba(200,235,228,.55);box-shadow:0 0 6px rgba(120,200,190,.6);opacity:.0;}
+@media (prefers-reduced-motion:no-preference){
+  .il-ring{animation:ilRing 9s cubic-bezier(.2,.6,.3,1) infinite;}
+  .il-ring.r2{animation-delay:-3s}.il-ring.r3{animation-delay:-6s}
+  .il-dust i{animation:ilDust 12s ease-in-out infinite;animation-delay:var(--d);}
+  .il-echo{animation:ilEcho 7s ease-in-out infinite alternate;}
+  .il-echo.e2{animation-delay:-2.3s}.il-echo.e3{animation-delay:-4.6s}
+}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .il-stage{animation:ilSpread linear both;animation-timeline:--il;animation-range:entry 10% exit 90%;}
+  }
+}
+@keyframes ilRing{0%{opacity:0;transform:scale(.55)}18%{opacity:.9}100%{opacity:0;transform:scale(1.9)}}
+@keyframes ilDust{0%,100%{opacity:0;transform:translate(0,0)}30%,70%{opacity:.9}50%{transform:translate(18px,-26px)}}
+@keyframes ilEcho{from{--ty:0px;opacity:.6}to{--ty:-10px;opacity:1}}
+@keyframes ilSpread{0%{opacity:0;letter-spacing:0}30%,65%{opacity:1}100%{opacity:0}}
+@property --ty{syntax:"<length>";inherits:false;initial-value:0px}
+.il-cap .jp{font-weight:400;text-transform:none;letter-spacing:.12em;color:rgba(120,200,190,.85);margin-right:.4em;}
 </style>
 </head>
 <body>
@@ -855,8 +883,13 @@ body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
 
   <section class="interlude" aria-hidden="true">
     <div class="il-in">
-      <span class="il-k">境</span>
-      <span class="il-cap"><span class="en">jìng — where a sound becomes a place</span><span class="zh-i">境 · 聲之所在</span></span>
+      <span class="il-stage">
+        <span class="il-ring r1"></span><span class="il-ring r2"></span><span class="il-ring r3"></span>
+        <span class="il-echo e3">境</span><span class="il-echo e2">境</span><span class="il-echo e1">境</span>
+        <span class="il-k">境</span>
+        <span class="il-dust"><i style="--x:12%;--y:30%;--d:0s"></i><i style="--x:84%;--y:22%;--d:-3s"></i><i style="--x:70%;--y:78%;--d:-6s"></i><i style="--x:22%;--y:72%;--d:-9s"></i><i style="--x:48%;--y:8%;--d:-4.5s"></i><i style="--x:92%;--y:55%;--d:-7.5s"></i><i style="--x:6%;--y:52%;--d:-1.5s"></i><i style="--x:58%;--y:94%;--d:-10.5s"></i></span>
+      </span>
+      <span class="il-cap"><span class="en"><b class="jp">ging²</b> — where a sound becomes a place</span><span class="zh-i"><b class="jp">ging²</b> 境 · 聲之所在</span></span>
       <span class="il-line"></span>
     </div>
   </section>
