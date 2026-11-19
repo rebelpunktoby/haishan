@@ -101,7 +101,7 @@ button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 </style>
 </head>
 <body>
-<a class="home" href="/#work" aria-label="Back" title="Back" onclick="if(document.referrer.indexOf(location.origin)===0&&history.length>1){history.back();return false}">←</a>
+<a class="home" href="/#work" aria-label="Back" title="Back" onclick="return goBack()">←</a>
 <header class="pg" id="top">
   <h1>Breath <span>息</span></h1>
   <p class="sub" data-en="Still Air · four movements for piano, electronics and a breathing room" data-zh="靜氣 · 為鋼琴、電子聲音與呼吸的房間而寫的四個樂章"></p>
@@ -485,6 +485,11 @@ async function openPerform(k) {
   try { await document.documentElement.requestFullscreen(); } catch (e) {}
   try { P.lock = await navigator.wakeLock.request("screen"); } catch (e) {}
   cancelAnimationFrame(P.raf); P.last = performance.now(); P.raf = requestAnimationFrame(frame);
+}
+function goBack() {
+  if (!$("pf").hidden) { closePerform(); return false; }
+  if (document.referrer.indexOf(location.origin) === 0 && history.length > 1) { history.back(); return false; }
+  return true;
 }
 function closePerform() {
   P.playing = false; $("pf").hidden = true; cancelAnimationFrame(P.raf); if (P.g) P.g.gain.value = 0;
