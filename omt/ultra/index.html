@@ -139,9 +139,9 @@ ol.laws b{color:var(--ink);font-weight:500}
 .opn{display:none;align-self:flex-start;font:500 11.5px var(--f-mono);letter-spacing:.06em;color:rgba(142,199,184,.9);background:none;border:0;padding:2px 0;cursor:pointer}
 .opn::before{content:"+ "}
 body.min .short,body.min .opn{display:block}
-body.min .pass>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks){display:none}
+body.min .pass>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks):not(.door):not(.fig):not(.scorebox){display:none}
 body.min .pass{min-height:26vh;gap:6px;padding:18px 0}
-body.min .pass.open>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks){display:revert}
+body.min .pass.open>:not(.kick):not(h2):not(.short):not(.opn):not(.tracks):not(.door):not(.fig):not(.scorebox){display:revert}
 .story{padding-bottom:22vh}
 body.min .pass.open>.short{display:none}
 body.min .pass.open>.opn::before{content:"− "}
@@ -194,22 +194,44 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
  .temple.narrow .chip [data-i]{display:none}
  .temple.narrow .chip .h{margin:0;font-size:15px}
 }
+
+.fig{margin:4px 0 2px;max-width:520px}
+.door{max-width:520px}
+.fig .dia{padding:12px}
+@media (min-width:901px){
+ .wrap{max-width:1320px}
+ .stage{grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:44px}
+}
+@media (max-width:900px){
+ .cvwrap{width:min(100%,38vh)}
+ .fig,.door{max-width:100%}
+}
+
+#cv3{position:absolute;left:10px;top:10px;width:calc(100% - 20px);height:calc(100% - 20px);border-radius:10px;display:none;cursor:grab;touch-action:pan-y}
+#cv3:active{cursor:grabbing}
+html.has3d body.d3 #cv3{display:block}
+html.has3d body.d3 #cv{opacity:0}
+.dim{position:absolute;top:18px;left:18px;z-index:2;display:none;border:1px solid rgba(232,229,220,.16);border-radius:999px;padding:2px;background:rgba(12,16,21,.72);backdrop-filter:blur(6px)}
+html.has3d .dim{display:flex}
+.dim button{font:500 12px var(--f-mono);background:none;border:0;color:var(--ink-2);padding:4px 10px;border-radius:999px;cursor:pointer}
+.dim button[aria-pressed="true"]{background:rgba(219,168,74,.18);color:var(--ink)}
+@media (max-width:900px){#cv3{left:5px;top:5px;width:calc(100% - 10px);height:calc(100% - 10px)}.dim{top:10px;left:10px}.dim button{font-size:10.5px;padding:3px 7px}}
 </style>
 </head>
 <body class="min">
 <div class="band"><div class="wrap" data-i="band">Concept stage. Nothing is built. All sound on this page is modelled.</div></div>
-<header><div class="wrap"><a class="omt-knob" href="/#omt" aria-label="Back" title="Back">←</a><a class="brand" href="/#omt">風雨殿 <span>OMT Site</span></a><button class="lang" id="lang" type="button" aria-label="Switch language">中文</button></div></header>
+<header><div class="wrap"><a class="brand" href="#top">風雨殿 <span>OMT Site</span></a><button class="lang" id="lang" type="button" aria-label="Switch language">中文</button></div></header>
 <main id="top">
 <section class="hero"><div class="wrap">
   <p class="eyebrow" data-i="eyebrow">OMT Site 殿境 · a study for a building</p>
   <div class="han" aria-hidden="true">風雨殿</div>
   <h1 data-i="h1">Temple of Wind and Rain</h1>
   <p class="thesis" data-i="thesis">A building played by weather. Wind in the walls, rain on glass, sun in the pitch. <b>The building only tunes and listens.</b></p>
-  <p class="cue" data-i="cue">The plan follows the text.</p>
+  <p class="cue" data-i="cue">The model follows the text.</p>
 </div></section>
 <div class="wrap stage">
   <div class="temple">
-    <div class="cvwrap"><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div></div>
+    <div class="cvwrap"><canvas id="cv3" role="img" aria-label="The temple as an instrument in space: wind enters the active face, the chord hangs in the air as rings, rain lights the glass in the skywell, a blade of sun crosses the floor. Drag to turn."></canvas><canvas id="cv" width="900" height="900" role="img" aria-label="Plan of an eight-faced temple. Wind streams toward one face, sunlight crosses the floor from the south, rain falls in the centre."></canvas><div class="dim" role="group" aria-label="Model"><button type="button" data-d="3d" aria-pressed="true">3D</button><button type="button" data-d="plan" aria-pressed="false" data-i="vplan">Plan</button></div><div class="view" role="group" aria-label="View"><button type="button" data-v="min" aria-pressed="true" data-i="vmin">Minimal</button><button type="button" data-v="open" aria-pressed="false" data-i="vopen">Open</button></div></div>
     <canvas class="scoreS" id="scoreS" aria-hidden="true"></canvas>
     <div class="arcm" aria-hidden="true"><i id="arcw"></i><i id="arcr"></i></div>
     <p class="readout" id="readout"></p>
@@ -243,7 +265,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
       <h2 data-i="p2t">The wall as instrument</h2>
       <p class="short" data-i="p2s">A slot lets the wind speak. A chamber sets the pitch.</p>
       <p class="body" data-i="p2b">Wind carries little pressure, so the voices are large and low. A slot lets the air speak. A tuned chamber behind it fixes the pitch. Shutters close in a storm.</p>
-      <details><summary data-i="m2s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
+      <figure class="fig"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Wind enters a slot, strikes an edge, and a chamber behind sets the pitch">
           <rect x="96" y="20" width="8" height="46" fill="#a3adb5" opacity=".5"/><rect x="96" y="80" width="8" height="50" fill="#a3adb5" opacity=".5"/>
           <path d="M104 20H290V60M290 86V130H104" fill="none" stroke="#a3adb5" stroke-width="1.2"/>
           <line x1="14" y1="73" x2="88" y2="73" stroke="#8ec7b8" stroke-width="2"/><path d="M88 73l-9-5v10z" fill="#8ec7b8"/>
@@ -253,7 +275,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
           <text x="112" y="44" font-size="11" data-i="d1b">slot + edge</text>
           <text x="176" y="78" font-size="11" data-i="d1c">tuned chamber</text>
           <text x="176" y="94" font-size="10" class="q" data-i="d1d">length sets pitch</text>
-        </svg></div><p data-i="m2p">At 15–40 km/h, wind supplies 10–74 Pa. Length and volume set pitch. An open pipe overblows to the octave, a stopped pipe to the twelfth, so gusts stay within the chord.</p></div></details>
+        </svg></div></figure><details><summary data-i="m2s">Show</summary><div class="in"><p data-i="m2p">At 15–40 km/h, wind supplies 10–74 Pa. Length and volume set pitch. An open pipe overblows to the octave, a stopped pipe to the twelfth, so gusts stay within the chord.</p></div></details>
       <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="pedal" id="f-pedal">
@@ -292,7 +314,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
       <h2 data-i="p5t">Rain, gathered</h2>
       <p class="short" data-i="p5s">Rain gathered into drops, falling on tuned glass.</p>
       <p class="body" data-i="p5b">Rain alone on glass is noise. Gathered, then released from a height, each drop strikes tuned glass in the open skywell. Light rain touches the octave and fifth. Heavier rain reaches the third, sixth, seventh and ninth, then the eleventh and thirteenth.</p>
-      <details><summary data-i="m5s">How it works</summary><div class="in"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
+      <figure class="fig"><div class="dia"><svg viewBox="0 0 320 150" role="img" aria-label="Rain is caught, falls as single drips onto a tilted glass bar, and drains away">
           <path d="M40 18H180L122 36H98z" fill="#28333f" stroke="#a3adb5" stroke-width="1.2"/>
           <line x1="110" y1="40" x2="110" y2="96" stroke="#8ec7b8" stroke-width="2" stroke-dasharray="2 7"/>
           <path d="M62 108L160 96L161 101L63 113z" fill="rgba(219,168,74,.2)" stroke="#dba84a" stroke-width="1.6"/>
@@ -301,7 +323,7 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
           <text x="196" y="72" font-size="11" data-i="d2b">fall 1 to 3 m: strength</text>
           <text x="196" y="108" font-size="11" data-i="d2c">tuned glass: pitch</text>
           <text x="196" y="134" font-size="11" class="q" data-i="d2d">drain: pitch stays</text>
-        </svg></div><p data-i="m5p">Each glass hangs at its own height. Drops shaken loose together land in order of their fall, lower notes first, so an interval opens over a fraction of a second. A gathered drop carries the energy of roughly fifteen raindrops. Drainage keeps the glass at pitch.</p></div></details>
+        </svg></div></figure><details><summary data-i="m5s">Show</summary><div class="in"><p data-i="m5p">Each glass hangs at its own height. Drops shaken loose together land in order of their fall, lower notes first, so an interval opens over a fraction of a second. A gathered drop carries the energy of roughly fifteen raindrops. Drainage keeps the glass at pitch.</p></div></details>
       <button class="opn" type="button" aria-expanded="false" data-i="opn">Open</button>
     </article>
     <article class="pass" data-focus="light" id="f-light">
@@ -347,11 +369,11 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
   </div>
 </div>
 </main>
-<footer><div class="wrap"><a href="/">← OceanMountain / Toby Hysan</a> · <a href="/#omt">山海 OMT</a> · © 2026 OCEANMOUNTAINLAI</div></footer>
+<footer><div class="wrap"><a href="/">← OceanMountain / Toby Hysan</a> · <a href="/omt/">山海 OMT</a> · © 2026 OCEANMOUNTAINLAI</div></footer>
 <script>
 (function(){
 "use strict";
-var ZH={"p1k": "i · 緣起", "p1t": "冬日之門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦：夏清涼開闊，冬溫暖。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處落下，每一滴敲在天井中調好音的玻璃上。細雨只觸及八度與五度；雨勢漸大，便觸及三度、六度、七度、九度，再到十一與十三度。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也牽動持續音的音高，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "運作方式", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "日光與共鳴", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分；白天兩者產生緩慢拍音，黃昏歸於一致。聆聽環廊沿牆設有依 A 泛音列調音的弦，隨周圍一切聲響微微共鳴。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。春秋採鋼琴調律，偏離 A，奏得較輕；夏冬採泛音列，安於 A。配置為暫定。", "m4b": "四季的音（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "運作方式", "m5p": "每片玻璃懸在不同高度。同時被搖落的雨滴，依落差先後抵達，低音先至，音程在一瞬間展開。一滴匯集的水約有十五顆雨滴的能量。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan）作品。風雨殿（OMT Site 殿境）是 OMT Engine（山海 · 聲境）的建築對應；聲境是一部以十二時辰與二十四節氣為本的聲音作品。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃條", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "風向", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度 · 鋼琴調律", "f2": "東南", "w2": "夏", "r2": "根音，清涼", "f3": "西", "w3": "秋", "r3": "F 的三度 · 鋼琴調律", "f4": "西北", "w4": "冬", "r4": "根音，溫暖", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "平面隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止", "p1s": "緣起：一道在風中歌唱的門縫。", "p2s": "縫讓風發聲，腔定下音高。", "p3s": "一個低音 A，貫穿一切。", "p4s": "每季的風，打開不同的一面。", "p5s": "雨聚成滴，落在調音的玻璃上。", "p6s": "一道日光，標出時辰，牽動音高。", "p7s": "無風之日，無聲。", "p8s": "四段可聽的模擬。", "p9s": "每項陳述，只帶一個標籤。", "p10s": "下一步：測試牆。", "vmin": "簡", "vopen": "全", "opn": "展開", "cls": "收起", "scap": "即時。每條線是一根正在發聲的弦，每一點是落在玻璃上的雨。聲音漸弱，向左漂去。", "sw0": "持續音", "sw1": "春", "sw2": "夏", "sw3": "秋", "sw4": "冬", "sw5": "雨"};
+var ZH={"p1k": "i · 緣起", "p1t": "冬日之門", "p1b": "紐約。西北向的門，一道窄縫，強風。門縫發出了聲音；從房間另一頭聽，近乎音樂。", "p2k": "ii · 牆", "p2t": "牆即樂器", "p2b": "風的壓力很小，所以聲部大而低。縫讓氣流發聲，縫後調好音的腔體定下音高。風暴時，擋板關上。", "p3k": "iii · 持續音", "p3t": "一個持續音", "p3b": "每個風面共用一個低音 A，55 與 110 Hz。它不變。其餘音高，都是其上的色彩。", "p4k": "iv · 八面", "p4t": "八面", "p4b": "八面，各對一卦。盛行風隨年轉向：春震、夏巽、秋兌、冬乾。同一個 A 之上，每一面奏出各自的和弦：夏清涼開闊，冬溫暖。", "p5k": "v · 雨", "p5t": "聚雨", "p5b": "雨直接打在玻璃上，只是雜音。先收集，再從高處落下，每一滴敲在天井中調好音的玻璃上。細雨只觸及八度與五度；雨勢漸大，便觸及三度、六度、七度、九度，再到十一與十三度。", "p6k": "vi · 光", "p6t": "光", "p6b": "南面開有密封光縫。一道日光隨時辰移過牆面；正午時，它的深度標出節氣。日光的熱也牽動持續音的音高，太陽因此可聞。", "p7k": "vii · 靜", "p7t": "靜", "p7b": "無風無雨之日，建築無聲。靜默也屬於天氣。", "p8k": "viii · 聆聽", "p8t": "聆聽", "p8b": "四段模擬：起點的那扇門，以及同一場天氣的三種調律。", "p9k": "ix · 方法", "p9t": "量得、承襲、選擇、盼望", "p9b": "每項陳述只帶一個標籤：量得、承襲、選擇、盼望。八卦為建築定序，不對自然作任何斷言。", "p10k": "x · 進行中", "p10t": "進行中", "p10b": "下一步：一面門板大小的測試牆、真實風雨的首批錄音，然後是建築師與基地。此頁隨作品更新。", "dcap": "風入。音出。", "m2s": "細看", "m2p": "風速每小時 15–40 公里，壓力 10–74 帕。長度與容積決定音高。開管超吹至八度，閉管至十二度，陣風因此仍在和弦之內。", "m3s": "日光與共鳴", "m3p": "高音 A 由兩個相同的腔體發出，一個向陽，一個背陰。溫度每升 1°C，音高約升 3 音分；白天兩者產生緩慢拍音，黃昏歸於一致。聆聽環廊沿牆設有依 A 泛音列調音的弦，隨周圍一切聲響微微共鳴。", "m4a": "其餘四面", "m4ap": "離（南）：光。坤（西南）：入口。坎（北）：排水。艮（東北）：靜。春秋採鋼琴調律，偏離 A，奏得較輕；夏冬採泛音列，安於 A。配置為暫定。", "m4b": "四季的音（赫茲）", "m4c": "為何和諧", "m4cp": "粗糙感取決於兩音之間的赫茲距離，而這距離在各音區大致相同。密集音程放高或短促；低音保持寬距。守此原則，持續音之上任何音階皆可，包括微分音。", "m5s": "細看", "m5p": "每片玻璃懸在不同高度。同時被搖落的雨滴，依落差先後抵達，低音先至，音程在一瞬間展開。一滴匯集的水約有十五顆雨滴的能量。排水使玻璃保持音準。", "m6s": "數據", "m6p": "5 毫米的縫投出的光，在 5 米外的牆上每小時移動約 1.3 米。北緯 35 度，正午光線夏至入室 0.6 米，冬至 4.9 米。", "l2h": "門 · 0:44", "m9a": "待解的問題", "m2": "粗糙度採用 Plomp–Levelt 模型，僅衡量聽覺的一個面向，不涉音樂意義。", "a1": "<b>靜默是共享的天氣。</b>", "ab1": "賴海山（Toby Hysan）作品。風雨殿（OMT Site 殿境）是 OMT Engine（山海 · 聲境）的建築對應；聲境是一部以十二時辰與二十四節氣為本的聲音作品。", "l3a": "A · 以 A 為基音的泛音列", "l3b": "B · 五聲音階", "l3c": "C · 鋼琴平均律 A13(♯11)", "q1": "<b>H1.</b> 經調音的風聲，是否比未調音者更悅耳？", "q2": "<b>H2.</b> 間距法則能否預測聽者對粗糙度的判斷？", "q3": "<b>H3.</b> 日照造成的緩慢拍音，聽來是平靜，還是走音？", "w_h": "原則", "a2": "<b>不作健康或療效宣稱。</b>不感測聽者。", "a3": "<b>自然演奏。</b>建築調音。", "a4": "<b>一個持續音，多種色彩。</b>", "a5": "<b>間距先於音階。</b>", "a6": "<b>開口盡可能兼顧聲與光。</b>", "x1": "測試牆", "x1s": "一個風聲部，五根玻璃條", "x2": "錄音", "x2s": "實測的風與雨", "x3": "建築師與基地", "x3s": "形體與土地", "th1": "面", "th2": "風向", "th3": "色彩音", "th4": "A 成為", "f1": "東", "w1": "春", "r1": "D 的五度 · 鋼琴調律", "f2": "東南", "w2": "夏", "r2": "根音，清涼", "f3": "西", "w3": "秋", "r3": "F 的三度 · 鋼琴調律", "f4": "西北", "w4": "冬", "r4": "根音，溫暖", "b1": "超過八度", "b2": "大六度", "b3": "四度", "b4": "大三度", "b5": "全音", "b5b": "全音", "d1a": "風", "d1b": "縫與刃", "d1c": "調音腔體", "d1d": "長度決定音高", "d2a": "集水面：速度", "d2b": "落差 1 至 3 米：力度", "d2c": "調音玻璃：音高", "d2d": "排水：音高不變", "s0": "春", "s1": "夏", "s2": "秋", "s3": "冬", "t1": "四季輪轉", "t2": "日照暖持續音", "t3": "雨", "band": "概念階段。尚未建造。本頁聲音皆為模擬。", "eyebrow": "OMT Site 殿境 · 一座建築的習作", "h1": "風雨之殿", "thesis": "一座由天氣演奏的建築。風在牆中，雨在玻璃上，日光在音高裡。<b>建築只調音，只聆聽。</b>", "cue": "模型隨文字轉動。", "hint": "建議使用耳機。瀏覽器草圖，非錄音。", "play": "播放聲音草圖", "stop": "停止", "p1s": "緣起：一道在風中歌唱的門縫。", "p2s": "縫讓風發聲，腔定下音高。", "p3s": "一個低音 A，貫穿一切。", "p4s": "每季的風，打開不同的一面。", "p5s": "雨聚成滴，落在調音的玻璃上。", "p6s": "一道日光，標出時辰，牽動音高。", "p7s": "無風之日，無聲。", "p8s": "四段可聽的模擬。", "p9s": "每項陳述，只帶一個標籤。", "p10s": "下一步：測試牆。", "vmin": "簡", "vopen": "全", "vplan": "平面", "opn": "展開", "cls": "收起", "scap": "即時。每條線是一根正在發聲的弦，每一點是落在玻璃上的雨。聲音漸弱，向左漂去。", "sw0": "持續音", "sw1": "春", "sw2": "夏", "sw3": "秋", "sw4": "冬", "sw5": "雨"};
 var EN={},lang="en",els=document.querySelectorAll("[data-i]");
 els.forEach(function(e){EN[e.dataset.i]=e.innerHTML;});
 EN.stop="Stop";EN.cls="Close";EN.play="Play the sketch";
@@ -826,6 +848,10 @@ function scoreLoop(){scores.forEach(function(s){s.draw();});if(!reduce)requestAn
 if(reduce)setInterval(function(){scores.forEach(function(s){s.draw();});},1000);
 requestAnimationFrame(scoreLoop);
 
+/* ---------- shared with the 3D view (temple3d.js) ---------- */
+window.OMT={VM:VM,S:S,SCOL:SCOL,cur:function(){return cur;},focus:function(){return focus;},hi:function(){return E.hi;},
+  GU:function(){return GU;},windArc:windArc,rainArc:rainArc,rain:function(){return rainBox.checked;},sun:function(){return sunBox.checked;}};
+
 })();
 </script>
 
@@ -849,6 +875,21 @@ requestAnimationFrame(scoreLoop);
   fit();setTimeout(fit,400);setTimeout(fit,1500);
 })();
 </script>
-<script src="/omt/knob.js"></script>
+
+<script>
+(function(){
+  var b=document.body,btns=[].slice.call(document.querySelectorAll('.dim button')),v='3d';
+  try{v=localStorage.getItem('omtsite-model')||'3d';}catch(e){}
+  function set(x){v=x;b.classList.toggle('d3',x==='3d');btns.forEach(function(k){k.setAttribute('aria-pressed',k.dataset.d===x?'true':'false');});try{localStorage.setItem('omtsite-model',x);}catch(e){}}
+  btns.forEach(function(k){k.addEventListener('click',function(){set(k.dataset.d);});});
+  set(v);
+})();
+</script>
+<script type="module">
+/* load the 3D model only where it can run: motion allowed and WebGL present */
+var rm=window.matchMedia&&window.matchMedia('(prefers-reduced-motion: reduce)').matches,gl=false;
+try{var c=document.createElement('canvas');gl=!!(c.getContext('webgl2')||c.getContext('webgl'));}catch(e){}
+if(!rm&&gl){var go=function(){import('./temple3d.js');};if('requestIdleCallback' in window)requestIdleCallback(go,{timeout:1200});else setTimeout(go,300);}
+</script>
 </body>
 </html>
