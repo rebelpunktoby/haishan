@@ -21,11 +21,11 @@ function start() {
   const mobile = window.innerWidth <= 900;
 
   const renderer = new WebGLRenderer({ canvas: host, antialias: true, alpha: false, powerPreference: 'low-power' });
-  renderer.setPixelRatio(Math.min(mobile ? 1.5 : 2, window.devicePixelRatio || 1));
+  renderer.setPixelRatio(Math.min(mobile ? 1.25 : 2, window.devicePixelRatio || 1));
   renderer.outputColorSpace = SRGBColorSpace;
   const scene = new Scene();
   scene.background = new Color('#131920');
-  scene.fog = new Fog('#131920', 38, 78);
+  scene.fog = new Fog('#131920', 56, 110);
   const camera = new PerspectiveCamera(32, 1, 0.1, 200);
 
   const add = o => { scene.add(o); return o; };
@@ -45,14 +45,12 @@ function start() {
   add(new LineLoop(oct(R, 0), lineMat(BONE, .38)));
   add(new LineLoop(oct(R, H), lineMat(BONE, .22)));
   { const p = []; for (let k = 0; k < 8; k++) { const v = P(Math.PI / 8 + az(k), R, 0); p.push(v.x, 0, v.z, v.x, H, v.z); }
-    const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); add(new LineSegments(g, lineMat(BONE, .2))); }
+    const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); add(new LineSegments(g, lineMat(BONE, .12))); }
   { const p = []; const RY = H + 2.8; for (let k = 0; k < 8; k++) { const a = P(Math.PI / 8 + az(k), R, H), b = P(Math.PI / 8 + az(k), SKY, RY); p.push(a.x, a.y, a.z, b.x, b.y, b.z); }
     const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); add(new LineSegments(g, lineMat(BONE, .13)));
     add(new LineLoop(loop(SKY, H + 2.8, 8, Math.PI / 8), lineMat(BONE, .2))); }
   const skin = new LineLoop(oct(R * .88, .02), new LineDashedMaterial({ color: BONE, transparent: true, opacity: .18, dashSize: .35, gapSize: .5 }));
   skin.computeLineDistances(); add(skin);
-  const skinTop = new LineLoop(oct(R * .88, H), new LineDashedMaterial({ color: BONE, transparent: true, opacity: .1, dashSize: .35, gapSize: .5 }));
-  skinTop.computeLineDistances(); add(skinTop);
 
   const faceW = 2 * R * Math.sin(Math.PI / 8), apo = R * Math.cos(Math.PI / 8);
   const faces = [];
@@ -126,7 +124,7 @@ function start() {
     rp[i * 3] = r * Math.sin(a); rp[i * 3 + 1] = H + 3 + Math.random() * 10; rp[i * 3 + 2] = -r * Math.cos(a); rv[i] = 9 + Math.random() * 5; };
   for (let i = 0; i < RN; i++) reseed(i, i < RN * .45);
   const rainG = new BufferGeometry(); rainG.setAttribute('position', new Float32BufferAttribute(rp, 3));
-  const rainM = new PointsMaterial({ color: BONE, size: .07, transparent: true, opacity: 0, depthWrite: false });
+  const rainM = new PointsMaterial({ color: BONE, size: .11, transparent: true, opacity: 0, depthWrite: false });
   add(new Points(rainG, rainM));
 
   /* wind: air drawn as moving points, streaming at the active face */
@@ -137,7 +135,7 @@ function start() {
   add(new Points(windG, windM));
 
   /* sun: a disc on its arc and a blade of light across the floor */
-  const sunDisc = new Mesh(new CircleGeometry(.9, 32), glow(WARM, .7, false)); add(sunDisc);
+  const sunDisc = new Mesh(new CircleGeometry(.6, 32), glow(WARM, .7, false)); add(sunDisc);
   const sunMark = new Mesh(new CircleGeometry(.45, 24), glow(WARM, .8)); sunMark.rotation.x = -Math.PI / 2; add(sunMark);
   const blade = new Mesh(new PlaneGeometry(.35, 1), glow(WARM, .5)); blade.rotation.x = -Math.PI / 2; blade.position.y = .04; add(blade);
 
@@ -147,16 +145,16 @@ function start() {
     const c = document.createElement('canvas'); c.width = c.height = 128; const x = c.getContext('2d');
     x.font = "500 78px 'Noto Serif TC', serif"; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#e8e5dc'; x.fillText(t, 64, 70);
     const tex = new CanvasTexture(c); tex.colorSpace = SRGBColorSpace;
-    const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, opacity: .5, depthWrite: false }));
-    s.position.copy(P(az(k), R + 2.6, .9)); s.scale.set(1.5, 1.5, 1); add(s); return { s, k, c, tex };
+    const s = new Sprite(new SpriteMaterial({ map: tex, transparent: true, opacity: .5, depthWrite: false, fog: false }));
+    s.position.copy(P(az(k), R + 2.6, .9)); s.scale.set(mobile ? 2.1 : 1.6, mobile ? 2.1 : 1.6, 1); add(s); return { s, k, c, tex };
   });
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => labels.forEach(L => {
     const x = L.c.getContext('2d'); x.clearRect(0, 0, 128, 128); x.font = "500 78px 'Noto Serif TC', serif"; x.textAlign = 'center'; x.textBaseline = 'middle'; x.fillStyle = '#e8e5dc'; x.fillText(TRI[L.k], 64, 70); L.tex.needsUpdate = true; }));
 
   /* camera: slow orbit; drag to turn; each passage leans the view toward its part */
   const VIEW = {
-    top: [-.55, .6, 50], origin: [-.79, .5, 46], wall: [null, .38, 40], pedal: [null, .2, 42], seasons: [null, .58, 47],
-    rain: [null, 1.08, 38], light: [Math.PI + .5, .82, 44], silence: [null, .55, 54], listen: [null, .55, 48], method: [null, .62, 50], next: [null, .6, 50]
+    top: [-.55, .6, 50], origin: [-.79, .5, 46], wall: [null, .38, 44], pedal: [null, .2, 42], seasons: [null, .58, 47],
+    rain: [null, 1.08, 42], light: [Math.PI + .5, .82, 44], silence: [null, .55, 54], listen: [null, .55, 48], method: [null, .62, 50], next: [null, .6, 50]
   };
   let camA = -.55, camE = .6, camD = 50, drag = null, lastUser = -99, spin = 0;
   host.addEventListener('pointerdown', e => { drag = { x: e.clientX, y: e.clientY, a: camA, e: camE }; host.setPointerCapture(e.pointerId); });
@@ -169,6 +167,8 @@ function start() {
   }
   new ResizeObserver(size).observe(host); size();
 
+  const look = new Vector3();
+  host.addEventListener('webglcontextlost', e => { e.preventDefault(); document.documentElement.classList.remove('has3d'); });
   let visible = true;
   new IntersectionObserver(es => { visible = es[0].isIntersecting; }).observe(host);
   let t0 = performance.now() / 1000, prev = t0;
@@ -190,15 +190,15 @@ function start() {
       const da = Math.atan2(Math.sin(ta - camA), Math.cos(ta - camA)); camA += da * Math.min(1, dt * .6);
       camE += (v[1] - camE) * Math.min(1, dt * .8); camD += (v[2] - camD) * Math.min(1, dt * .8);
     }
-    const look = new Vector3(0, focus === 'rain' ? 2.6 : 3.4, 0);
-    camera.position.set(look.x + camD * Math.cos(camE) * Math.sin(camA), look.y + camD * Math.sin(camE), look.z - camD * Math.cos(camE) * Math.cos(camA));
+    look.set(0, focus === 'rain' ? 2.6 : 3.4, 0); const cd = camD * (camera.aspect < 1 ? 1.12 : 1);
+    camera.position.set(look.x + cd * Math.cos(camE) * Math.sin(camA), look.y + cd * Math.sin(camE), look.z - cd * Math.cos(camE) * Math.cos(camA));
     camera.lookAt(look);
 
     /* faces */
     faces.forEach(F => {
       const act = F.k === S.face, h = F.k === hi;
-      const o = F.wind ? (act ? .07 + .22 * gg * (.5 + .5 * gw) : .025) : F.sun ? (O.sun() ? .05 : .02) : .015;
-      F.m.material.opacity += ((h ? .22 : o) - F.m.material.opacity) * Math.min(1, dt * 3);
+      const o = F.wind ? (act ? .05 + .1 * gg * (.5 + .5 * gw) : .02) : F.sun ? (O.sun() ? .05 : .02) : .015;
+      F.m.material.opacity += ((h ? .07 : o) - F.m.material.opacity) * Math.min(1, dt * 3);
       F.m.material.color.copy(h ? WARM : F.sun ? WARM : TEAL);
     });
 
@@ -235,7 +235,7 @@ function start() {
 
     /* rain */
     const rainOn = O.rain(), rlev = rainOn ? Math.max(ra, focus === 'rain' ? .6 : 0) * Math.min(1, S.rain * 1.4) : 0;
-    rainM.opacity += ((rlev > .02 ? .25 + .45 * rlev : 0) - rainM.opacity) * Math.min(1, dt * 2);
+    rainM.opacity += ((rlev > .02 ? .4 + .4 * rlev : 0) - rainM.opacity) * Math.min(1, dt * 2);
     const n = Math.floor(RN * Math.min(1, .15 + rlev));
     for (let i = 0; i < RN; i++) {
       if (i >= n) { rp[i * 3 + 1] = -50; continue; }
@@ -264,7 +264,7 @@ function start() {
     const day = (t % 60) / 60, sunOn = O.sun(), elev = Math.sin(day * Math.PI) * .95, sa = Math.PI + (day - .5) * 2.4;
     sunDisc.position.copy(P(sa, 34 * Math.cos(elev), 34 * Math.sin(elev) + 1)); sunDisc.lookAt(camera.position);
     sunMark.position.copy(P(sa, 20, .05)); sunMark.material.opacity = sunOn ? .3 + .6 * Math.sin(day * Math.PI) : .12;
-    sunDisc.material.opacity = sunOn && elev > .08 ? .2 + .65 * Math.sin(day * Math.PI) : 0;
+    sunDisc.material.opacity = sunOn && elev > .15 ? .2 + .65 * Math.sin(day * Math.PI) : 0;
     const reach = MathUtils.clamp(1.2 / Math.max(.18, Math.tan(elev)), 1.2, R * 1.4), ba = sa + Math.PI;
     const start = P(az(4), apo, .04);
     blade.scale.set(1, reach, 1);
@@ -274,7 +274,7 @@ function start() {
     slits.forEach(s => { s.material.opacity = sunOn ? .2 + .5 * Math.sin(day * Math.PI) : .08; });
 
     /* labels */
-    labels.forEach(L => { const act = L.k === S.face, h = L.k === hi; L.s.material.opacity = h ? 1 : act ? .95 : L.k === 4 ? .7 : .38;
+    labels.forEach(L => { const act = L.k === S.face, h = L.k === hi; L.s.material.opacity = h ? 1 : act ? .95 : L.k === 4 ? .75 : .6;
       L.s.material.color.copy(h ? WARM : act ? TEAL : L.k === 4 ? WARM : BONE); });
 
     renderer.render(scene, camera);
