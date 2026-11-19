@@ -824,6 +824,17 @@ a.brand{color:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-
     .il-cap{animation-range:entry 30% exit 70%;}
   }
 }
+
+/* phone and tablet too: Site sits right and mirrors (殿境 before the name) */
+@media (max-width:979px){
+  #omt .omt-item.site{justify-items:end;text-align:right;}
+  #omt .omt-item.site .t{justify-content:flex-end;}
+  #omt .omt-item.site .t i{order:-1;margin:0 -.12em 0 0;}
+  #omt .omt-item.site .t sup{order:1;}
+  #omt .omt-item.site .r{justify-self:end;}
+  #omt .omt-item.site .k{left:0;right:auto;}
+  #omt .omt-item.site .go{left:0;right:auto;}
+}
 </style>
 </head>
 <body>
