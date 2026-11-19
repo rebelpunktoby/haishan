@@ -416,21 +416,25 @@
 /* OMT trio: left, right, left */
 @media (min-width:980px){#omt .omt-item.site{padding-left:36%;padding-right:0}#omt .omt-item.body{padding-left:0;padding-right:30%}#omt .omt-item.body .go{right:30%}}
 
-  /* Stage as a colophon: venues set as one quiet line of type, not a list of shows */
+  /* Stage, gallery-CV style: date · venue, one quiet column, nothing else */
   #stage{padding-block:clamp(2.6rem,5vw,4.5rem);}
   #stage .seclabel{margin-bottom:1.2rem;}
   #stage .wrap{row-gap:0;}
-  #stage > .wrap > .perf, #stage .perf-more-inner > .perf{display:block;max-width:46rem;line-height:2.1;}
-  #stage > .wrap > .perf .p, #stage .perf-more-inner > .perf .p{display:inline;padding:0;border:0;white-space:nowrap;}
-  #stage > .wrap > .perf .p .v > span, #stage .perf-more-inner > .perf .p .v > span{white-space:normal;}
-  #stage > .wrap > .perf .p .v, #stage .perf-more-inner > .perf .p .v{display:inline;font-family:var(--serif);font-style:italic;font-weight:300;font-size:.95rem;letter-spacing:.01em;color:var(--haze);}
+  #stage > .wrap > .perf, #stage .perf-more-inner > .perf{display:block;max-width:34rem;}
+  #stage > .wrap > .perf .p, #stage .perf-more-inner > .perf .p{display:grid;grid-template-columns:6.6rem 1fr;align-items:baseline;gap:0;padding:.32rem 0;border:0;}
+  #stage > .wrap > .perf .p .y, #stage .perf-more-inner > .perf .p .y{order:-1;font-size:.66rem;letter-spacing:.06em;color:var(--faint);}
+  #stage > .wrap > .perf .p .v, #stage .perf-more-inner > .perf .p .v{font-family:var(--sans);font-weight:300;font-size:.86rem;letter-spacing:.01em;color:var(--haze);}
   #stage > .wrap > .perf .p small, #stage .perf-more-inner > .perf .p small{display:none;}
-  #stage > .wrap > .perf .p .y, #stage .perf-more-inner > .perf .p .y{font-size:.58rem;color:var(--faint);vertical-align:super;margin-left:.3rem;letter-spacing:.06em;}
-  #stage > .wrap > .perf .p:not(:last-child)::after, #stage .perf-more-inner > .perf .p:not(:last-child)::after{content:"/";margin:0 .85rem;color:var(--line-2);font-style:normal;}
-  #stage .perf-more-inner > .perf{margin-top:.2rem;}
-  #stage .perf-toggle{margin-top:1.4rem;font-size:.62rem;justify-self:start;}
+  #stage .perf-toggle{margin-top:1.2rem;font-size:.62rem;justify-self:start;}
   #stage .study{margin-top:2.2rem;}
-  #stage .mentor{margin-top:1.2rem;font-size:.88rem;}
+  #stage .study .perf{display:block;max-width:34rem;}
+  #stage .study .perf .p{display:grid;grid-template-columns:6.6rem 1fr;align-items:baseline;gap:0;padding:.32rem 0;border:0;}
+  #stage .study .perf .p .y{order:-1;font-size:.66rem;letter-spacing:.06em;color:var(--faint);}
+  #stage .study .perf .p .v{font-family:var(--sans);font-weight:300;font-size:.86rem;letter-spacing:.01em;color:var(--haze);}
+  #stage .study .perf .p .v small{display:inline;font-size:.78rem;color:var(--faint);margin:0 0 0 .5rem;}
+  #stage .study-h{margin-bottom:.6rem;}
+  #stage .mentor{margin-top:1.4rem;font-size:.86rem;}
+  #stage .mentor b{font-weight:300;color:var(--haze);}
 </style>
 <style>
 
