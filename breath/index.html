@@ -22,8 +22,8 @@ html{scroll-snap-type:y proximity}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.55 "Space Grotesk",system-ui,sans-serif;overflow-x:clip}
 .pg{min-height:100vh;padding:clamp(28px,5vw,72px) max(6vw,18px);max-width:1340px;margin:0 auto;display:flex;flex-direction:column;justify-content:center;scroll-snap-align:start}
 
-.home{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));z-index:8;display:inline-flex;align-items:center;gap:6px;min-height:40px;padding:0 16px;border-radius:20px;
-  font:500 14px "Space Grotesk",sans-serif;color:var(--ink);text-decoration:none;border:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(10px)}
+.home{position:fixed;top:max(14px,env(safe-area-inset-top));left:max(14px,env(safe-area-inset-left));z-index:8;display:inline-flex;align-items:center;justify-content:center;width:36px;height:36px;padding:0;border-radius:50%;
+  font:400 17px/1 "Space Grotesk",sans-serif;color:var(--ink);text-decoration:none;border:1px solid var(--rule);background:color-mix(in srgb,var(--bg) 78%,transparent);backdrop-filter:blur(10px)}
 .home:hover{border-color:var(--mute)}.home:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
 h1{font:300 clamp(40px,7vw,84px)/1 Fraunces,Georgia,serif;margin:0}h1 span{color:var(--mute);font-size:.5em;margin-left:.25em}
 .sub{color:var(--mute);margin:14px 0 0}
@@ -101,7 +101,7 @@ button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 </style>
 </head>
 <body>
-<a class="home" href="/#work" aria-label="Back to home">← <span data-en="Home" data-zh="首頁"></span></a>
+<a class="home" href="/#work" aria-label="Back" title="Back" onclick="if(document.referrer.indexOf(location.origin)===0&&history.length>1){history.back();return false}">←</a>
 <header class="pg" id="top">
   <h1>Breath <span>息</span></h1>
   <p class="sub" data-en="Still Air · four movements for piano, electronics and a breathing room" data-zh="靜氣 · 為鋼琴、電子聲音與呼吸的房間而寫的四個樂章"></p>
