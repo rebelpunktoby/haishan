@@ -817,6 +817,7 @@ function setMemMode(m){S.memMode=m;clearMem();$('follow').setAttribute('aria-pre
 /* ---- Strikes: one pure tone, never a burst ---- */
 function strike(amount=.6){
   if(!ctx||S.fade)return;const now=ctx.currentTime,w=WORLDS[S.w];
+  if(RN.dev){RN.hit++;rnSet('hitamt',clamp(amount));rnSet('hit',RN.hit)}
   let f;if(S.mem.length&&Math.random()<.5){f=memFreq(S.mem[Math.random()*S.mem.length|0]);while(f<400)f*=2}else if(roomOn()){f=S.room[Math.random()*S.room.length|0];while(f<400)f*=2;while(f>4000)f/=2}else{const b=banks[S.w];const opn=b?b.parts.filter(p=>(p.avail||0)>.5&&p.f):[];f=opn.length?pickOne(opn.slice(-3)).f:S.A4/8*pickOne(w.strike);while(f<400)f*=2;while(f>3500)f/=2}
   f=qz(f);
   const g=G(0),p=ctx.createStereoPanner();p.pan.value=clamp(S.pan*.7+(Math.random()-.5)*.4,-1,1);g.connect(p).connect(strikeG);
@@ -921,7 +922,7 @@ function frame(ts){
   S.swellAmt+=((S.swell?1:0)-S.swellAmt)*(1-Math.exp(-dt/(S.swell?1.2:3)));
   S.hushAmt+=((S.hush?1:0)-S.hushAmt)*(1-Math.exp(-dt/(S.hush?.4:2)));
   if(ctx){listen(dt);trackPartials();if(!S.freeze){stormDrive();weird(dt);wildDrive(dt);lineTick(dt)}}
-  midiTick();if(M.lastTxt)$('mLast').textContent=M.lastTxt;
+  rnboTick(dt);midiTick();if(M.lastTxt)$('mLast').textContent=M.lastTxt;
   drive();meters();
 }
 function baseEnergies(){
@@ -1218,7 +1219,7 @@ async function initMidi(){
   if(!navigator.requestMIDIAccess){midiStat('This browser has no Web MIDI. Use Chrome.');return}
   try{midi=await navigator.requestMIDIAccess();midi.onstatechange=fillPorts;fillPorts();
     midiStat(midi.outputs.size?'Ready. Pick an output (on a Mac: IAC Driver Bus 1).':'No MIDI outputs found. On a Mac, turn on the IAC Driver in Audio MIDI Setup, then reload.')}
-  catch(e){midiStat('MIDI permission was refused. Allow MIDI for this file in Chrome site settings, then reload.')}
+  catch(e){midiStat('MIDI permission was refused. Allow MIDI for this page in Chrome site settings, then reload.')}
 }
 function fillPorts(){
   if(!midi)return;const o=$('midiOut'),i=$('midiIn'),ov=o.value,iv=i.value;
@@ -1273,6 +1274,7 @@ function midiTick(){
   if(!mOut)return;
   ccOut(20,S.mot*127);ccOut(21,S.fast*127);ccOut(22,S.hi*127);ccOut(23,(S.pan+1)/2*127);ccOut(24,Math.max(0,S.still)/8*127);
   ccOut(25,S.storm*127);ccOut(26,S.pno*127);ccOut(27,S.on.reduce((a,v,i)=>a+(v?1<<i:0),0));ccOut(28,MODES.findIndex(m=>m.id===S.mode));ccOut(29,S.spread*127);ccOut(30,S.ten*127);ccOut(31,S.bound*127);ccOut(32,S.sud*127);ccOut(33,S.dir*127);ccOut(34,S.wgt*127);ccOut(35,S.lv.edge*127);
+  ccOut(36,(S.fol||0)*127);ccOut(37,(S.body||0)*127);ccOut(39,S.lv.space*127);ccOut(40,S.lv.pulse*127);ccOut(41,(S.fade?0:S.rel?S.relAmt:1)*127);ccOut(42,(S.A4-420)/40*127);   // OMT RNBO contract
   // the body plays your notes: motion sets density and velocity, position picks low to high, height picks the octave
   const now=performance.now();if(!M.body||S.fade||S.freeze||S.hushAmt>.5||now<M.next)return;
   const e=clamp(Math.max(S.mot*S.lv.depth*1.6,S.fast));if(e<.06){M.next=now+200;return}
@@ -1290,8 +1292,33 @@ const PT={on:false,x:CW/2,y:CH/2,acc:0,m:0,seen:false};
 async function boot(){
   if(S.running)return true;
   try{await initAudio()}catch(e){showErr('Audio could not start: '+e.message);return false}
-  S.running=true;lastT=0;requestAnimationFrame(frame);return true;
+  S.running=true;lastT=0;requestAnimationFrame(frame);
+  if(/[?&]engine=rnbo\b/.test(location.search))rnboStart();
+  if(/[?&]midi=1\b/.test(location.search)){M.cc=true;initMidi().then(()=>{const t=$('midiStat').textContent;if(t)toast(t)})}
+  return true;
 }
+/* ---- RNBO: the shared OMT instrument (see /omt/rnbo/CONTRACT.md). ?engine=rnbo plays the exported patch in place of the
+   built-in voices; the hall, the pulse-locked glitch and the limiter stay. Anything missing falls back to the built-in engine. ---- */
+const RN={dev:null,p:{},hit:0,t:0};
+function rnSet(n,v){const p=RN.p[n];if(p&&Number.isFinite(v)){try{p.value=v}catch(_){}}}
+function loadScript(u){return new Promise((res,rej)=>{const s=document.createElement('script');s.src=u;s.onload=res;s.onerror=()=>rej(new Error('could not load '+u));document.head.appendChild(s)})}
+async function rnboStart(){
+  try{
+    const r=await fetch('/omt/rnbo/export/patch.export.json',{cache:'no-cache'});if(!r.ok)throw new Error('no export yet');
+    const pat=await r.json(),ver=pat.desc&&pat.desc.meta&&pat.desc.meta.rnboversion;
+    if(!window.RNBO){if(!ver)throw new Error('the export has no RNBO version');const v=encodeURIComponent(ver);
+      await loadScript('https://c74-public.nyc3.digitaloceanspaces.com/rnbo/'+v+'/rnbo.min.js').catch(()=>loadScript('https://cdn.jsdelivr.net/npm/@rnbo/js@'+v+'/dist/rnbo.min.js'))}
+    const dev=await RNBO.createDevice({context:ctx,patcher:pat});
+    (dev.parameters||[]).forEach(p=>{RN.p[String(p.id).split('/').pop()]=p;RN.p[p.name]=p});
+    bus.disconnect();combOut.disconnect();dev.node.connect(dryG);dev.node.connect(pre);
+    RN.dev=dev;toast('RNBO instrument');
+  }catch(e){RN.dev=null;toast('RNBO: '+(e.message||e)+' · built-in engine');console.warn('RNBO',e)}
+}
+function rnboTick(dt){if(!RN.dev)return;RN.t+=dt;if(RN.t<.033)return;RN.t=0;
+  rnSet('energy',S.body||0);rnSet('follow',S.fol||0);rnSet('form',clamp(S.mot));rnSet('still',clamp(S.still/8));rnSet('height',S.hi);rnSet('pan',S.pan);
+  rnSet('storm',S.storm);rnSet('edge',S.lv.edge);rnSet('room',S.lv.space);rnSet('pulse',40+S.lv.pulse*100);rnSet('root',S.A4/8);
+  const sc=1/Math.sqrt(activeIdx().length||1);['ground','water','fire','wind'].forEach((n,i)=>rnSet(n,S.on[i]?sc:0));
+  rnSet('level',S.fade?0:S.rel?S.relAmt:1)}
 function setHint(t){const h=$('hint');if(!t){h.hidden=true;return}h.textContent=t;h.hidden=false;h.style.opacity=1}
 async function startTouch(){
   $('startTouch').disabled=true;if(!await boot()){$('startTouch').disabled=false;return}
