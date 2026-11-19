@@ -196,15 +196,18 @@ html[lang="zh-Hant"] .kick,html[lang="zh-Hant"] summary,html[lang="zh-Hant"] .ey
  .temple.narrow .chip .h{margin:0;font-size:15px}
 }
 
-.fig{margin:4px 0 2px;max-width:520px}
-.door{max-width:520px}
+.fig{margin:4px 0 2px;max-width:460px}
+.door{max-width:460px}
 .fig .dia{padding:12px}
 @media (min-width:901px){
  .wrap{max-width:1320px}
- .stage{grid-template-columns:minmax(0,1.32fr) minmax(0,1fr);gap:44px}
+ .stage{grid-template-columns:minmax(0,1.08fr) minmax(0,1fr);gap:56px}
+ .cvwrap{transition:width .5s ease,margin .5s ease}
+ body.reading .cvwrap{width:86%;margin:0 auto}
 }
 @media (max-width:900px){
- .cvwrap{width:min(100%,38vh)}
+ .cvwrap{width:min(100%,36vh);transition:width .5s ease}
+ body.reading .cvwrap{width:min(100%,26vh)}
  .fig,.door{max-width:100%}
 }
 
@@ -888,7 +891,11 @@ window.OMT={VM:VM,S:S,SCOL:SCOL,cur:function(){return cur;},focus:function(){ret
   fit();setTimeout(fit,400);setTimeout(fit,1500);
 })();
 </script>
-
+<script>
+/* the model steps back a little once reading begins */
+(function(){var f=document.querySelector('.pass');if(!f)return;function on(){document.body.classList.toggle('reading',f.getBoundingClientRect().top<window.innerHeight*.7);}
+window.addEventListener('scroll',on,{passive:true});window.addEventListener('resize',on);on();})();
+</script>
 <script>
 (function(){
   var b=document.body,btns=[].slice.call(document.querySelectorAll('.dim button')),v='3d';
