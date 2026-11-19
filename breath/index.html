@@ -43,6 +43,7 @@ button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .num{font:300 clamp(64px,11vw,150px)/.9 Fraunces,serif;color:color-mix(in srgb,var(--elec) 75%,var(--ink))}
 .nm{font:300 clamp(30px,4.4vw,54px)/1 Fraunces,serif}.nm span{color:var(--mute);font-size:.55em;margin-left:.3em}
 .facts{display:flex;flex-wrap:wrap;gap:8px 34px;margin:clamp(20px,4vh,40px) 0 clamp(26px,5vh,54px);color:var(--mute)}
+.rel{font:italic 300 clamp(19px,2vw,26px)/1.35 Fraunces,serif;color:var(--ink);margin:calc(-1 * clamp(10px,2.5vh,30px)) 0 clamp(26px,5vh,48px);max-width:34ch;word-break:keep-all}
 .facts b{display:block;font:300 clamp(24px,2.6vw,34px)/1.1 Fraunces,serif;color:var(--ink)}
 .flow{display:flex;align-items:center;gap:clamp(10px,2vw,26px)}
 .side{flex:none;width:clamp(56px,8vw,110px);display:flex;flex-direction:column;gap:6px;align-items:center;color:var(--mute);font-size:12px}
@@ -329,10 +330,10 @@ const $ = id => document.getElementById(id);
 let lang = "en";
 const PZ = { in: "吸", "top-up": "再吸", hold: "屏", out: "吐", rest: "歇", free: "自然" };
 const MV = [
-  { k: "m1", n: "I", main: "Tide", zh: "潮", rate: "6.4", alpha: "38%" },
-  { k: "m2", n: "II", main: "Square", zh: "方", rate: "3.75", alpha: "60%" },
-  { k: "m3", n: "III", main: "Still Air", zh: "靜氣", rate: "", alpha: "0%" },
-  { k: "m4", n: "IV", main: "Sigh", zh: "嘆", rate: "7.5", alpha: "26%" }
+  { k: "m1", n: "I", main: "Tide", zh: "潮", rate: "6.4", alpha: "38%", rel: ["any interval · opens on the in, closes on the out", "任何音程 · 吸氣時張開，吐氣時收合"] },
+  { k: "m2", n: "II", main: "Square", zh: "方", rate: "3.75", alpha: "60%", rel: ["one shape, four sides · rise, hold, fall, silence", "一個形狀，四邊 · 升、持、降、靜"] },
+  { k: "m3", n: "III", main: "Still Air", zh: "靜氣", rate: "", alpha: "0%", rel: ["only what is already sounding · just the distance moves", "只用已在響的聲音 · 只有距離在動"] },
+  { k: "m4", n: "IV", main: "Sigh", zh: "嘆", rate: "7.5", alpha: "26%", rel: ["two small steps up, one long fall", "兩小步向上，一次長長落下"] }
 ];
 const T = (en, zh) => `<span data-en="${en}" data-zh="${zh}"></span>`;
 const secOf = (k, name) => TLB.PIECES[k].sections.find(s => s.name === name);
@@ -357,7 +358,7 @@ function movementPage(m, i) {
   let body, facts;
   if (main.untimed) {
     body = `<div class="field">${T("no clock · the body leads", "無時鐘 · 由身體引領")}</div>`;
-    facts = `<div><b>${Math.round(src.min / 60)}–${Math.round(src.max / 60)}′</b>${T("open", "開放")}</div><div><b>A♭ B♭ C E♭ F</b>${T("pitches to draw from", "可用音")}</div>`;
+    facts = `<div><b>${Math.round(src.min / 60)}–${Math.round(src.max / 60)}′</b>${T("open", "開放")}</div><div><b>∞</b>${T("any sound, any key", "任何聲音，任何調")}</div>`;
   } else {
     body = breathBars(src) + `<div class="rep">× ${src.min}–${src.max}</div>`;
     facts = `<div><b>${src.meter}/4</b>♩ ${src.bpm}</div><div><b>${src.bpb / src.meter}</b>${T("bars per breath", "小節／每次呼吸")}</div><div><b>${m.rate}</b>${T("breaths / min", "每分鐘呼吸")}</div>`;
@@ -368,7 +369,7 @@ function movementPage(m, i) {
   const flow = `<div class="flow">${first.name.indexOf("Settle") === 0 ? settleMini + arrow : ""}<div class="main">${body}</div>${last.name === "Out" ? arrow + sighMini : last.name === "Coda" ? arrow + `<div class="side"><div class="mini">${T("coda", "尾聲")}</div>${T("open", "開放")}</div>` : ""}</div>`;
   return `<section class="pg mv" id="${m.k}" aria-label="${m.n} ${m.main}">
     <div class="mh"><span class="num">${m.n}</span><span class="nm">${m.main}<span>${m.zh}</span></span></div>
-    <div class="facts">${facts}</div>${before}${flow}
+    <div class="facts">${facts}</div><p class="rel">${T(m.rel[0], m.rel[1])}</p>${before}${flow}
     <div class="pact"><button data-play="${m.k}" data-en="Perform ${m.n}" data-zh="演出 ${m.n}"></button></div></section>`;
 }
 $("idx").innerHTML = MV.map(m => `<a class="tile${m.k === "m3" ? " open" : ""}" style="--a:${m.alpha}" href="#${m.k}"><b>${m.n}</b><span>${m.main} ${m.zh}</span><small>${m.rate ? m.rate + " /min" : "open"}</small></a>`).join("");
