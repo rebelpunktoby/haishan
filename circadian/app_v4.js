@@ -141,7 +141,7 @@ const I18N = {
   g4:{en:"At the centre, the tide: the day's shape of pitch, drawn from the piece's own hour table. The moon is shown, and does not enter the sound.",zh:"中心是潮——音高一日之形，出自本曲時辰之表。月在其位，不入聲。"},
   s_sun:{en:"Sun",zh:"日"}, s_moon:{en:"Moon",zh:"月"}, s_day:{en:"Day",zh:"晝"}, s_sector:{en:"sector",zh:"宮"},
   s_more:{en:"Read more",zh:"細讀"}, s_now:{en:"Now",zh:"此刻"}, s_sounding:{en:"Sounding",zh:"正在響"},
-  s_loc:{en:"use my location",zh:"用我的位置"}, s_mine:{en:"your location",zh:"你的位置"}, s_locno:{en:"location unavailable",zh:"無法取得位置"}, r_more:{en:"Read the ten articles ↗",zh:"閱讀十條憲章 ↗"},
+  s_loc:{en:"use my location",zh:"用我的位置"}, s_mine:{en:"your location",zh:"你的位置"}, s_locno:{en:"location unavailable",zh:"無法取得位置"}, r_more:{en:"Read the ten articles →",zh:"閱讀十條憲章 →"},
   r1t:{en:"Ground · 節氣",zh:"地 · 節氣"}, r1:{en:"The solar term sets the register — low in winter, high in summer.",zh:"節氣定音域——冬低，夏高。"},
   r2t:{en:"Tide · 時辰",zh:"潮 · 時辰"}, r2:{en:"Each double-hour moves the pitch and brightness: rising toward 午, sinking toward 子. The shape on the wheel is that tide.",zh:"每個時辰推動音高與明暗：向午而升，向子而沉。輪上的形狀，就是這道潮。"},
   r3t:{en:"Colour · 四時",zh:"色 · 四時"}, r3:{en:"The day turns through four chords — morning, noon, dusk, night.",zh:"一日流轉四個和弦——晨、午、暮、夜。"},

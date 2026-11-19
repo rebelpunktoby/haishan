@@ -219,8 +219,8 @@
 <body>
 <div class="band">山海 OceanMountain · The Laws · Theory corpus 2026</div>
 <header class="nav" id="nav"><div class="wrap nav-row">
-  <a class="brand" href="/">Haishan Lai <b>/</b> 山海 OMT</a>
-  <nav class="nav-right"><div class="nav-links"><a href="/omt/">Sketch 4A</a><a href="#now">Now</a><a href="#laws">Laws</a></div></nav>
+  <span class="knob-row"><a class="omt-knob" href="/#omt" aria-label="Back" title="Back">←</a><a class="brand" href="/">OceanMountain <b>/</b> 山海 OMT</a></span>
+  <nav class="nav-right"><div class="nav-links"><a href="/circadian/">Engine</a><a href="#now">Now</a><a href="#laws">Laws</a></div></nav>
 </div></header>
 <main>
   <section class="hero" id="now">
@@ -306,8 +306,9 @@
   </section>
 </main>
 <footer><div class="wrap">
-  <a href="/omt/">← Sketch 4A</a>
-  <a href="/">Haishan Lai</a>
+  <a href="/circadian/">OMT engine β ↗</a>
+  <a href="/omt/">Sketch 4A</a>
+  <a href="/#omt">← OceanMountain</a>
   <span>Excerpted from the OceanMountain theory corpus, 2026. © <span id="yr"></span></span>
 </div></footer>
 <script>
@@ -353,5 +354,6 @@ $("yr").textContent=new Date().getFullYear();
 tick();setInterval(tick,30000);
 })();
 </script>
+<script src="/omt/knob.js"></script>
 </body>
 </html>

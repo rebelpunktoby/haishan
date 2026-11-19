@@ -206,7 +206,7 @@ body.zh .about p,body.zh .about ul,body.zh .intro .sub{letter-spacing:.03em}
 </head>
 <body>
 <header class="site"><div class="in">
-  <a class="brand" href="/#omt">山海 · 身境 <span>OMT Motion β</span></a>
+  <a class="omt-knob" href="/#omt" aria-label="Back" title="Back">←</a><a class="brand" href="/#omt">山海 · 身境 <span>OMT Motion β</span></a>
   <nav><a href="/#omt" data-t="nav_omt">OMT ↗</a><button class="lang" id="langBtn" type="button">中文</button></nav>
 </div></header>
 <div class="wrap">
@@ -1461,5 +1461,6 @@ function applyLang(){document.documentElement.lang=LANG==='zh'?'zh-Hant':'en';do
 $('langBtn').addEventListener('click',()=>{LANG=LANG==='zh'?'en':'zh';try{localStorage.setItem('omt-lang',LANG)}catch(_){}applyLang()});
 applyLang();
 </script>
+<script src="/omt/knob.js"></script>
 </body>
 </html>
