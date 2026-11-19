@@ -723,6 +723,29 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
   #omt .omt-item.body .go{right:34%;}
   #omt .omt-item.eng .go{right:34%;}
 }
+
+/* interlude between Work and OMT: one character, a held breath, then a line down into the room */
+.interlude{position:relative;height:150svh;}
+.il-in{position:sticky;top:0;height:100svh;display:grid;place-items:center;align-content:center;gap:1.6rem;overflow:hidden;}
+.il-k{font-family:"Noto Serif TC",serif;font-weight:200;font-size:clamp(9rem,26vw,20rem);line-height:1;color:transparent;
+  -webkit-text-stroke:1px rgba(120,200,190,.55);background:linear-gradient(180deg,rgba(120,200,190,.14),rgba(120,200,190,.02));-webkit-background-clip:text;background-clip:text;
+  text-shadow:0 0 80px rgba(120,200,190,.08);}
+.il-cap{font-family:var(--mono);font-size:.7rem;letter-spacing:.32em;text-transform:uppercase;color:var(--haze,#9B98B6);}
+.il-cap .zh-i{display:none;letter-spacing:.5em;}
+body.lang-zh .il-cap .en{display:none}body.lang-zh .il-cap .zh-i{display:inline}
+.il-line{position:absolute;left:50%;bottom:0;width:1px;height:22vh;background:linear-gradient(180deg,rgba(120,200,190,0),rgba(120,200,190,.6));transform-origin:top;}
+@supports (animation-timeline:view()){
+  @media (prefers-reduced-motion:no-preference){
+    .il-k{animation:ilK linear both;animation-timeline:--il;animation-range:entry 10% exit 90%;}
+    .il-cap{animation:ilCap linear both;animation-timeline:--il;animation-range:entry 40% exit 60%;}
+    .il-line{animation:ilLine linear both;animation-timeline:--il;animation-range:contain 30% exit 40%;}
+    .interlude{view-timeline:--il block;}
+  }
+}
+@keyframes ilK{0%{opacity:0;transform:scale(.86) translateY(6vh);filter:blur(10px)}35%,62%{opacity:1;transform:none;filter:none}100%{opacity:0;transform:scale(1.06) translateY(-4vh);filter:blur(6px)}}
+@keyframes ilCap{0%{opacity:0;letter-spacing:.6em}40%,70%{opacity:1;letter-spacing:.32em}100%{opacity:0}}
+@keyframes ilLine{from{transform:scaleY(0)}to{transform:scaleY(1)}}
+@media (max-width:979px){.interlude{height:120svh}.il-cap{font-size:.62rem;letter-spacing:.22em}}
 </style>
 </head>
 <body>
@@ -827,6 +850,14 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
         </div>
       </div>
       <p class="mentor" data-reveal><span class="lbl" data-i18n="lbl_listen">Listen</span><b><a href="https://soundcloud.com/tobyhysan" target="_blank" rel="noopener" class="work-link">SoundCloud <span class="arr">↗</span></a>&nbsp;&nbsp;·&nbsp;&nbsp;<a href="https://oceanmountain.bandcamp.com/music" target="_blank" rel="noopener" class="work-link">Bandcamp <span class="arr">↗</span></a></b></p>
+    </div>
+  </section>
+
+  <section class="interlude" aria-hidden="true">
+    <div class="il-in">
+      <span class="il-k">境</span>
+      <span class="il-cap"><span class="en">jìng — where a sound becomes a place</span><span class="zh-i">境 · 聲之所在</span></span>
+      <span class="il-line"></span>
     </div>
   </section>
 
