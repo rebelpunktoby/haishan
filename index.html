@@ -708,6 +708,21 @@ body.lang-zh .omt-item .zh{letter-spacing:.5em;}
 .omt-item .t sup{font-family:var(--mono);font-size:.7rem;letter-spacing:.1em;color:var(--faint);align-self:flex-start;margin-left:.2em;}
 .omt-item:hover .t i,.omt-item:focus-visible .t i{letter-spacing:.42em;opacity:1;}
 .omt-item .r{margin-top:1rem;}
+
+/* OMT trio on laptop: left · right · left; the right one mirrors (Chinese before the name) */
+@media (min-width:980px){
+  #omt .omt-item.eng{padding-left:0;padding-right:34%;}
+  #omt .omt-item.site{padding-left:34%;padding-right:0;justify-items:end;text-align:right;}
+  #omt .omt-item.site .t{justify-content:flex-end;}
+  #omt .omt-item.site .t i{order:-1;margin:0 -.12em 0 0;}
+  #omt .omt-item.site .t sup{order:1;}
+  #omt .omt-item.site .r{justify-self:end;}
+  #omt .omt-item.site .go{left:auto;right:-1.8rem;}
+  #omt .omt-item.site .k{left:8%;right:auto;}
+  #omt .omt-item.body{padding-left:0;padding-right:34%;}
+  #omt .omt-item.body .go{right:34%;}
+  #omt .omt-item.eng .go{right:34%;}
+}
 </style>
 </head>
 <body>
