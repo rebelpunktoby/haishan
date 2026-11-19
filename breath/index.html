@@ -74,10 +74,10 @@ button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 .rd details summary::-webkit-details-marker{display:none}.rd .nm{font-size:clamp(26px,3.4vw,40px)}
 .rd .nm::after{content:" +";color:var(--acc)}.rd details[open] .nm::after{content:" −"}
 .rd .hint{color:var(--mute);font-size:14px}
-.rrow{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1.4fr) minmax(0,1.8fr);gap:10px 32px;padding:22px 0;border-bottom:1px solid var(--rule)}
+.rrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1.3fr) minmax(0,1.5fr);gap:12px clamp(28px,4vw,56px);padding:clamp(26px,4vh,40px) 0;border-bottom:1px solid var(--rule)}
 .rrow:first-child{margin-top:clamp(16px,3vh,28px);border-top:1px solid var(--rule)}
-.rrow b{display:block;font:300 22px/1.2 Fraunces,serif}.rrow small{display:block;color:var(--mute);font-size:13px;margin-top:4px}
-.rrow .lb{display:block;font-size:12px;color:var(--elec);margin-bottom:4px}.rrow p{margin:0;font-size:15px;line-height:1.6}
+.rrow b{display:block;font:300 24px/1.2 Fraunces,serif}.rrow small{display:block;color:var(--mute);font-size:13px;margin-top:4px}
+.rrow .lb{display:block;font-size:12px;color:var(--elec);margin-bottom:4px}.rrow p{margin:0;font-size:15px;line-height:1.7;max-width:34ch}
 .rd .note{color:var(--mute);font-size:14px;margin:22px 0 10px}
 .src{color:var(--mute);font-size:13px;padding-left:20px;margin:0}.src a{color:var(--mute)}.src a:hover{color:var(--ink)}
 @media(max-width:800px){.rrow{grid-template-columns:minmax(0,1fr)}}
@@ -111,9 +111,9 @@ button.go{background:var(--ink);color:var(--bg);border-color:var(--ink)}
 <main id="mvs"></main>
 <section class="pg mv rd" id="read" aria-label="Read" style="min-height:auto">
   <details>
-    <summary><span class="nm" data-en="Read" data-zh="閱讀"></span><span class="hint" data-en="each breath: what it is for, where it comes from" data-zh="每種呼吸：為何而用，從何而來"></span></summary>
+    <summary><span class="nm" data-en="Read" data-zh="閱讀"></span><span class="hint" data-en="for · from" data-zh="為何 · 從何"></span></summary>
     <div id="rdlist"></div>
-    <p class="note" data-en="This is music, not treatment. Holds are optional; if you feel dizzy or tight, breathe your own way." data-zh="這是音樂，不是治療。屏息可選；若頭暈或胸悶，用自己的方式呼吸。"></p>
+    <p class="note" data-en="Music, not treatment. Holds are optional; if dizzy, breathe your own way." data-zh="是音樂，不是治療。屏息可選；頭暈就用自己的方式呼吸。"></p>
     <ol class="src" id="rdsrc"></ol>
   </details>
 </section>
@@ -375,32 +375,28 @@ $("idx").innerHTML = MV.map(m => `<a class="tile${m.k === "m3" ? " open" : ""}" 
 $("mvs").innerHTML = MV.map(movementPage).join("");
 // Read: each breath, what it is for, where it comes from
 const READ = [
-  { n: "", name: "Room 室", m: ["natural breath, no count", "自然呼吸，不計數"],
-    f: ["Arriving. No count, only noticing the breath that is already there.", "到場。不計數，只是覺察已經在發生的呼吸。"],
-    o: ["Breath awareness in meditation; 數息, the Buddhist practice of counting breaths, begins here.", "源自冥想中的覺察呼吸；佛教的數息由此開始。"] },
-  { n: "I", name: "Tide 潮", m: ["resonance breathing · in 4, out 6 · about 6 a minute", "共振呼吸 · 吸4 吐6 · 每分鐘約六次"],
-    f: ["Slows the breath to the rate where heart rhythm and breathing rise and fall together; the longer exhale settles.", "把呼吸放慢到心跳節律與呼吸同起同落的速度；較長的吐氣讓人安定。"],
-    o: ["Heart-rate-variability biofeedback research [1]; slow breathing under ten a minute is linked to calmer states [2]. Rosary prayer and yoga mantras fall near the same rate [3]. Humming on the exhale is bhramari, a yoga breath.",
-        "心率變異度生物回饋研究 [1]；每分鐘少於十次的慢呼吸與較平靜的狀態相關 [2]。玫瑰經祈禱與瑜伽咒語的節奏也接近這個速度 [3]。吐氣時哼鳴，即瑜伽的蜂鳴呼吸（bhramari）。"] },
-  { n: "II", name: "Square 方", m: ["box breathing · in, hold, out, rest · 4 each", "方形呼吸 · 吸、屏、吐、歇 · 各四拍"],
-    f: ["An even count that steadies attention. The hold is always optional.", "均等的拍數，讓注意力穩定。屏息永遠可選。"],
-    o: ["Equal-ratio breathing in yoga (sama vritti); widely taught in military and first-responder stress training. Its evidence is thinner: in a 2023 trial it lifted mood less than the exhale-led sigh [5].",
-        "瑜伽中的等長呼吸（sama vritti）；也廣泛用於軍警與急救人員的壓力訓練。證據較少：2023 年一項試驗中，它對情緒的幫助不及以吐氣為主的嘆息 [5]。"] },
-  { n: "III", name: "Still Air 靜氣", m: ["no clock · the body leads", "無時鐘 · 由身體引領"],
-    f: ["Steering stops. Each body keeps its own pace, and the electronics follow one listener's heartbeat.", "不再引導。每個身體保持自己的步調，電子聲音跟隨一位聽眾的心跳。"],
-    o: ["Biofeedback turned around: the body steers the sound, not the other way round. Zhuangzi: 真人之息以踵, the true person breathes from the heels.",
-        "反轉的生物回饋：是身體引導聲音，而非相反。莊子：「真人之息以踵」。"] },
-  { n: "IV", name: "Sigh 嘆", m: ["physiological sigh · two inhales, one long exhale", "生理嘆息 · 兩次吸氣，一次長吐"],
-    f: ["A reset the body already makes on its own; it ends on a long exhale and brings everyone back.", "身體本來就會自行做的重新調整；以一個長長的吐氣結束，把大家帶回來。"],
-    o: ["Respiratory physiology: sighs reopen the lungs every few minutes [4]. Practised five minutes a day, cyclic sighing lifted mood most in a 2023 trial [5].",
-        "呼吸生理學：嘆息每隔幾分鐘重新撐開肺部 [4]。2023 年一項試驗中，每天練習五分鐘的循環嘆息對情緒的改善最大 [5]。"] }
+  { n: "", name: "Room 室", m: ["natural breath", "自然呼吸"],
+    f: ["Arrive. Just notice.", "到場，只是覺察。"],
+    o: ["Breath awareness in meditation; Buddhist 數息.", "冥想的覺察呼吸；佛教數息。"] },
+  { n: "I", name: "Tide 潮", m: ["in 4 · out 6 · about 6 a minute", "吸4 吐6 · 每分鐘約六次"],
+    f: ["Heart and breath rise together. The long exhale settles.", "心跳與呼吸同起同落，長吐氣讓人安定。"],
+    o: ["HRV biofeedback [1]; slow breathing [2]; the pace of rosary and mantra [3]; bhramari, the humming breath.", "心率變異度回饋 [1]；慢呼吸 [2]；玫瑰經與咒語的節奏 [3]；蜂鳴呼吸。"] },
+  { n: "II", name: "Square 方", m: ["in · hold · out · rest, 4 each", "吸 · 屏 · 吐 · 歇，各四拍"],
+    f: ["An even count steadies attention.", "均等的拍數，穩住注意力。"],
+    o: ["Yoga's sama vritti; military stress training. Weaker evidence than the sigh [5].", "瑜伽等長呼吸；軍警壓力訓練。證據不及嘆息 [5]。"] },
+  { n: "III", name: "Still Air 靜氣", m: ["no clock", "無時鐘"],
+    f: ["Each body keeps its own pace. Sound follows one heartbeat.", "各自的步調，聲音跟隨一顆心跳。"],
+    o: ["Biofeedback reversed. Zhuangzi: 真人之息以踵.", "反轉的生物回饋。莊子：真人之息以踵。"] },
+  { n: "IV", name: "Sigh 嘆", m: ["two inhales, one long exhale", "兩次吸氣，一次長吐"],
+    f: ["The body's own reset. It brings everyone back.", "身體自有的重置，把大家帶回來。"],
+    o: ["Sighs reopen the lungs [4]; the largest mood lift in a 2023 trial [5].", "嘆息重新撐開肺部 [4]；2023 年試驗中情緒改善最大 [5]。"] }
 ];
 const SRC = [
-  ["Lehrer & Gevirtz (2014), Heart rate variability biofeedback: how and why does it work?", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4104929/"],
-  ["Zaccaro et al. (2018), How breath-control can change your life", "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2018.00353/full"],
-  ["Bernardi et al. (2001), Rosary prayer and yoga mantras, BMJ", "https://doi.org/10.1136/bmj.323.7327.1446"],
-  ["Li et al. (2016), The peptidergic control circuit for sighing, Nature", "https://doi.org/10.1038/nature16964"],
-  ["Balban et al. (2023), Brief structured respiration practices, Cell Reports Medicine", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9873947/"]
+  ["Lehrer & Gevirtz 2014 · HRV biofeedback", "https://pmc.ncbi.nlm.nih.gov/articles/PMC4104929/"],
+  ["Zaccaro et al. 2018 · slow breathing", "https://www.frontiersin.org/journals/human-neuroscience/articles/10.3389/fnhum.2018.00353/full"],
+  ["Bernardi et al. 2001 · rosary and mantra", "https://doi.org/10.1136/bmj.323.7327.1446"],
+  ["Li et al. 2016 · the sigh circuit", "https://doi.org/10.1038/nature16964"],
+  ["Balban et al. 2023 · cyclic sighing", "https://pmc.ncbi.nlm.nih.gov/articles/PMC9873947/"]
 ];
 $("rdlist").innerHTML = READ.map(r => `<div class="rrow"><div><b>${r.n ? r.n + " · " : ""}${r.name}</b><small>${T(r.m[0], r.m[1])}</small></div>
   <p><span class="lb">${T("for", "為何")}</span>${T(r.f[0], r.f[1])}</p><p><span class="lb">${T("from", "從何而來")}</span>${T(r.o[0], r.o[1])}</p></div>`).join("");
