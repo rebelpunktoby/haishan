@@ -69,7 +69,7 @@
   @property --sky-a{syntax:"<color>";inherits:true;initial-value:#0A0C18}
   @property --sky-b{syntax:"<color>";inherits:true;initial-value:#0C1220}
   :root{--sky-a:#0A0C18;--sky-b:#0C1220;--sun-x:50%;--sun-y:120%;--sun-c:255,214,170;--sun-a:0;--orb-o:1;--warm:0;--dim:0}
-  .sky{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) 100%);transition:--sky-a 20s linear,--sky-b 20s linear}
+  .sky-bg{position:absolute;inset:0;background:linear-gradient(180deg,var(--sky-a) 0%,var(--sky-b) 100%);transition:--sky-a 20s linear,--sky-b 20s linear}
   /* the light's source: where the sun is (or, at night, the moon) — shown only */
   .lum{position:absolute;width:80vmax;height:80vmax;left:var(--sun-x);top:var(--sun-y);transform:translate(-50%,-50%);border-radius:50%;
     background:radial-gradient(circle,rgba(var(--sun-c),.42) 0%,rgba(var(--sun-c),.10) 30%,rgba(var(--sun-c),0) 62%);mix-blend-mode:screen;opacity:var(--sun-a);
@@ -276,7 +276,7 @@
 
 <main class="stage">
   <div class="field" aria-hidden="true">
-    <span class="sky"></span>
+    <span class="sky-bg"></span>
     <span class="orb o1"></span><span class="orb o2"></span><span class="orb o3"></span>
     <span class="lum"></span>
   </div>
@@ -360,6 +360,6 @@
 
 <script src="/omt/knob.js"></script>
 <script>OMTKnob.addCloser(function(){var a=document.getElementById("about");if(a&&a.classList.contains("open")){document.getElementById("aboutClose").click();return true}return false});</script>
-<script type="module" src="app_v5.js?v=1"></script>
+<script type="module" src="app_v5.js?v=2"></script>
 </body>
 </html>
