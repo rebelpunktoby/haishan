@@ -643,7 +643,9 @@ body.lang-zh .seclabel .tag{display:none;}
 
 /* ================= Merge · fluid rooms with an architectural spine ================= */
 html{scroll-snap-type:y proximity;}
-section.block{scroll-snap-align:start;border-top:0;align-items:flex-start;}
+section.block{scroll-snap-align:start;scroll-snap-stop:always;border-top:0;align-items:flex-start;}
+/* every room is a stop: a fast flick or trackpad glide pauses at each room instead of sailing past it */
+.hero{scroll-snap-align:start;}
 section.block#omt,section.block.edu,section.block.other,section.block#contact{align-items:center;}
 .block + .block{border-top:0;}
 /* B: wide blurred light that bleeds across rooms */
@@ -1459,6 +1461,45 @@ a.brand{color:inherit;text-decoration:none;cursor:pointer;-webkit-tap-highlight-
   var hero=document.querySelector('.hero');
   function showIdx(){ var y=window.scrollY||0; nav.classList.toggle('show', y>(hero?hero.offsetHeight*0.6:400)); }
   window.addEventListener('scroll',showIdx,{passive:true}); showIdx();
+})();
+
+/* Room hold: a fast wheel or trackpad glide stops at the start of the next room
+   instead of sailing past it; the rest of that glide is absorbed, the next one moves on. */
+(function(){
+  var hold=0, dir=0, GAP=260, anim=0, root=document.documentElement;
+  var reduce=matchMedia('(prefers-reduced-motion: reduce)');
+  function stops(){
+    var out=[0];
+    document.querySelectorAll('section.block:not([hidden])').forEach(function(s){ out.push(Math.round(s.getBoundingClientRect().top+window.scrollY)); });
+    return out;
+  }
+  function glide(to){
+    cancelAnimationFrame(anim);
+    var from=window.scrollY, dist=to-from, t0=performance.now(), dur=reduce.matches?0:520;
+    root.style.scrollSnapType='none';
+    function step(now){
+      var k=dur?Math.min(1,(now-t0)/dur):1, ease=1-Math.pow(1-k,3);
+      window.scrollTo(0, from+dist*ease);
+      if(k<1){ anim=requestAnimationFrame(step); } else { root.style.scrollSnapType=''; }
+    }
+    anim=requestAnimationFrame(step);
+  }
+  window.addEventListener('wheel',function(e){
+    if(e.ctrlKey||e.defaultPrevented||!e.deltaY) return;
+    if(document.querySelector('.omt-sheet')) return;
+    var d=e.deltaY*(e.deltaMode===1?32:e.deltaMode===2?window.innerHeight:1);
+    var s=d>0?1:-1, now=performance.now();
+    if(now<hold && s===dir){ e.preventDefault(); hold=now+GAP; return; }
+    var y=window.scrollY, to=y+d, list=stops(), b=null;
+    for(var i=0;i<list.length;i++){
+      var p=list[i];
+      if(s>0 && p>y+2 && p<=to){ b=p; break; }
+      if(s<0 && p<y-2 && p>=to){ b=p; }
+    }
+    if(b===null) return;
+    e.preventDefault(); dir=s; hold=now+GAP;
+    glide(b);
+  },{passive:false});
 })();
 
 </script>
