@@ -29,6 +29,10 @@ function start() {
   const camera = new PerspectiveCamera(32, 1, 0.1, 200);
 
   const add = o => { scene.add(o); return o; };
+  /* a soft round dot for every point: air, rain, cloud */
+  const dot = (() => { const c = document.createElement('canvas'); c.width = c.height = 64; const x = c.getContext('2d');
+    const g = x.createRadialGradient(32, 32, 0, 32, 32, 32); g.addColorStop(0, 'rgba(255,255,255,1)'); g.addColorStop(.35, 'rgba(255,255,255,.55)'); g.addColorStop(1, 'rgba(255,255,255,0)');
+    x.fillStyle = g; x.fillRect(0, 0, 64, 64); const t = new CanvasTexture(c); t.colorSpace = SRGBColorSpace; return t; })();
   const lineMat = (c, op) => new LineBasicMaterial({ color: c, transparent: true, opacity: op, depthWrite: false });
   const glow = (c, op, fog = true) => new MeshBasicMaterial({ color: c, transparent: true, opacity: op, blending: AdditiveBlending, depthWrite: false, side: DoubleSide, fog });
   const az = k => k * Math.PI / 4;                      /* face k: 0 = north, clockwise */
@@ -36,7 +40,13 @@ function start() {
   const loop = (r, y, n, a0) => { const p = []; for (let i = 0; i < n; i++) { const v = P(a0 + i * 2 * Math.PI / n, r, y); p.push(v.x, v.y, v.z); } const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); return g; };
 
   /* ground: compass rings and the eight directions */
-  [6, 13, 20, 28].forEach((r, i) => add(new LineLoop(loop(r, 0, 128, 0), lineMat(BONE, .07 - i * .012))));
+  /* the land: contour lines around the site, so the building sits in ground, not in a void */
+  [14, 19, 25, 32, 40, 49].forEach((r0, k) => {
+    const p = []; for (let i = 0; i < 160; i++) { const th = i / 160 * Math.PI * 2;
+      const r = r0 * (1 + .07 * Math.sin(3 * th + k * 1.3) + .045 * Math.sin(5 * th - k * .8) + .03 * Math.sin(8 * th + k * 2.1));
+      p.push(r * Math.sin(th), -.02 - k * .02, -r * Math.cos(th)); }
+    const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); add(new LineLoop(g, lineMat(BONE, .085 - k * .011)));
+  });
   { const p = []; for (let k = 0; k < 8; k++) { const a = P(az(k), R + 1, 0), b = P(az(k), 28, 0); p.push(a.x, 0, a.z, b.x, 0, b.z); }
     const g = new BufferGeometry(); g.setAttribute('position', new Float32BufferAttribute(p, 3)); add(new LineSegments(g, lineMat(BONE, .05))); }
 
@@ -124,16 +134,22 @@ function start() {
     rp[i * 3] = r * Math.sin(a); rp[i * 3 + 1] = H + 3 + Math.random() * 10; rp[i * 3 + 2] = -r * Math.cos(a); rv[i] = 9 + Math.random() * 5; };
   for (let i = 0; i < RN; i++) reseed(i, i < RN * .45);
   const rainG = new BufferGeometry(); rainG.setAttribute('position', new Float32BufferAttribute(rp, 3));
-  const rainM = new PointsMaterial({ color: BONE, size: .11, transparent: true, opacity: 0, depthWrite: false });
+  const rainM = new PointsMaterial({ map: dot, color: BONE, size: .16, transparent: true, opacity: 0, depthWrite: false });
   add(new Points(rainG, rainM));
 
   /* wind: air drawn as moving points, streaming at the active face */
-  const WN = mobile ? 380 : 760, wp = new Float32Array(WN * 3), wl = new Float32Array(WN), wo = new Float32Array(WN * 2);
-  for (let i = 0; i < WN; i++) { wo[i * 2] = (Math.random() * 2 - 1) * 15; wo[i * 2 + 1] = Math.random() * H * 1.2; wl[i] = Math.random(); }
+  const WN = mobile ? 520 : 1100, wp = new Float32Array(WN * 3), wl = new Float32Array(WN), wo = new Float32Array(WN * 2);
+  for (let i = 0; i < WN; i++) { wo[i * 2] = (Math.random() * 2 - 1) * 30; wo[i * 2 + 1] = Math.random() * H * 1.2; wl[i] = Math.random(); }
   const windG = new BufferGeometry(); windG.setAttribute('position', new Float32BufferAttribute(wp, 3));
-  const windM = new PointsMaterial({ color: TEAL, size: .16, transparent: true, opacity: .4, blending: AdditiveBlending, depthWrite: false });
+  const windM = new PointsMaterial({ map: dot, color: TEAL, size: .16, transparent: true, opacity: .4, blending: AdditiveBlending, depthWrite: false });
   add(new Points(windG, windM));
 
+  const CN = mobile ? 160 : 320, cp = new Float32Array(CN * 3);
+  for (let i = 0; i < CN; i++) { const a = Math.random() * 6.28, r = Math.sqrt(Math.random()) * 46; cp[i * 3] = r * Math.sin(a); cp[i * 3 + 1] = H + 13 + Math.random() * 5; cp[i * 3 + 2] = -r * Math.cos(a); }
+  const cloudG = new BufferGeometry(); cloudG.setAttribute('position', new Float32BufferAttribute(cp, 3));
+  const cloudM = new PointsMaterial({ map: dot, color: BONE, size: 3.2, transparent: true, opacity: 0, depthWrite: false, blending: AdditiveBlending });
+  add(new Points(cloudG, cloudM));
+  const NIGHT = new Color('#0d1218'), DAY = new Color('#151c24'), DUSK = new Color('#1c1a1c'), sky = new Color();
   /* sun: a disc on its arc and a blade of light across the floor */
   const sunDisc = new Mesh(new CircleGeometry(.6, 32), glow(WARM, .7, false)); add(sunDisc);
   const sunMark = new Mesh(new CircleGeometry(.45, 24), glow(WARM, .8)); sunMark.rotation.x = -Math.PI / 2; add(sunMark);
@@ -153,8 +169,8 @@ function start() {
 
   /* camera: slow orbit; drag to turn; each passage leans the view toward its part */
   const VIEW = {
-    top: [-.55, .6, 50], origin: [-.79, .5, 46], wall: [null, .38, 44], pedal: [null, .2, 42], seasons: [null, .58, 47],
-    rain: [null, 1.08, 42], light: [Math.PI + .5, .82, 44], silence: [null, .55, 54], listen: [null, .55, 48], method: [null, .62, 50], next: [null, .6, 50]
+    top: [-.55, .6, 50], origin: [-.79, .5, 46], wall: [null, .38, 48], pedal: [null, .2, 42], seasons: [null, .58, 47],
+    rain: [null, 1.08, 45], light: [Math.PI + .5, .82, 44], silence: [null, .55, 54], listen: [null, .55, 48], method: [null, .62, 50], next: [null, .6, 50]
   };
   let camA = -.55, camE = .6, camD = 50, drag = null, lastUser = -99, spin = 0, zoom = 1;
   const full = () => document.body.classList.contains('full');
@@ -255,17 +271,19 @@ function start() {
     /* wind: from the active face's side, into the face, faster and brighter in gusts */
     const wa0 = az(S.face), dx = -Math.sin(wa0), dz = Math.cos(wa0), px = Math.cos(wa0), pz = Math.sin(wa0), speed = .05 + .22 * gw;
     for (let i = 0; i < WN; i++) {
-      wl[i] += dt * speed * (.6 + (i % 7) * .08); if (wl[i] > 1) { wl[i] -= 1; wo[i * 2] = (Math.random() * 2 - 1) * 15; }
-      const u = 1 - wl[i] * 2, dist = 34 * u;
-      let x = -dx * dist + px * wo[i * 2], z = -dz * dist + pz * wo[i * 2];
+      wl[i] += dt * speed * (.6 + (i % 7) * .08); if (wl[i] > 1) { wl[i] -= 1; wo[i * 2] = (Math.random() * 2 - 1) * 30; }
+      const u = 1 - wl[i] * 2, dist = 44 * u, lat = wo[i * 2], enters = Math.abs(lat) < faceW * .45 && wo[i * 2 + 1] < H;
+      let x = -dx * dist + px * lat, z = -dz * dist + pz * lat;
       const y = wo[i * 2 + 1] + Math.sin(t * .7 + i) * .15 * gg;
-      const inside = Math.hypot(x, z) < R;
-      if (inside) { x *= .995; z *= .995; }
-      wp[i * 3] = x; wp[i * 3 + 1] = inside && wl[i] > .52 ? -50 : y; wp[i * 3 + 2] = z;
+      const rr = Math.hypot(x, z), edge = R + 2.2;
+      let hide = false;
+      if (enters) { if (rr < R) hide = true; }
+      else if (rr < edge + 4) { const f = Math.max(0, edge + 4 - rr) * (edge / (edge + 4)); const k = (rr + f * .9) / Math.max(rr, 1e-3); x *= k; z *= k; }
+      wp[i * 3] = x; wp[i * 3 + 1] = hide ? -50 : y; wp[i * 3 + 2] = z;
     }
     windG.attributes.position.needsUpdate = true;
-    windM.opacity = (.16 + .6 * gw) * (focus === 'silence' ? .3 : 1);
-    windM.size = .13 + .12 * gg;
+    windM.opacity = (.26 + .6 * gw) * (focus === 'silence' ? .3 : 1);
+    windM.size = .26 + .2 * gg;
 
     /* sun: one day every 60 s; the blade runs from the south slits across the floor */
     const day = (t % 60) / 60, sunOn = O.sun(), elev = Math.sin(day * Math.PI) * .95, sa = Math.PI + (day - .5) * 2.4;
@@ -281,6 +299,15 @@ function start() {
     slits.forEach(s => { s.material.opacity = sunOn ? .2 + .5 * Math.sin(day * Math.PI) : .08; });
 
     /* labels */
+    /* clouds drift with the wind and thicken as the rain arc rises */
+    const cdx = Math.sin(wa0), cdz = -Math.cos(wa0), cv = (.4 + 1.6 * gw) * dt;
+    for (let i = 0; i < CN; i++) { let x = cp[i * 3] - cdx * cv, z = cp[i * 3 + 2] - cdz * cv; if (Math.hypot(x, z) > 46) { x = -x * .98; z = -z * .98; } cp[i * 3] = x; cp[i * 3 + 2] = z; }
+    cloudG.attributes.position.needsUpdate = true;
+    cloudM.opacity += ((.04 + .1 * Math.max(ra, wa * .5)) - cloudM.opacity) * Math.min(1, dt);
+    /* the sky follows the day: deep at night, a little lighter by day, warm at its edges */
+    const dl = Math.sin(day * Math.PI), edgeT = Math.max(0, 1 - Math.abs(day - .03) * 12) + Math.max(0, 1 - Math.abs(day - .97) * 12);
+    sky.copy(NIGHT).lerp(DAY, Math.max(0, dl)).lerp(DUSK, Math.min(1, edgeT) * .6);
+    scene.background.copy(sky); scene.fog.color.copy(sky);
     labels.forEach(L => { const act = L.k === S.face, h = L.k === hi; L.s.material.opacity = h ? 1 : act ? .95 : L.k === 4 ? .75 : .6;
       L.s.material.color.copy(h ? WARM : act ? TEAL : L.k === 4 ? WARM : BONE); });
 
