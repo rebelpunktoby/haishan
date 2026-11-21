@@ -157,6 +157,9 @@
   .dial input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;width:13px;height:13px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer;box-shadow:0 0 10px rgba(143,227,210,.45)}
   .dial input[type=range]::-moz-range-thumb{width:13px;height:13px;border-radius:50%;background:var(--lumen);border:0;cursor:pointer}
   .row2{display:flex;align-items:center;justify-content:center;gap:1.4rem 1.8rem;flex-wrap:wrap}
+  .timer{font-variant-numeric:tabular-nums;min-width:5.5em;text-align:center}
+  .timer.set{color:var(--lumen)}
+  body.lang-zh .timer{letter-spacing:.14em}
   .pill{font-family:var(--mono);font-size:.62rem;letter-spacing:.26em;text-indent:.26em;text-transform:uppercase;color:var(--haze);
     border:1px solid var(--line-2);border-radius:999px;padding:.55rem 1.25rem;transition:color .4s var(--ease),border-color .4s var(--ease)}
   .pill:hover,.pill:focus-visible{color:var(--lumen);border-color:var(--lumen)}
@@ -315,6 +318,7 @@
     <div class="row2">
       <button class="pill" id="powerBtn" type="button" aria-label="Pause the sound"><span data-i18n="pause">Pause</span></button>
       <button class="quiet" id="aboutBtn" type="button" aria-expanded="false" aria-controls="about"><span data-i18n="about">About</span> <span aria-hidden="true">↑</span></button>
+      <button class="quiet timer" id="timerBtn" type="button" aria-label="Sleep timer: off. Tap to choose when the sound fades out.">Timer</button>
     </div>
     <p class="msg" id="msg"></p>
   </div>
@@ -362,6 +366,6 @@
 
 <script src="/omt/knob.js"></script>
 <script>OMTKnob.addCloser(function(){var a=document.getElementById("about");if(a&&a.classList.contains("open")){document.getElementById("aboutClose").click();return true}return false});</script>
-<script type="module" src="app_v5.js?v=5"></script>
+<script type="module" src="app_v5.js?v=6"></script>
 </body>
 </html>

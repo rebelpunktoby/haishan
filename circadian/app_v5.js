@@ -34,6 +34,7 @@ const moTime = $("moTime"), moHour = $("moHour"), moLine = $("moLine"), moTerm =
 const canvas = $("horizon"), ctx2d = canvas.getContext("2d");
 const dials = { breath: $("breath"), light: $("light"), room: $("room") };
 
+let sleepGain = null;
 let audioCtx = null, engine = null, masterGain = null, analyser = null, wetAnalyser = null, airAnalyser = null, wetData = null, wetCurve = null, airBins = null, airLevel = 0, roomLevel = 0;
 const GRAINS = Array.from({ length: 70 }, (_, i) => ({ x: (i * 0.618034) % 1, y: 0.12 + ((i * 0.381966) % 1) * 0.5, s: 0.6 + ((i * 7) % 5) / 5, ph: (i * 1.7) % 6.28 }));
 let waveData = null, smoothWave = null, frameCount = 0;
@@ -271,6 +272,7 @@ function applyLang(next) {
   langBtn.textContent = lang === "en" ? "繁" : "EN";
   langBtn.setAttribute("aria-label", lang === "en" ? "Switch to Traditional Chinese" : "Switch to English");
   pushClock();
+  try { renderTimer(); } catch (_) {}
   if (aboutBox.classList.contains("open")) drawClock();
 }
 langBtn.addEventListener("click", () => applyLang(lang === "en" ? "zh" : "en"));
@@ -296,7 +298,8 @@ async function initialize() {
     masterGain = audioCtx.createGain(); masterGain.gain.value = 0;
     analyser = audioCtx.createAnalyser(); analyser.fftSize = 2048;
     waveData = new Float32Array(analyser.fftSize); smoothWave = new Float32Array(analyser.fftSize);
-    engine.output.connect(masterGain); masterGain.connect(analyser); analyser.connect(audioCtx.destination);
+    sleepGain = audioCtx.createGain(); sleepGain.gain.value = 1;          // the sleep timer's fade lives on the audio clock, so it holds even if the page is throttled
+    engine.output.connect(masterGain); masterGain.connect(sleepGain); sleepGain.connect(analyser); analyser.connect(audioCtx.destination);
     wetAnalyser = audioCtx.createAnalyser(); wetAnalyser.fftSize = 2048; wetAnalyser.smoothingTimeConstant = 0.85; engine.wet.connect(wetAnalyser);
     airAnalyser = audioCtx.createAnalyser(); airAnalyser.fftSize = 512; airAnalyser.smoothingTimeConstant = 0.9; engine.air.connect(airAnalyser);
     wetData = new Float32Array(wetAnalyser.fftSize); wetCurve = new Float32Array(VIZ_POINTS); airBins = new Float32Array(airAnalyser.frequencyBinCount);
@@ -346,8 +349,60 @@ async function onPowerToggle() {
     powerBtn.setAttribute("aria-label", "Pause the sound");
     fadeMaster(1, 0.9);
     if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
+    scheduleSleep();
   }
 }
+
+// ---------- the sleep timer: 20 · 30 min · 1 h · 1 · 2 · 3 時辰, then a slow fade and the sound stops ----------
+const TIMER_OPTIONS = [0, 20, 30, 60, 120, 240, 360];          // minutes; 1 時辰 = 2 hours
+const timerBtn = $("timerBtn");
+let timerIdx = 0, timerEnd = 0, timerFlash = 0;
+const fadeSecondsFor = min => Math.min(120, Math.max(45, min * 60 * 0.05));   // 45 s for 20 min … 2 min for the long ones
+function timerOptionLabel(min) {
+  if (!min) return lang === "zh" ? "定時" : "Timer";
+  if (min >= 120) return lang === "zh" ? `${min / 120} 時辰` : `${min / 120} 時辰`;
+  if (min === 60) return lang === "zh" ? "1 小時" : "1 h";
+  return lang === "zh" ? `${min} 分` : `${min} min`;
+}
+function remainingLabel(ms) {
+  const m = Math.max(0, Math.ceil(ms / 60000));
+  if (m >= 60) { const h = Math.floor(m / 60), r = m % 60; return lang === "zh" ? `餘 ${h} 時 ${String(r).padStart(2, "0")} 分` : `– ${h} h ${String(r).padStart(2, "0")}`; }
+  return lang === "zh" ? `餘 ${m} 分` : `– ${m} min`;
+}
+function renderTimer() {
+  const min = TIMER_OPTIONS[timerIdx];
+  timerBtn.classList.toggle("set", !!min);
+  if (!min) { timerBtn.textContent = timerOptionLabel(0); timerBtn.setAttribute("aria-label", "Sleep timer: off. Tap to choose when the sound fades out."); return; }
+  const text = Date.now() < timerFlash ? timerOptionLabel(min) : remainingLabel(timerEnd - Date.now());
+  if (timerBtn.textContent !== text) timerBtn.textContent = text;
+  const end = new Date(timerEnd);
+  timerBtn.setAttribute("aria-label", `Sleep timer: the sound fades out at ${String(end.getHours()).padStart(2, "0")}:${String(end.getMinutes()).padStart(2, "0")}. Tap for the next option.`);
+}
+function scheduleSleep() {
+  if (!sleepGain || !audioCtx) return;
+  const g = sleepGain.gain, t = audioCtx.currentTime, min = TIMER_OPTIONS[timerIdx];
+  g.cancelScheduledValues(t); g.setValueAtTime(g.value, t);
+  if (!min) { g.linearRampToValueAtTime(1, t + 1.5); return; }
+  const remaining = (timerEnd - Date.now()) / 1000, fade = fadeSecondsFor(min);
+  if (remaining <= 0.5) { g.linearRampToValueAtTime(0, t + 2); return; }
+  if (remaining > fade) { g.linearRampToValueAtTime(1, t + 1.5); g.setValueAtTime(1, t + remaining - fade); }
+  g.linearRampToValueAtTime(0, t + remaining);                 // a straight breath out, ending exactly at the time
+}
+function setTimer(idx) {
+  timerIdx = idx; const min = TIMER_OPTIONS[idx];
+  timerEnd = min ? Date.now() + min * 60000 : 0;
+  timerFlash = min ? Date.now() + 1800 : 0;
+  scheduleSleep(); renderTimer();
+}
+function endTimer() {
+  timerIdx = 0; timerEnd = 0;
+  if (playing) onPowerToggle();                                // the fade has already brought it to silence; this pauses and lets the device rest
+  setTimeout(() => { if (sleepGain && audioCtx) { const t = audioCtx.currentTime; sleepGain.gain.cancelScheduledValues(t); sleepGain.gain.setValueAtTime(1, t + 0.05); } }, 1500);
+  renderTimer();
+}
+timerBtn.addEventListener("click", () => setTimer((timerIdx + 1) % TIMER_OPTIONS.length));
+setInterval(() => { if (timerIdx && Date.now() >= timerEnd) endTimer(); else renderTimer(); }, 2000);
+renderTimer();
 function setMode(spk) {
   speakers = spk;
   modeBtn.setAttribute("aria-pressed", String(spk));
@@ -579,7 +634,8 @@ function setupMediaSession() {
 // as soon as it's allowed. Only an explicit Pause stops the station.
 async function keepAlive() {
   if (!audioCtx || !playing) return;
-  if (audioCtx.state !== "running") { try { await audioCtx.resume(); pushClock(); } catch (_) {} }
+  if (audioCtx.state !== "running") { try { await audioCtx.resume(); pushClock(); scheduleSleep(); } catch (_) {} }
+  if (timerIdx && Date.now() >= timerEnd) endTimer();
   if ("mediaSession" in navigator) navigator.mediaSession.playbackState = "playing";
 }
 ["visibilitychange", "pageshow", "focus", "pointerdown", "keydown"].forEach(ev =>
